@@ -35,7 +35,12 @@ include_directories(
 )
 set(SOURCES
         src/file_manager.cc
-        src/canvas_manager.cc)
+        src/canvas_manager.cc
+        src/correlation_manager.cc
+        )
 
 add_executable(draw_symmetry src/main.cc ${SOURCES})
 target_link_libraries(draw_symmetry Qn::Base ${ROOT_LIBRARIES} ${Boost_PROPERTY_TREE} )
+
+add_executable(draw src/draw.cc ${SOURCES})
+target_link_libraries(draw Qn::Base ${ROOT_LIBRARIES} ${Boost_PROPERTY_TREE} )

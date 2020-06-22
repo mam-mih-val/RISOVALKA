@@ -1,9 +1,11 @@
 {
-  "pad left margin": 0.15,
+  "pad left margin": 0.2,
+  "pad right margin": 0.1,
+  "pad bottom margin": 0.15,
   "legend border size": 0,
-  "frame line width": 3,
-  "title size": [{"X": 0.08}, {"Y": 0.04}],
-  "title offset": [{"X": 1.0}, {"Y": 1.6}],
+  "frame line width": 4,
+  "title size": {"X": 0.08, "Y": 0.04},
+  "title offset": {"X": 0.035, "Y": 0.035},
   "marker size": 2,
   "line width": 3
 }

@@ -5,9 +5,10 @@
 #ifndef FLOW_DRAWING_TOOLS_SRC_FILE_MANAGER_H_
 #define FLOW_DRAWING_TOOLS_SRC_FILE_MANAGER_H_
 
-#include <DataContainer.h>
-#include <Stats.h>
+#include <iostream>
+
 #include <TFile.h>
+
 class FileManager {
 public:
   static FileManager* Instance(){

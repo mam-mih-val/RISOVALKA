@@ -43,35 +43,38 @@ public:
       std::cout << "CanvasManager::Draw: canvas is not set" << std::endl;
       abort();
     }
-    style_->cd();
+//    style_->cd();
     canvas_->cd();
     if( !graph_stack_ ){
       std::cout << "CanvasManager::Draw: graphs are not set" << std::endl;
       abort();
     }
     graph_stack_->Draw("AP");
+    gPad->BuildLegend();
   }
-  void ReadStyleConfig( const std::string& file_path="config/style.json" ){
+private:
+
+  void ReadStyleConfig( const std::string& file_path="../src/config/style.json" ){
     boost::property_tree::ptree config;
     boost::property_tree::read_json(file_path, config);
-    style_ = new TStyle("style", "");
-    style_->SetPadLeftMargin(config.get<float>("left pad margin") );
-    style_->SetLegendBorderSize(config.get<int>("legend border size"));
-    style_->SetFrameLineWidth(config.get<int>("frame line width"));
-    style_->SetMarkerSize(config.get<int>("marker size"));
-    style_->SetLineWidth(config.get<int>("line width"));
+//    gStyle = new TStyle("style", "");
+    gStyle->SetPadLeftMargin(config.get<float>("pad left margin") );
+    gStyle->SetPadRightMargin(config.get<float>("pad right margin") );
+    gStyle->SetPadBottomMargin(config.get<float>("pad bottom margin") );
+    gStyle->SetLegendBorderSize(config.get<int>("legend border size"));
+    gStyle->SetFrameLineWidth(config.get<int>("frame line width"));
+    gStyle->SetMarkerSize(config.get<int>("marker size"));
+    gStyle->SetLineWidth(config.get<int>("line width"));
     auto title_size_config = config.get_child("title size");
-    style_->SetTitleSize(title_size_config.get<float>("X"),"X");
-    style_->SetTitleSize(title_size_config.get<float>("Y"),"Y");
+    gStyle->SetTitleSize(title_size_config.get<float>("X"),"X");
+    gStyle->SetTitleSize(title_size_config.get<float>("Y"),"Y");
 
     auto title_offset_config = config.get_child("title offset");
-    style_->SetTitleSize(title_offset_config.get<float>("X"),"X");
-    style_->SetTitleSize(title_offset_config.get<float>("Y"),"Y");
+    gStyle->SetTitleSize(title_offset_config.get<float>("X"),"X");
+    gStyle->SetTitleSize(title_offset_config.get<float>("Y"),"Y");
 
-    style_->SetOptStat(0);
+    gStyle->SetOptStat(0);
   }
-
-private:
   CanvasManager(){
       ReadStyleConfig();
   };
