@@ -10,6 +10,7 @@ void CorrelationManager::Draw(const std::string& path_to_file){
   boost::property_tree::ptree config;
   boost::property_tree::read_json(path_to_file, config);
   ReadConfig(config);
+  ReadGraphs(config);
   canvas_manager_->AddToCanvas(graph_stack_);
   canvas_manager_->ResetCanvas("canv");
   canvas_manager_->Draw();
@@ -17,7 +18,7 @@ void CorrelationManager::Draw(const std::string& path_to_file){
 }
 
 void CorrelationManager::ReadConfig(boost::property_tree::ptree config){
-  file_manager_->SetFile(config.get<std::string>("file"));
+  file_manager_->Open(config.get<std::string>("file"));
   auto axis_config = config.get_child("axis title");
   std::string stack_title = ";"+ axis_config.get<std::string>("X")
       +";"+axis_config.get<std::string>("Y");
@@ -33,7 +34,7 @@ void CorrelationManager::ReadConfig(boost::property_tree::ptree config){
 }
 
 void CorrelationManager::AddCorrelation(boost::property_tree::ptree config){
-  auto corr = file_manager_->GetObject<Qn::DataContainerStats>(config.get<std::string>("name"));
+  auto corr = *(file_manager_->GetObject<Qn::DataContainerStats>(config.get<std::string>("name")));
   auto rebin_config = config.get_child("rebin axis");
   for( const auto& axis : rebin_config ){
     auto title = axis.second.get<std::string>("name");
@@ -57,4 +58,31 @@ void CorrelationManager::AddCorrelation(boost::property_tree::ptree config){
       config.get<std::string>("color")
       ) );
   graph_stack_->Add(graph);
+}
+void CorrelationManager::AddGraph(const boost::property_tree::ptree& config) {
+  file_manager_->Open( config.get<std::string>("file") );
+  auto graph = file_manager_->GetObject<TGraphAsymmErrors>(config.get<std::string>("name"));
+  graph->SetTitle( (config.get<std::string>("title")).data() );
+  graph->SetMarkerStyle( MarkerConstants::MARKERS.at(
+      config.get<std::string>("marker")
+  ) );
+  graph->SetMarkerColor( MarkerConstants::COLORS.at(
+      config.get<std::string>("color")
+  ) );
+  graph->SetLineColor( MarkerConstants::COLORS.at(
+      config.get<std::string>("color")
+  ) );
+  graph_stack_->Add(graph);
+}
+
+void CorrelationManager::ReadGraphs(const boost::property_tree::ptree &config) {
+  try {
+    auto corr_config = config.get_child("graphs");
+    for( const auto& conf : corr_config ){
+      AddGraph(conf.second);
+    }
+  }catch(const std::exception& e){
+    std::cout << "Graphs are not found" << std::endl;
+    return;
+  }
 }

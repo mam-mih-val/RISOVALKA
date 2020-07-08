@@ -31,7 +31,8 @@ private:
   ~CorrelationManager() = default;
   void AddCorrelation(boost::property_tree::ptree config);
   void ReadConfig(boost::property_tree::ptree config);
-
+  void ReadGraphs(const boost::property_tree::ptree& config);
+  void AddGraph(const boost::property_tree::ptree& config);
   static CorrelationManager* instance_;
   FileManager* file_manager_{nullptr};
   CanvasManager* canvas_manager_{nullptr};

@@ -11,8 +11,9 @@
 #include <boost/property_tree/json_parser.hpp>
 
 #include <TCanvas.h>
-#include <TStyle.h>
+#include <TLine.h>
 #include <TMultiGraph.h>
+#include <TStyle.h>
 class CanvasManager {
 public:
   static CanvasManager* Instance(){
@@ -49,8 +50,12 @@ public:
       std::cout << "CanvasManager::Draw: graphs are not set" << std::endl;
       abort();
     }
+    auto line = new TF1("zero", "0", -10.0, 10.0);
+    auto y_cm = new TLine(-0.74, -0.25, -0.74, 0.25);
     graph_stack_->Draw("AP");
     gPad->BuildLegend();
+    line->Draw("same");
+    y_cm->Draw("same");
   }
 private:
 

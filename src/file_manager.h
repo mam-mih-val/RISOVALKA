@@ -17,7 +17,7 @@ public:
     return instance_;
   }
   template <class T>
-  [[nodiscard]] T GetObject(std::string_view name){
+  [[nodiscard]] T* GetObject(std::string_view name){
     if( !file_ ){
       std::cout << "FileManager::GetCorrelation: File is not set" << std::endl;
       abort();
@@ -29,20 +29,25 @@ public:
                 << name << " in file" << std::endl;
       abort();
     }
-    return *obj;
+    return obj;
   }
   template <class T>
-  [[nodiscard]] T GetCorrelationVector(
+  [[nodiscard]] std::vector<T*> GetObjectsVector(
       const std::vector<std::string_view>& names ){
-    std::vector<T> obj_vec;
+    std::vector<T*> obj_vec;
     obj_vec.reserve(names.size());
     for( auto name : names ){
       obj_vec.emplace_back(GetObject<T>(name));
     }
     return obj_vec;
   }
-  void SetFile(std::string_view file_name){
+  void Open(const std::string& file_name){
     file_.reset(TFile::Open(file_name.data()));
+    if( !file_ ){
+      std::cerr << "Error in FileManager::Open()" << file_name << std::endl;
+      std::cerr << "No such a file " << file_name << std::endl;
+      abort();
+    }
   };
 private:
   FileManager() = default;
