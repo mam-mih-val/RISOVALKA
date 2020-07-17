@@ -36,7 +36,7 @@ include_directories(
 set(SOURCES
         src/file_manager.cc
         src/canvas_manager.cc
-        src/correlation_manager.cc
+        src/config_manager.cc
         src/flow_method.cc
         src/rnd_not_ext_method.cc
         src/computation_manager.cc

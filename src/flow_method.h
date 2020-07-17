@@ -22,9 +22,18 @@ public:
   }
   void SetName(const std::string &name) { name_ = name; }
   virtual void ComputeFlow(){
-//    auto corr = un_qn_->Projection({"Centrality","mdc_vtx_tracks_rapidity"});
-    auto corr = *un_qn_;
-    flow_ = new Qn::DataContainerStats ( corr / *(resolution_) );
+    auto num = *un_qn_;
+    auto den = *resolution_;
+    for( auto& bin : num){
+      bin.SetWeights(Qn::Stats::Weights::OBSERVABLE);
+      bin.ResetBits(Qn::Stats::CORRELATEDERRORS);
+    }
+    for( auto& bin : den ){
+      bin.SetWeights(Qn::Stats::Weights::REFERENCE);
+//      bin.ResetBits(Qn::Stats::CORRELATEDERRORS);
+    }
+
+    flow_ = new Qn::DataContainerStats (num / den );
   }
   virtual void ComputeResolution(){}
   void Write(TFile* file){

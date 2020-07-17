@@ -4,13 +4,13 @@
 
 #include <string>
 
-#include "correlation_manager.h"
+#include "config_manager.h"
 
 int main(int n_args, char** args){
   if( n_args < 2 ){
     return 1;
   }
   std::string input{args[1]};
-  CorrelationManager::Instance()->Draw(input);
+  ConfigManager::Instance()->Draw(input);
   return 0;
 }

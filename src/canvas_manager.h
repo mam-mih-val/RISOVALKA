@@ -11,6 +11,7 @@
 #include <boost/property_tree/json_parser.hpp>
 
 #include <TCanvas.h>
+#include <THStack.h>
 #include <TLine.h>
 #include <TMultiGraph.h>
 #include <TStyle.h>
@@ -39,6 +40,9 @@ public:
   void AddToCanvas(TMultiGraph* graph_stack){
     graph_stack_ = graph_stack;
   }
+  void AddToCanvas(THStack* histo_stack){
+    histo_stack_ = histo_stack;
+  }
   void Draw(){
     if( !canvas_ ){
       std::cout << "CanvasManager::Draw: canvas is not set" << std::endl;
@@ -50,9 +54,13 @@ public:
       std::cout << "CanvasManager::Draw: graphs are not set" << std::endl;
       abort();
     }
+    std::cout << histo_stack_ << std::endl;
+
     auto line = new TF1("zero", "0", -10.0, 10.0);
     auto y_cm = new TLine(-0.74, -0.25, -0.74, 0.25);
     graph_stack_->Draw("AP");
+    if( histo_stack_ )
+      histo_stack_->Draw("same+NOSTACK");
     gPad->BuildLegend();
     line->Draw("same");
     y_cm->Draw("same");
@@ -89,6 +97,7 @@ private:
   std::unique_ptr<TCanvas> canvas_{nullptr};
   TStyle* style_{nullptr};
   TMultiGraph* graph_stack_{nullptr};
+  THStack* histo_stack_{nullptr};
 };
 
 #endif // FLOW_DRAWING_TOOLS_SRC_CANVAS_MANAGER_H_
