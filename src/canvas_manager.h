@@ -56,14 +56,14 @@ public:
     }
     std::cout << histo_stack_ << std::endl;
 
-    auto line = new TF1("zero", "0", -10.0, 10.0);
+    auto line = new TF1("zero", "0", -10.0, 100.0);
     auto y_cm = new TLine(-0.74, -0.25, -0.74, 0.25);
     graph_stack_->Draw("AP");
     if( histo_stack_ )
       histo_stack_->Draw("same+NOSTACK");
     gPad->BuildLegend();
     line->Draw("same");
-    y_cm->Draw("same");
+//    y_cm->Draw("same");
   }
 private:
 

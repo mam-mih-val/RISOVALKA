@@ -20,33 +20,23 @@ public:
   void SetQnQn(const std::vector<Qn::DataContainer<Qn::Stats>*> &qn_qn) {
     qn_qn_ = qn_qn;
   }
+  void SetResolutionProjAxis(
+      const std::vector<Qn::Axis<double>> &resolution_proj_axis) {
+    resolution_proj_axis_ = resolution_proj_axis;
+  }
+  void AddResolutionRebinAxis(const Qn::Axis<double>& axis ){
+    resolution_proj_axis_.emplace_back(axis);
+  }
+  void ResolutionProjection();
   void SetName(const std::string &name) { name_ = name; }
-  virtual void ComputeFlow(){
-    auto num = *un_qn_;
-    auto den = *resolution_;
-    for( auto& bin : num){
-      bin.SetWeights(Qn::Stats::Weights::OBSERVABLE);
-      bin.ResetBits(Qn::Stats::CORRELATEDERRORS);
-    }
-    for( auto& bin : den ){
-      bin.SetWeights(Qn::Stats::Weights::REFERENCE);
-//      bin.ResetBits(Qn::Stats::CORRELATEDERRORS);
-    }
-
-    flow_ = new Qn::DataContainerStats (num / den );
-  }
+  virtual void ComputeFlow();
   virtual void ComputeResolution(){}
-  void Write(TFile* file){
-    file->cd();
-    std::string save_name = "flow_"+name_;
-    flow_->Write(save_name.c_str());
-    save_name = "resolution_"+name_;
-    resolution_->Write(save_name.c_str());
-  }
+  void Write(TFile* file);
 protected:
   std::string name_;
   Qn::DataContainer<Qn::Stats> *un_qn_;
   std::vector<Qn::DataContainer<Qn::Stats>*> qn_qn_;
+  std::vector<Qn::Axis<double>> resolution_proj_axis_;
 
   Qn::DataContainer<Qn::Stats> *flow_{nullptr};
   Qn::DataContainer<Qn::Stats> *resolution_{nullptr};

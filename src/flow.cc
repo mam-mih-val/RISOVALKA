@@ -12,6 +12,7 @@ int main(int n_args, char** args){
   }
   std::string input{args[1]};
   ComputationManager manager;
-  manager.Compute(input);
+  manager.Init(input);
+  manager.Compute();
   return 0;
 }

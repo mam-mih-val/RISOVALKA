@@ -1,0 +1,157 @@
+{
+  "file": "/home/mikhail/Correlations/ag_fw_mdc.root",
+  "save name": "fuck.root",
+
+  "correlations" : [
+    {
+      "title" : "u_W1",
+      "name" : "u_RESCALED_W1_RECENTERED",
+      "components" : ["Q1x_Q1x", "Q1y_Q1y"]
+    },{
+      "title" : "u_W2",
+      "name" : "u_RESCALED_W2_RECENTERED",
+      "components" : ["Q1x_Q1x", "Q1y_Q1y"]
+    },{
+      "title" : "u_W3",
+      "name" : "u_RESCALED_W3_RECENTERED",
+      "components" : ["Q1x_Q1x", "Q1y_Q1y"]
+    },{
+      "title" : "W1_W2",
+      "name" : "W1_RECENTERED_W2_RECENTERED",
+      "components" : ["Q1x_Q1x", "Q1y_Q1y"]
+    },{
+      "title" : "W2_W3",
+      "name" : "W2_RECENTERED_W3_RECENTERED",
+      "components" : ["Q1x_Q1x", "Q1y_Q1y"]
+    },{
+      "title" : "W1_W3",
+      "name" : "W1_RECENTERED_W3_RECENTERED",
+      "components" : ["Q1x_Q1x", "Q1y_Q1y"]
+    },{
+      "title" : "Mf_W1",
+      "name" : "M_RESCALED_W1_RECENTERED",
+      "projection axis": "Centrality",
+      "rebin axis": [
+        {"name": "mdc_vtx_tracks_rapidity", "n bins": 2, "low bin": 1.09, "up bin": 1.29}
+      ],
+      "components" : ["Q1x_Q1x", "Q1y_Q1y"]
+    },{
+      "title" : "Mf_W2",
+      "name" : "M_RESCALED_W2_RECENTERED",
+      "projection axis": "Centrality",
+      "rebin axis": [
+        {"name": "mdc_vtx_tracks_rapidity", "n bins": 2, "low bin": 1.09, "up bin": 1.29}
+      ],
+      "components" : ["Q1x_Q1x", "Q1y_Q1y"]
+    },{
+      "title" : "Mf_W3",
+      "name" : "M_RESCALED_W3_RECENTERED",
+      "projection axis": "Centrality",
+      "rebin axis": [
+        {"name": "mdc_vtx_tracks_rapidity", "n bins": 2, "low bin": 1.09, "up bin": 1.29}
+      ],
+      "components" : ["Q1x_Q1x", "Q1y_Q1y"]
+    },{
+      "title" : "Mb_W1",
+      "name" : "M_RESCALED_W1_RECENTERED",
+      "projection axis": "Centrality",
+      "rebin axis": [
+        {"name": "mdc_vtx_tracks_rapidity", "n bins": 2, "low bin": 0.19, "up bin": 0.39}
+      ],
+      "scale coefficient": -1.0,
+      "components" : ["Q1x_Q1x", "Q1y_Q1y"]
+    },{
+      "title" : "Mb_W2",
+      "name" : "M_RESCALED_W2_RECENTERED",
+      "projection axis": "Centrality",
+      "rebin axis": [
+        {"name": "mdc_vtx_tracks_rapidity", "n bins": 2, "low bin": 0.19, "up bin": 0.39}
+      ],
+      "scale coefficient": -1.0,
+      "components" : ["Q1x_Q1x", "Q1y_Q1y"]
+    },{
+      "title" : "Mb_W3",
+      "name" : "M_RESCALED_W3_RECENTERED",
+      "projection axis": "Centrality",
+      "rebin axis": [
+        {"name": "mdc_vtx_tracks_rapidity", "n bins": 2, "low bin": 0.19, "up bin": 0.39}
+      ],
+      "scale coefficient": -1.0,
+      "components" : ["Q1x_Q1x", "Q1y_Q1y"]
+    }
+  ],
+
+  "methods": [
+    {
+      "method": "THREE SUB METHOD",
+      "name": "W1(W2,W3)",
+      "observed": "u_W1",
+      "resolution": [
+        "W1_W2",
+        "W1_W3",
+        "W2_W3"
+      ],
+      "components" : ["Q1x_Q1x", "Q1y_Q1y"]
+    },{
+      "method": "THREE SUB METHOD",
+      "name": "W2(W1,W3)",
+      "observed": "u_W2",
+      "resolution": [
+        "W1_W2",
+        "W2_W3",
+        "W1_W3"
+      ],
+      "components" : ["Q1x_Q1x", "Q1y_Q1y"]
+    },{
+      "method": "THREE SUB METHOD",
+      "name": "W3(W1,W2)",
+      "observed": "u_W3",
+      "resolution": [
+        "W1_W3",
+        "W2_W3",
+        "W1_W2"
+      ],
+      "components" : ["Q1x_Q1x", "Q1y_Q1y"]
+    },{
+      "method": "THREE SUB METHOD",
+      "name": "W1(Mf,W3)",
+      "observed": "u_W1",
+      "resolution": [
+        "W1_W3",
+        "Mf_W1",
+        "Mf_W3"
+      ],
+      "components" : ["Q1x_Q1x", "Q1y_Q1y"]
+    },{
+      "method": "THREE SUB METHOD",
+      "name": "W1(Mb,W3)",
+      "observed": "u_W1",
+      "resolution": [
+        "W1_W3",
+        "Mb_W1",
+        "Mb_W3"
+      ],
+      "components" : ["Q1x_Q1x", "Q1y_Q1y"]
+    },{
+      "method": "THREE SUB METHOD",
+      "name": "W3(Mf,W1)",
+      "observed": "u_W3",
+      "resolution": [
+        "W1_W3",
+        "Mf_W3",
+        "Mf_W1"
+      ],
+      "components" : ["Q1x_Q1x", "Q1y_Q1y"]
+    },{
+      "method": "THREE SUB METHOD",
+      "name": "W3(Mb,W1)",
+      "observed": "u_W3",
+      "resolution": [
+        "W1_W3",
+        "Mb_W3",
+        "Mb_W1"
+      ],
+      "components" : ["Q1x_Q1x", "Q1y_Q1y"]
+    }
+  ]
+}

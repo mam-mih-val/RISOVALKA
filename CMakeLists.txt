@@ -38,7 +38,11 @@ set(SOURCES
         src/canvas_manager.cc
         src/config_manager.cc
         src/flow_method.cc
+        src/correlation.cc
+        src/correlation_stack.cc
+        src/config_reader.cc
         src/rnd_not_ext_method.cc
+        src/tree_sub_method.cc
         src/computation_manager.cc
         )
 
