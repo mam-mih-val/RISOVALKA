@@ -22,9 +22,9 @@ if (ROOT_USE_FILE)
     include(${ROOT_USE_FILE})
 endif()
 
-list(APPEND CMAKE_PREFIX_PATH $ENV{Qn})
+list(APPEND CMAKE_PREFIX_PATH $ENV{QnTools})
 
-find_package(Qn REQUIRED)
+find_package(QnTools REQUIRED)
 
 include_directories(
         QnDrawer/include
@@ -37,17 +37,7 @@ set(SOURCES
         src/file_manager.cc
         src/canvas_manager.cc
         src/config_manager.cc
-        src/flow_method.cc
-        src/correlation.cc
-        src/correlation_stack.cc
-        src/config_reader.cc
-        src/rnd_not_ext_method.cc
-        src/tree_sub_method.cc
-        src/computation_manager.cc
         )
 
 add_executable(draw src/draw.cc ${SOURCES})
-target_link_libraries(draw Qn::Base ${ROOT_LIBRARIES} ${Boost_PROPERTY_TREE} )
-
-add_executable(flow src/flow.cc ${SOURCES})
-target_link_libraries(flow Qn::Base ${ROOT_LIBRARIES} ${Boost_PROPERTY_TREE} )
+target_link_libraries(draw QnTools::Base ${ROOT_LIBRARIES} ${Boost_PROPERTY_TREE} )

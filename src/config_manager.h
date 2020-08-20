@@ -10,8 +10,8 @@
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
 
-#include <DataContainer.h>
-#include <Stats.h>
+#include <DataContainer.hpp>
+#include <Stats.hpp>
 #include <THStack.h>
 #include <TProfile.h>
 

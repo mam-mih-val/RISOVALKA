@@ -15,6 +15,15 @@ void ConfigManager::Draw(const std::string& path_to_file){
   canvas_manager_->AddToCanvas(graph_stack_);
   canvas_manager_->AddToCanvas(histo_stack_);
   canvas_manager_->ResetCanvas("canv");
+  auto pave_text = config.get<std::string>("top text", "");
+  if( !std::empty(pave_text) )
+    canvas_manager_->AddText(pave_text);
+  auto legend_config = config.get_child("legend position");
+  std::vector<double> legend_position{
+      legend_config.get<double>("x1"),legend_config.get<double>("y1"),
+      legend_config.get<double>("x2"),legend_config.get<double>("y2"),
+  };
+  canvas_manager_->SetLegendPosition(legend_position);
   canvas_manager_->Draw();
   canvas_manager_->SaveCanvas(config.get<std::string>("save name"));
 }
@@ -46,8 +55,12 @@ void ConfigManager::AddCorrelation(boost::property_tree::ptree config){
     auto up_bin = axis.second.get<double>("up bin");
     corr = corr.Rebin({title, n_bins, low_bin, up_bin});
   }
-  corr = corr.Projection({config.get<std::string>("projection axis")});
-  corr = corr*( config.get<double>("scale") );
+  auto projection_axis = config.get<std::string>("projection axis", "");
+  if( !std::empty(projection_axis) )
+    corr = corr.Projection({projection_axis});
+  auto scale = config.get<double>("scale", -999.0);
+  if( fabs(scale+999.0) > 0.1 )
+    corr = corr*( scale );
   corr.SetSetting(Qn::Stats::Settings::CORRELATEDERRORS);
   auto graph = Qn::DataContainerHelper::ToTGraph(corr);
   graph->SetTitle( (config.get<std::string>("title")).data() );
