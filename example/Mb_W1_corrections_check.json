@@ -1,0 +1,71 @@
+{
+  "save name": "Mb_W1_corrections_check.png",
+  "axes titles": ["Centrality, (%)", "<Q_{1} #times Q_{1}>"],
+  "y axis range": [0.01, 0.129],
+  "ratio range": [0.951, 1.049],
+  "reference title": "(XX+YY)/2 rescaled",
+  "x axis range": [0.0, 40.0],
+  "resolution": [1000, 1100],
+  "top text": { "text": "(Mb,W1)", "x1": 0.25, "y1": 0.8 },
+  "legend position": [0.45, 0.05, 0.8, 0.45],
+  "correlations": [
+    {
+      "file": "/home/mikhail/Correlations/au123_fw3_rs_recentring.root",
+      "names": ["M_RECENTERED_W1_RECENTERED_Q1x_Q1x"],
+      "title": "XX, recentered",
+      "rebin axis": [{"name": "y_cm", "n bins": 2, "low bin": -0.55, "up bin": -0.35}],
+      "projection axis": "Centrality",
+      "scale": -1.0,
+      "color": "red",
+      "marker": "full square"
+    },{
+      "file": "/home/mikhail/Correlations/au123_fw3_rs_recentring.root",
+      "names": ["M_RECENTERED_W1_RECENTERED_Q1y_Q1y"],
+      "title": "XX, recentered",
+      "rebin axis": [{"name": "y_cm", "n bins": 2, "low bin": -0.55, "up bin": -0.35}],
+      "projection axis": "Centrality",
+      "scale": -1.0,
+      "color": "red",
+      "marker": "open square"
+    },{
+      "file": "/home/mikhail/Correlations/au123_fw3_rs_rescale.root",
+      "names": ["M_RESCALED_W1_RECENTERED_Q1x_Q1x"],
+      "title": "XX, rescaled",
+      "rebin axis": [{"name": "y_cm", "n bins": 2, "low bin": -0.55, "up bin": -0.35}],
+      "projection axis": "Centrality",
+      "scale": -1.0,
+      "color": "blue",
+      "marker": "full triangle up"
+    },{
+      "file": "/home/mikhail/Correlations/au123_fw3_rs_rescale.root",
+      "names": ["M_RESCALED_W1_RECENTERED_Q1y_Q1y"],
+      "title": "XX, rescaled",
+      "rebin axis": [{"name": "y_cm", "n bins": 2, "low bin": -0.55, "up bin": -0.35}],
+      "projection axis": "Centrality",
+      "scale": -1.0,
+      "color": "blue",
+      "marker": "open triangle up"
+    }
+  ],
+  "reference": [
+    {
+      "file": "/home/mikhail/Correlations/au123_fw3_rs_rescale.root",
+      "names": ["M_RESCALED_W1_RECENTERED_Q1x_Q1x"],
+      "title": "XX",
+      "rebin axis": [{"name": "y_cm", "n bins": 2, "low bin": -0.55, "up bin": -0.35}],
+      "projection axis": "Centrality",
+      "scale": -1.0,
+      "color": "red",
+      "marker": "full circle"
+    },{
+      "file": "/home/mikhail/Correlations/au123_fw3_rs_rescale.root",
+      "names": ["M_RESCALED_W1_RECENTERED_Q1y_Q1y"],
+      "title": "YY",
+      "rebin axis": [{"name": "y_cm", "n bins": 2, "low bin": -0.55, "up bin": -0.35}],
+      "projection axis": "Centrality",
+      "scale": -1.0,
+      "color": "red",
+      "marker": "open circle"
+    }
+  ]
+}

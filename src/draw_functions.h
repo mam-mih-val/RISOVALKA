@@ -25,11 +25,13 @@ namespace Draw{
 
 struct Picture{
   std::string save_name;
-  std::string axis_titles;
+  std::vector<std::string> axes_titles;
   std::string text;
+  std::string ratio_reference_title;
   std::array<short, 2> resolution;
   std::vector<double> x_axis_range;
   std::vector<double> y_axis_range;
+  std::vector<double> ratio_range;
   std::vector<double> text_position;
   std::vector<double> legend_position;
 };
@@ -48,7 +50,7 @@ struct Style{
 
 struct Correlation{
   std::string file;
-  std::string name;
+  std::vector<std::string> names;
   std::string title;
   std::vector<Qn::AxisD> rebin_axes;
   std::string projection_axis;

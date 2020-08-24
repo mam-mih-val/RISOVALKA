@@ -9,19 +9,31 @@ namespace Draw{
 void DrawHistogram2D( const Picture&picture_config, const Histogram2D& histo ){
   auto canvas = new TCanvas("canv", "", picture_config.resolution.at(0),
                             picture_config.resolution.at(1));
-  auto text = new TLatex(picture_config.text_position.at(0),
-                         picture_config.text_position.at(1),
-                         picture_config.text.c_str());
+  TLatex* text{nullptr};
+  try {
+    text = new TLatex(picture_config.text_position.at(0),picture_config.text_position.at(1),
+                      picture_config.text.c_str());
+    text->SetNDC();
+    text->SetTextSize(0.04);
+    text->SetLineWidth(1);
+  } catch (std::out_of_range&) {
+    std::cout << "TLatex position set incorrect" << std::endl;
+  }
   FileManager::Open(histo.file);
   auto histo2d = FileManager::GetObject<TH2F>( histo.name );
-  histo2d->SetTitle(picture_config.axis_titles.c_str());
+  try {
+    std::string axes_title = ";"+ picture_config.axes_titles.at(0) + ";" +
+                             picture_config.axes_titles.at(1);
+    histo2d->SetTitle(axes_title.c_str());
+  } catch (const std::exception&) {}
   histo2d->SetMinimum(picture_config.y_axis_range.at(0));
   histo2d->SetMaximum(picture_config.y_axis_range.at(1));
   histo2d->GetXaxis()->SetLimits(picture_config.x_axis_range.at(0),
                                  picture_config.x_axis_range.at(1));
   canvas->cd();
   histo2d->Draw("colz");
-  text->Draw("same");
+  if( text )
+    text->Draw("same");
   canvas->SaveAs(picture_config.save_name.c_str());
 };
 
@@ -38,18 +50,31 @@ void Draw1D( const Picture&picture_config, const std::vector<Correlation>&correl
   } catch (std::out_of_range&) {
     std::cout << "TLatex position set incorrect" << std::endl;
   }
-  auto* graph_stack = new TMultiGraph("graphs", picture_config.axis_titles.c_str());
+  std::string axes_title;
+  try {
+    axes_title = ";" + picture_config.axes_titles.at(0) + ";" +
+                             picture_config.axes_titles.at(1);
+  }catch (const std::exception&) {}
+  auto* graph_stack = new TMultiGraph("graphs", axes_title.c_str());
   auto* histo_stack = new THStack( "histo", "" );
 
   for( const auto& config : correlation_configs){
     FileManager::Open(config.file);
-    auto container = *(FileManager::GetObject<Qn::DataContainerStats>(config.name));
-    for(const auto& axis : config.rebin_axes)
-      container = container.Rebin(axis);
-    container = container.Projection({config.projection_axis});
-    container = container* config.scale;
-    container.SetSetting(Qn::Stats::Settings::CORRELATEDERRORS);
-    auto graph = Qn::ToTGraph( container );
+    std::vector<Qn::DataContainerStats> containers;
+    for( const auto& name : config.names ) {
+      auto container =
+          *(FileManager::GetObject<Qn::DataContainerStats>(name));
+      for (const auto &axis : config.rebin_axes)
+        container = container.Rebin(axis);
+      container = container.Projection({config.projection_axis});
+      container = container * config.scale;
+      containers.emplace_back(container);
+    }
+    for (size_t i = 1; i < std::size(containers); ++i)
+      containers.at(0) = containers.at(0) + containers.at(i);
+    containers.at(0) = containers.at(0) * (1.0/ (double ) std::size(containers));
+    containers.at(0).SetSetting(Qn::Stats::Settings::CORRELATEDERRORS);
+    auto graph = Qn::ToTGraph( containers.at(0) );
     graph->SetTitle(config.title.c_str());
     graph->SetLineColor(config.color);
     graph->SetMarkerColor(config.color);
@@ -94,7 +119,7 @@ void Draw1D( const Picture&picture_config, const std::vector<Correlation>&correl
   }
   auto line_zero = new TF1( "line", "0", -100, 100 );
   line_zero->Draw("same");
-//  if( text )
+  if( text )
     text->Draw();
   canvas->SaveAs(picture_config.save_name.c_str());
 };
@@ -113,30 +138,56 @@ void CompareCorrelations( const Picture&picture_config, const std::vector<Correl
   } catch (std::out_of_range&) {
     std::cout << "TLatex position set incorrect" << std::endl;
   }
-  auto* result_stack = new TMultiGraph("results", picture_config.axis_titles.c_str());
-  auto* ratio_stack = new TMultiGraph("ratio", picture_config.axis_titles.c_str());
+  std::string result_name;
+  std::string ratio_name;
+  try {
+    result_name = ";;" + picture_config.axes_titles.at(1);
+    ratio_name = ";"+picture_config.axes_titles.at(0) + "; #frac{"+
+        picture_config.axes_titles.at(1)+ "}{"+picture_config.ratio_reference_title+"}";
+  }catch (const std::exception&) {}
+  auto* result_stack = new TMultiGraph("results", result_name.c_str());
+  auto* ratio_stack = new TMultiGraph("ratio", ratio_name.c_str());
   std::vector<Qn::DataContainerStats> references;
   for( const auto& config : reference_configs){
     FileManager::Open(config.file);
-    auto container = *(FileManager::GetObject<Qn::DataContainerStats>(config.name));
-    for(const auto& axis : config.rebin_axes)
-      container = container.Rebin(axis);
-    container = container.Projection({config.projection_axis});
-    container = container* config.scale;
-    references.push_back(container);
+    std::vector<Qn::DataContainerStats> containers;
+    for( const auto& name : config.names ) {
+      auto container =
+          *(FileManager::GetObject<Qn::DataContainerStats>(name));
+      for (const auto &axis : config.rebin_axes)
+        container = container.Rebin(axis);
+      container = container.Projection({config.projection_axis});
+      container = container * config.scale;
+      containers.emplace_back(container);
+    }
+    for (size_t i = 1; i < std::size(containers); ++i)
+      containers.at(0) = containers.at(0) + containers.at(i);
+    containers.at(0) = containers.at(0) * (1.0/ (double ) std::size(containers));
+    references.push_back(containers.at(0));
   }
   for( size_t i=1; i<std::size(references); ++i ){
     references.at(0) = references.at(0) + references.at(i);
   }
+  references.at(0) = references.at(0) * ( 1.0 / (double) std::size(references) );
   for( const auto& config : compare_configs){
     FileManager::Open(config.file);
-    auto container = *(FileManager::GetObject<Qn::DataContainerStats>(config.name));
-    for(const auto& axis : config.rebin_axes)
-      container = container.Rebin(axis);
-    container = container.Projection({config.projection_axis});
-    container = container* config.scale;
-    auto ratio = container / references.at(0);
-    auto graph = Qn::ToTGraph( container );
+    std::vector<Qn::DataContainerStats> containers;
+    for( const auto& name : config.names ) {
+      auto container =
+          *(FileManager::GetObject<Qn::DataContainerStats>(name));
+      for (const auto &axis : config.rebin_axes)
+        container = container.Rebin(axis);
+      container = container.Projection({config.projection_axis});
+      container = container * config.scale;
+      containers.emplace_back(container);
+    }
+    for (size_t i = 1; i < std::size(containers); ++i)
+      containers.at(0) = containers.at(0) + containers.at(i);
+    containers.at(0) = containers.at(0) * (1.0/ (double ) std::size(containers));
+    containers.at(0).SetSetting(Qn::Stats::Settings::CORRELATEDERRORS);
+    auto ratio = containers.at(0) / references.at(0);
+    ratio.SetSetting(Qn::Stats::Settings::CORRELATEDERRORS);
+    auto graph = Qn::ToTGraph( containers.at(0) );
     graph->SetTitle(config.title.c_str());
     graph->SetLineColor(config.color);
     graph->SetMarkerColor(config.color);
@@ -149,13 +200,24 @@ void CompareCorrelations( const Picture&picture_config, const std::vector<Correl
     graph->SetMarkerStyle(config.marker);
     ratio_stack->Add(graph);
   }
+  references.at(0).SetSetting(Qn::Stats::Settings::CORRELATEDERRORS);
+  auto graph = Qn::ToTGraph( references.at(0) );
+  graph->SetTitle(picture_config.ratio_reference_title.c_str());
+  graph->SetLineColor(kBlack);
+  graph->SetMarkerColor(kBlack);
+  graph->SetMarkerStyle(kFullCircle);
+  result_stack->Add(graph);
   canvas->cd();
   auto result_pad = new TPad("result", "result", 0.0, 0.35, 1.0, 1.0);
   auto ratio_pad = new TPad("ratio", "ratio", 0.0, 0.0, 1.0, .35);
+  auto ratio_pad_scale = 1.0/0.35-0.3;
+  auto result_pad_scale = 1.0/0.75;
   result_pad->cd();
   result_pad->SetBottomMargin(0);
   result_stack->Draw("AP+E5");
-  result_stack->GetHistogram()->SetLabelSize(0.035, "Y");
+  result_stack->GetHistogram()->SetLabelSize(gStyle->GetLabelSize("Y")*result_pad_scale, "Y");
+  result_stack->GetHistogram()->SetTitleSize(gStyle->GetTitleSize("Y")*result_pad_scale, "Y");
+  result_stack->GetHistogram()->SetTitleOffset(gStyle->GetTitleOffset("Y")*result_pad_scale, "Y");
   result_stack->SetMinimum(picture_config.y_axis_range.at(0));
   result_stack->SetMaximum(picture_config.y_axis_range.at(1));
   result_stack->GetXaxis()->SetLimits(picture_config.x_axis_range.at(0),
@@ -167,13 +229,28 @@ void CompareCorrelations( const Picture&picture_config, const std::vector<Correl
   } catch (std::out_of_range&) {
     gPad->BuildLegend();
   }
+  auto line_zero = new TF1( "zero", "0", -100, 100 );
+  line_zero->SetLineColor(kBlue);
+  line_zero->Draw("same");
   text->Draw();
   ratio_pad->cd();
   ratio_pad->SetTopMargin(0);
-  ratio_pad->SetBottomMargin(0.25);
+  ratio_pad->SetBottomMargin(gStyle->GetPadBottomMargin()*ratio_pad_scale);
   ratio_stack->Draw("AP+E5");
-  ratio_stack->GetHistogram()->SetLabelSize(0.065, "X");
-  ratio_stack->GetHistogram()->SetLabelSize(0.065, "Y");
+  ratio_stack->GetHistogram()->SetLabelSize(gStyle->GetLabelSize("Y")* ratio_pad_scale, "Y");
+  ratio_stack->GetHistogram()->SetLabelSize(gStyle->GetLabelSize("X")* ratio_pad_scale, "X");
+  ratio_stack->GetHistogram()->SetTitleSize(gStyle->GetTitleSize("Y")* ratio_pad_scale, "Y");
+  ratio_stack->GetHistogram()->SetTitleOffset(gStyle->GetTitleOffset("Y")* ratio_pad_scale, "Y");
+  ratio_stack->GetHistogram()->SetTitleSize(gStyle->GetTitleSize("X")* ratio_pad_scale, "X");
+  ratio_stack->SetMinimum(picture_config.ratio_range.at(0));
+  ratio_stack->SetMaximum(picture_config.ratio_range.at(1));
+  ratio_stack->GetYaxis()->SetNdivisions(5,5, 0);
+  ratio_stack->GetXaxis()->SetLimits(picture_config.x_axis_range.at(0),
+                                      picture_config.x_axis_range.at(1));
+  auto line_one = new TF1( "one", "1", -100, 100 );
+  line_one->SetLineColor(kRed);
+  line_one->Draw("same");
+  line_zero->Draw("same");
   canvas->cd();
   result_pad->Draw();
   ratio_pad->Draw();

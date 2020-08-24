@@ -12,7 +12,7 @@ Draw::Picture GetPictureConfig(const std::string &json_file) {
   boost::property_tree::ptree config;
   boost::property_tree::read_json(json_file, config);
   Draw::Picture picture;
-  // save name
+  // save names
   picture.save_name = config.get<std::string>("save name", "canv.png");
   // resolution
   try {
@@ -53,8 +53,22 @@ Draw::Picture GetPictureConfig(const std::string &json_file) {
       picture.x_axis_range.emplace_back( axis_conf.second.get<double>("") );
     }
   } catch (const std::exception&) {}
+  // ratio y-axis range
+  try{
+    auto axis_range_config = config.get_child("ratio range");
+    for( const auto& axis_conf : axis_range_config ){
+      picture.ratio_range.emplace_back( axis_conf.second.get<double>("") );
+    }
+  } catch (const std::exception&) {}
   // axis names
-  picture.axis_titles = config.get<std::string>("axis title", "");
+  try {
+    auto axes_titles = config.get_child("axes titles");
+    for( const auto& axis_conf : axes_titles ){
+      picture.axes_titles.emplace_back( axis_conf.second.get<std::string>("") );
+    }
+  }catch (const std::exception&) {}
+  // ratio-reference name
+  picture.ratio_reference_title = config.get<std::string>("reference title");
   return picture;
 };
 
@@ -65,20 +79,26 @@ Draw::Histogram2D GetHistogram2DConfig( const std::string& json_file ){
 
   auto histo_config = config.get_child( "histogram 2D" );
   histogram.file = histo_config.get<std::string>("file");
-  histogram.name = histo_config.get<std::string>("name");
+  histogram.name = histo_config.get<std::string>("names");
   return histogram;
 };
 
 std::vector<Draw::Correlation>
-GetCorrelationConfigs( const std::string& json_file ){
+GetCorrelationConfigs( const std::string& json_file, const std::string& branch_name ){
   boost::property_tree::ptree config;
   boost::property_tree::read_json(json_file, config);
   std::vector<Draw::Correlation> correlations;
-  auto corr_config = config.get_child("correlations");
+  auto corr_config = config.get_child(branch_name);
   for( const auto& conf : corr_config ){
     auto correlation_config = conf.second;
     correlations.emplace_back();
-    correlations.back().name = correlation_config.get<std::string>("name");
+    try {
+      auto names_config = correlation_config.get_child("names");
+      for (const auto &name_config : names_config) {
+        correlations.back().names.push_back(
+            name_config.second.get<std::string>(""));
+      }
+    } catch (const std::exception& e) { throw e; }
     correlations.back().title = correlation_config.get<std::string>("title");
     correlations.back().file = correlation_config.get<std::string>("file");
     auto rebin_config = correlation_config.get_child("rebin axis");
@@ -97,7 +117,7 @@ GetCorrelationConfigs( const std::string& json_file ){
   return correlations;
 };
 
-Draw::Style GetSyleConfig( const std::string& json_file ){
+Draw::Style GetStyleConfig( const std::string& json_file ){
   boost::property_tree::ptree config;
   boost::property_tree::read_json(json_file, config);
   Draw::Style style_config;

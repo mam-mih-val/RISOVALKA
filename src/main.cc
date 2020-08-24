@@ -13,9 +13,13 @@ int main(int n_args, char** args){
   }
   std::string input{args[1]};
   auto picture_config = JsonConfig::GetPictureConfig(input);
-  auto correlation_configs = JsonConfig::GetCorrelationConfigs(input);
-  auto style = JsonConfig::GetSyleConfig("/home/mikhail/flow_drawing_tools/src/config/style.json");
+  auto correlation_configs = JsonConfig::GetCorrelationConfigs(input, "correlations");
+  auto ref_correlation_configs = JsonConfig::GetCorrelationConfigs(input, "reference");
+  auto style = JsonConfig::GetStyleConfig("../src/config/style.json");
   Draw::SetStyle(style);
-  Draw::Draw1D(picture_config, correlation_configs, {}, {});
+  if( std::empty(ref_correlation_configs) )
+    Draw::Draw1D(picture_config, correlation_configs, {}, {});
+  else
+    Draw::CompareCorrelations(picture_config, ref_correlation_configs, correlation_configs);
   return 0;
 }
