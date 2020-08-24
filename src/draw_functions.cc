@@ -30,9 +30,11 @@ void Draw1D( const Picture&picture_config, const std::vector<Correlation>&correl
   auto canvas = new TCanvas("canv", "", picture_config.resolution.at(0), picture_config.resolution.at(1));
   TLatex* text{nullptr};
   try {
-    text = new TLatex(picture_config.text_position.at(0),
-                           picture_config.text_position.at(1),
+    text = new TLatex(picture_config.text_position.at(0),picture_config.text_position.at(1),
                            picture_config.text.c_str());
+    text->SetNDC();
+    text->SetTextSize(0.04);
+    text->SetLineWidth(1);
   } catch (std::out_of_range&) {
     std::cout << "TLatex position set incorrect" << std::endl;
   }
@@ -92,17 +94,25 @@ void Draw1D( const Picture&picture_config, const std::vector<Correlation>&correl
   }
   auto line_zero = new TF1( "line", "0", -100, 100 );
   line_zero->Draw("same");
-  if( text )
-    text->Draw("same");
+//  if( text )
+    text->Draw();
   canvas->SaveAs(picture_config.save_name.c_str());
 };
 
 void CompareCorrelations( const Picture&picture_config, const std::vector<Correlation>& reference_configs,
                           const std::vector<Correlation>& compare_configs){
   auto canvas = new TCanvas("canv", "", picture_config.resolution.at(0), picture_config.resolution.at(1));
-  auto text = new TLatex(picture_config.text_position.at(0),
-                         picture_config.text_position.at(1),
-                         picture_config.text.c_str());
+
+  TLatex* text{nullptr};
+  try {
+    text = new TLatex(picture_config.text_position.at(0),picture_config.text_position.at(1),
+                      picture_config.text.c_str());
+    text->SetNDC();
+    text->SetTextSize(0.04);
+    text->SetLineWidth(1);
+  } catch (std::out_of_range&) {
+    std::cout << "TLatex position set incorrect" << std::endl;
+  }
   auto* result_stack = new TMultiGraph("results", picture_config.axis_titles.c_str());
   auto* ratio_stack = new TMultiGraph("ratio", picture_config.axis_titles.c_str());
   std::vector<Qn::DataContainerStats> references;
