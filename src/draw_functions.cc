@@ -6,24 +6,28 @@
 
 namespace Draw{
 
-void DrawHistogram2D( const Picture& picture, const Histogram2D& histo ){
-  auto canvas = new TCanvas("canv", "", 1100, 1000);
-  auto text = new TLatex(picture.text_position.at(0), picture.text_position.at(1), picture.text.c_str());
+void DrawHistogram2D( const Picture&picture_config, const Histogram2D& histo ){
+  auto canvas = new TCanvas("canv", "", picture_config.resolution.at(0),
+                            picture_config.resolution.at(1));
+  auto text = new TLatex(picture_config.text_position.at(0),
+                         picture_config.text_position.at(1),
+                         picture_config.text.c_str());
   FileManager::Open(histo.file);
   auto histo2d = FileManager::GetObject<TH2F>( histo.name );
-  histo2d->SetTitle(picture.axis_titles.c_str());
-  histo2d->SetMinimum(picture.y_axis_range.at(0));
-  histo2d->SetMaximum(picture.y_axis_range.at(1));
-  histo2d->GetXaxis()->SetLimits(picture.x_axis_range.at(0), picture.x_axis_range.at(1));
+  histo2d->SetTitle(picture_config.axis_titles.c_str());
+  histo2d->SetMinimum(picture_config.y_axis_range.at(0));
+  histo2d->SetMaximum(picture_config.y_axis_range.at(1));
+  histo2d->GetXaxis()->SetLimits(picture_config.x_axis_range.at(0),
+                                 picture_config.x_axis_range.at(1));
   canvas->cd();
   histo2d->Draw("colz");
   text->Draw("same");
-  canvas->SaveAs(picture.save_name.c_str());
+  canvas->SaveAs(picture_config.save_name.c_str());
 };
 
 void Draw1D( const Picture&picture_config, const std::vector<Correlation>&correlation_configs,
             const std::vector<Graph>&graph_configs, const std::vector<Histogram1D>&histogram_configs){
-  auto canvas = new TCanvas("canv", "", 1100, 1000);
+  auto canvas = new TCanvas("canv", "", picture_config.resolution.at(0), picture_config.resolution.at(1));
   TLatex* text{nullptr};
   try {
     text = new TLatex(picture_config.text_position.at(0),
@@ -95,7 +99,7 @@ void Draw1D( const Picture&picture_config, const std::vector<Correlation>&correl
 
 void CompareCorrelations( const Picture&picture_config, const std::vector<Correlation>& reference_configs,
                           const std::vector<Correlation>& compare_configs){
-  auto canvas = new TCanvas("canv", "", 1100, 1000);
+  auto canvas = new TCanvas("canv", "", picture_config.resolution.at(0), picture_config.resolution.at(1));
   auto text = new TLatex(picture_config.text_position.at(0),
                          picture_config.text_position.at(1),
                          picture_config.text.c_str());

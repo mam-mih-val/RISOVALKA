@@ -27,6 +27,7 @@ struct Picture{
   std::string save_name;
   std::string axis_titles;
   std::string text;
+  std::array<short, 2> resolution;
   std::vector<double> x_axis_range;
   std::vector<double> y_axis_range;
   std::vector<double> text_position;
@@ -74,7 +75,7 @@ struct Histogram2D{
   std::string name;
 };
 
-void DrawHistogram2D( const Picture& picture, const Histogram2D& histo );
+void DrawHistogram2D( const Picture&picture_config, const Histogram2D& histo );
 
 void Draw1D( const Picture&picture_config, const std::vector<Correlation>&correlation_configs,
             const std::vector<Graph>&graph_configs, const std::vector<Histogram1D>&histogram_configs);
