@@ -29,7 +29,7 @@ void ConfigManager::Draw(const std::string& path_to_file){
 }
 
 void ConfigManager::ReadConfig(boost::property_tree::ptree config){
-  file_manager_->Open(config.get<std::string>("file"));
+  FileManager::Open(config.get<std::string>("file"));
   auto axis_config = config.get_child("axis title");
   std::string stack_title = ";"+ axis_config.get<std::string>("X")
       +";"+axis_config.get<std::string>("Y");
@@ -46,7 +46,7 @@ void ConfigManager::ReadConfig(boost::property_tree::ptree config){
 }
 
 void ConfigManager::AddCorrelation(boost::property_tree::ptree config){
-  auto corr = *(file_manager_->GetObject<Qn::DataContainerStats>(config.get<std::string>("name")));
+  auto corr = *(FileManager::GetObject<Qn::DataContainerStats>(config.get<std::string>("name")));
   auto rebin_config = config.get_child("rebin axis");
   for( const auto& axis : rebin_config ){
     auto title = axis.second.get<std::string>("name");
@@ -76,8 +76,8 @@ void ConfigManager::AddCorrelation(boost::property_tree::ptree config){
   graph_stack_->Add(graph);
 }
 void ConfigManager::AddGraph(const boost::property_tree::ptree& config) {
-  file_manager_->Open( config.get<std::string>("file") );
-  auto graph = file_manager_->GetObject<TGraphAsymmErrors>(config.get<std::string>("name"));
+  FileManager::Open( config.get<std::string>("file") );
+  auto graph = FileManager::GetObject<TGraphAsymmErrors>(config.get<std::string>("name"));
   graph->SetTitle( (config.get<std::string>("title")).data() );
   graph->SetMarkerStyle( MarkerConstants::MARKERS.at(
       config.get<std::string>("marker")
@@ -114,8 +114,8 @@ void ConfigManager::ReadHistos(const boost::property_tree::ptree &config) {
   }
 }
 void ConfigManager::AddHisto(const boost::property_tree::ptree &config){
-  file_manager_->Open( config.get<std::string>("file") );
-  auto histo = file_manager_->GetObject<TH1>(config.get<std::string>("name"));
+  FileManager::Open( config.get<std::string>("file") );
+  auto histo = FileManager::GetObject<TH1>(config.get<std::string>("name"));
   histo->SetTitle( (config.get<std::string>("title")).data() );
   histo->SetMarkerStyle( MarkerConstants::MARKERS.at(
       config.get<std::string>("marker")

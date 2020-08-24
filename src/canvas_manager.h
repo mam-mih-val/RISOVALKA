@@ -52,10 +52,14 @@ public:
   void AddToCanvas(TMultiGraph* graph_stack){
     graph_stack_ = graph_stack;
   }
+  void AddRatios(TMultiGraph* ratio_stack){
+    ratio_stack_ = ratio_stack_;
+  }
   void AddToCanvas(THStack* histo_stack){
     histo_stack_ = histo_stack;
   }
   void Draw();
+  void DrawWithRatios();
 private:
 
   void ReadStyleConfig( const std::string& file_path="../src/config/style.json" );
@@ -67,6 +71,7 @@ private:
   std::array<ushort, 2> resolution_{1000, 1100};
   std::unique_ptr<TCanvas> canvas_{nullptr};
   TMultiGraph* graph_stack_{nullptr};
+  TMultiGraph* ratio_stack_{nullptr};
   THStack* histo_stack_{nullptr};
   std::vector<double> legend_position_;
   TLatex* text_;

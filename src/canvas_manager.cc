@@ -47,3 +47,39 @@ void CanvasManager::Draw(){
   }
   line->Draw("same");
 }
+void CanvasManager::DrawWithRatios(){
+  assert(canvas_);
+  canvas_->cd();
+  assert(graph_stack_);
+  assert(ratio_stack_);
+  [[maybe_unused]] auto line_zero = new TF1("zero", "0", -10.0, 100.0);
+  [[maybe_unused]] auto line_one = new TF1("one", "1", -10.0, 100.0);
+  auto result_pad = new TPad("result", "result", 0.0, 0.35, 1.0, 1.0);
+  auto ratio_pad = new TPad("ratio", "ratio", 0.0, 0.0, 1.0, .35);
+  result_pad->cd();
+  result_pad->SetBottomMargin(0);
+  graph_stack_->Draw("AP+E5");
+  graph_stack_->GetHistogram()->SetLabelSize(0.035, "Y");
+  try{
+    gPad->BuildLegend(legend_position_.at(0), legend_position_.at(1),
+                      legend_position_.at(2), legend_position_.at(3),
+                      "", "P");
+  } catch (std::out_of_range&) {
+    gPad->BuildLegend();
+  }
+  if(text_) {
+    text_->Draw();
+  }
+  line_zero->Draw("same");
+  ratio_pad->cd();
+  ratio_pad->SetTopMargin(0);
+  ratio_pad->SetBottomMargin(0.25);
+  ratio_stack_->Draw("AP+E5");
+  ratio_stack_->GetHistogram()->SetLabelSize(0.065, "X");
+  ratio_stack_->GetHistogram()->SetLabelSize(0.065, "Y");
+  line_one->Draw("same");
+  canvas_->cd();
+  result_pad->Draw();
+  ratio_pad->Draw();
+  canvas_->Draw();
+}

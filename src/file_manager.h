@@ -11,28 +11,27 @@
 
 class FileManager {
 public:
-  static FileManager* Instance(){
-    if (!instance_)
-      instance_ = new FileManager();
-    return instance_;
-  }
   template <class T>
-  [[nodiscard]] T* GetObject(std::string_view name){
-    if( !file_ ){
+  [[nodiscard]] static T* GetObject(std::string_view name){
+    try {
+      assert(Instance()->file_);
+    } catch (const std::exception& e) {
       std::cout << "FileManager::GetCorrelation: File is not set" << std::endl;
-      abort();
+      throw e;
     }
     T* obj;
-    file_->GetObject(name.data(), obj);
-    if( !obj) {
+    Instance()->file_->GetObject(name.data(), obj);
+    try{
+      assert(obj);
+    } catch (const std::exception& e) {
       std::cout << "FileManager::GetCorrelation: No such a DataContainer called"
                 << name << " in file" << std::endl;
-      abort();
+      throw e;
     }
     return obj;
   }
   template <class T>
-  [[nodiscard]] std::vector<T*> GetObjectsVector(
+  [[nodiscard]] static std::vector<T*> GetObjectsVector(
       const std::vector<std::string_view>& names ){
     std::vector<T*> obj_vec;
     obj_vec.reserve(names.size());
@@ -41,19 +40,17 @@ public:
     }
     return obj_vec;
   }
-  void Open(const std::string& file_name){
-    file_.reset(TFile::Open(file_name.data()));
-    if( !file_ ){
-      std::cerr << "Error in FileManager::Open()" << file_name << std::endl;
-      std::cerr << "No such a file " << file_name << std::endl;
-      abort();
-    }
-  };
+  static void Open(const std::string& file_name);
 private:
-  FileManager() = default;
-  ~FileManager() = default;
-
   static FileManager* instance_;
+  static FileManager* Instance(){
+    if (!instance_)
+      instance_ = new FileManager();
+    return instance_;
+  }
+  FileManager() = default;
+
+  ~FileManager() = default;
   std::unique_ptr<TFile> file_{nullptr};
 };
 

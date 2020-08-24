@@ -37,7 +37,12 @@ set(SOURCES
         src/file_manager.cc
         src/canvas_manager.cc
         src/config_manager.cc
+        src/draw_functions.cc
+        src/json_reader.cc
         )
 
 add_executable(draw src/draw.cc ${SOURCES})
 target_link_libraries(draw QnTools::Base ${ROOT_LIBRARIES} ${Boost_PROPERTY_TREE} )
+
+add_executable(main src/main.cc src/draw_functions.cc  src/json_reader.cc src/file_manager.cc)
+target_link_libraries(main QnTools::Base ${ROOT_LIBRARIES} ${Boost_PROPERTY_TREE} )

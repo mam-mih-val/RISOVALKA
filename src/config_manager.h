@@ -19,6 +19,8 @@
 #include "file_manager.h"
 #include "marker_constants.h"
 
+#include "draw_functions.h"
+
 class ConfigManager {
 public:
   static ConfigManager * Instance(){
@@ -28,8 +30,7 @@ public:
   }
   void Draw(const std::string& path_to_file);
 private:
-  ConfigManager() : file_manager_( FileManager::Instance() ),
-                         canvas_manager_(CanvasManager::Instance()){};
+  ConfigManager() : canvas_manager_(CanvasManager::Instance()){};
   ~ConfigManager() = default;
   void AddCorrelation(boost::property_tree::ptree config);
   void ReadConfig(boost::property_tree::ptree config);
@@ -38,7 +39,6 @@ private:
   void AddGraph(const boost::property_tree::ptree& config);
   void AddHisto(const boost::property_tree::ptree& config);
   static ConfigManager * instance_;
-  FileManager* file_manager_{nullptr};
   CanvasManager* canvas_manager_{nullptr};
   std::vector<Qn::DataContainer<Qn::Stats>> containers_;
   TMultiGraph* graph_stack_{nullptr};
