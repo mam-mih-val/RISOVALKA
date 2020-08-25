@@ -34,4 +34,4 @@ include_directories(
 )
 
 add_executable(draw src/main.cc src/draw_functions.cc  src/json_reader.cc src/file_manager.cc)
-target_link_libraries(draw QnTools::Base ${ROOT_LIBRARIES} ${Boost_PROPERTY_TREE} ${Boost_LIBRARIES} )
+target_link_libraries(draw QnTools::Base ${ROOT_LIBRARIES} ${Boost_LIBRARIES} )

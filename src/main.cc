@@ -30,6 +30,7 @@ int main(int n_args, char** args){
   po::notify(vm);
   if (vm.count("help")){
     std::cout << options << std::endl;
+    return 0;
   }
   auto style = JsonConfig::GetStyleConfig("../src/config/style.json");
   Draw::SetStyle(style);
@@ -38,8 +39,11 @@ int main(int n_args, char** args){
     auto picture_config = JsonConfig::GetPictureConfig(input_config);
     auto correlation_configs =
         JsonConfig::GetCorrelationConfigs(input_config, "correlations");
-    auto ref_correlation_configs =
-        JsonConfig::GetCorrelationConfigs(input_config, "reference");
+    std::vector<Draw::Correlation> ref_correlation_configs;
+    try {
+      ref_correlation_configs =
+          JsonConfig::GetCorrelationConfigs(input_config, "reference");
+    } catch (const std::exception&) {}
     if (std::empty(ref_correlation_configs))
       Draw::Draw1D(picture_config, correlation_configs, {}, {});
     else
