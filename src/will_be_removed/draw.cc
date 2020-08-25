@@ -5,9 +5,8 @@
 #include <string>
 
 #include "config_manager.h"
-#include "json_reader.h"
-#include "draw_functions.h"
-
+#include "src/draw_functions.h"
+#include "src/json_reader.h"
 
 int main(int n_args, char** args){
   if( n_args < 2 ){

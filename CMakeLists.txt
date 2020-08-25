@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
 project(flow_drawing_tools)
 set(CMAKE_CXX_FLAGS "-Wall")
-set (QnDrawer_VERSION_MAJOR 1)
-set (QnDrawer_VERSION_MINOR 0)
+set (QnDrawer_VERSION_MAJOR 0)
+set (QnDrawer_VERSION_MINOR 9)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_BUILD_TYPE debug)
 
@@ -31,18 +31,7 @@ include_directories(
         ${CMAKE_SOURCE_DIR}
         ${Base_INCLUDE_DIR}
         ${Boost_INCLUDE_DIRS}
-
 )
-set(SOURCES
-        src/file_manager.cc
-        src/canvas_manager.cc
-        src/config_manager.cc
-        src/draw_functions.cc
-        src/json_reader.cc
-        )
 
-#add_executable(draw src/draw.cc ${SOURCES})
-#target_link_libraries(draw QnTools::Base ${ROOT_LIBRARIES} ${Boost_PROPERTY_TREE} )
-
-add_executable(main src/main.cc src/draw_functions.cc  src/json_reader.cc src/file_manager.cc)
-target_link_libraries(main QnTools::Base ${ROOT_LIBRARIES} ${Boost_PROPERTY_TREE} )
+add_executable(draw src/main.cc src/draw_functions.cc  src/json_reader.cc src/file_manager.cc)
+target_link_libraries(draw QnTools::Base ${ROOT_LIBRARIES} ${Boost_PROPERTY_TREE} ${Boost_LIBRARIES} )

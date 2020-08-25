@@ -16,10 +16,10 @@
 #include <TProfile.h>
 
 #include "canvas_manager.h"
-#include "file_manager.h"
-#include "marker_constants.h"
+#include "src/file_manager.h"
+#include "src/marker_constants.h"
 
-#include "draw_functions.h"
+#include "src/draw_functions.h"
 
 class ConfigManager {
 public:
