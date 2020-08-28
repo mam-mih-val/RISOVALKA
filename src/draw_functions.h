@@ -34,6 +34,7 @@ struct Picture{
   std::vector<double> ratio_range;
   std::vector<double> text_position;
   std::vector<double> legend_position;
+  std::vector<std::string> formulas;
 };
 
 struct Style{
@@ -42,8 +43,8 @@ struct Style{
   double pad_bottom_margin;
   double legend_border_size;
   double frame_line_width;
-  std::array<double, 2> title_size;
-  std::array<double, 2> title_offset;
+  std::array<double, 3> title_size;
+  std::array<double, 3> title_offset;
   int marker_size;
   int line_width;
 };
@@ -75,6 +76,7 @@ struct Histogram1D{
 struct Histogram2D{
   std::string file;
   std::string name;
+  bool is_colz;
 };
 
 void DrawHistogram2D( const Picture&picture_config, const Histogram2D& histo );

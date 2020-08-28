@@ -67,6 +67,13 @@ Draw::Picture GetPictureConfig(const std::string &json_file) {
       picture.axes_titles.emplace_back( axis_conf.second.get<std::string>("") );
     }
   }catch (const std::exception&) {}
+  // tf1 formulas
+  try {
+    auto formulas_config = config.get_child("formulas");
+    for( const auto&formula : formulas_config ){
+      picture.formulas.emplace_back(formula.second.get<std::string>("") );
+    }
+  }catch (const std::exception&) {}
   // ratio-reference name
   picture.ratio_reference_title = config.get<std::string>("reference title");
   return picture;
@@ -79,7 +86,8 @@ Draw::Histogram2D GetHistogram2DConfig( const std::string& json_file ){
 
   auto histo_config = config.get_child( "histogram 2D" );
   histogram.file = histo_config.get<std::string>("file");
-  histogram.name = histo_config.get<std::string>("names");
+  histogram.name = histo_config.get<std::string>("name");
+  histogram.is_colz = histo_config.get<bool>("colz", false);
   return histogram;
 };
 
@@ -131,10 +139,12 @@ Draw::Style GetStyleConfig( const std::string& json_file ){
   auto title_size_config = config.get_child("title size");
   style_config.title_size.at(0) = title_size_config.get<float>("X");
   style_config.title_size.at(1) = title_size_config.get<float>("Y");
+  style_config.title_size.at(2) = title_size_config.get<float>("Z");
 
   auto title_offset_config = config.get_child("title offset");
   style_config.title_offset.at(0) = title_offset_config.get<float>("X");
   style_config.title_offset.at(1) = title_offset_config.get<float>("Y");
+  style_config.title_offset.at(2) = title_offset_config.get<float>("Z");
 
   return style_config;
 }

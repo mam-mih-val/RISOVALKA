@@ -26,14 +26,26 @@ void DrawHistogram2D( const Picture&picture_config, const Histogram2D& histo ){
                              picture_config.axes_titles.at(1);
     histo2d->SetTitle(axes_title.c_str());
   } catch (const std::exception&) {}
-  histo2d->SetMinimum(picture_config.y_axis_range.at(0));
-  histo2d->SetMaximum(picture_config.y_axis_range.at(1));
-  histo2d->GetXaxis()->SetLimits(picture_config.x_axis_range.at(0),
+
+  histo2d->GetYaxis()->SetRangeUser(picture_config.y_axis_range.at(0),
+                        picture_config.y_axis_range.at(1));
+  histo2d->GetXaxis()->SetRangeUser(picture_config.x_axis_range.at(0),
                                  picture_config.x_axis_range.at(1));
   canvas->cd();
+  gStyle->SetPalette(kVisibleSpectrum);
   histo2d->Draw("colz");
   if( text )
     text->Draw("same");
+  std::vector<TF1*> formulas;
+  int num=0;
+  for( const auto& formula : picture_config.formulas ){
+    std::string name = "formula_"+std::to_string(num);
+    formulas.emplace_back( new TF1( name.c_str(), formula.c_str(), -100, 100 ) );
+    formulas.back()->Draw("same");
+    num++;
+  }
+  if( histo.is_colz )
+    gPad->SetLogz();
   canvas->SaveAs(picture_config.save_name.c_str());
 };
 
@@ -268,9 +280,11 @@ void SetStyle(const Style& style){
   gStyle->SetLineWidth(style.line_width);
   gStyle->SetTitleSize(style.title_size.at(0), "X");
   gStyle->SetTitleSize(style.title_size.at(1), "Y");
+  gStyle->SetTitleSize(style.title_size.at(2), "Z");
 
   gStyle->SetTitleSize(style.title_offset.at(0), "X");
   gStyle->SetTitleSize(style.title_offset.at(1), "Y");
+  gStyle->SetTitleSize(style.title_offset.at(2), "Z");
 
   gStyle->SetOptStat(0);
 };
