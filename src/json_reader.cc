@@ -53,6 +53,13 @@ Draw::Picture GetPictureConfig(const std::string &json_file) {
       picture.x_axis_range.emplace_back( axis_conf.second.get<double>("") );
     }
   } catch (const std::exception&) {}
+  // z axis range
+  try{
+    auto axis_range_config = config.get_child("z axis range");
+    for( const auto& axis_conf : axis_range_config ){
+      picture.z_axis_range.emplace_back( axis_conf.second.get<double>("") );
+    }
+  } catch (const std::exception&) {}
   // ratio y-axis range
   try{
     auto axis_range_config = config.get_child("ratio range");
@@ -75,7 +82,7 @@ Draw::Picture GetPictureConfig(const std::string &json_file) {
     }
   }catch (const std::exception&) {}
   // ratio-reference name
-  picture.ratio_reference_title = config.get<std::string>("reference title");
+  picture.ratio_reference_title = config.get<std::string>("reference title", "");
   return picture;
 };
 
@@ -87,7 +94,8 @@ Draw::Histogram2D GetHistogram2DConfig( const std::string& json_file ){
   auto histo_config = config.get_child( "histogram 2D" );
   histogram.file = histo_config.get<std::string>("file");
   histogram.name = histo_config.get<std::string>("name");
-  histogram.is_colz = histo_config.get<bool>("colz", false);
+  histogram.is_log_z = histo_config.get<bool>("log z", false);
+  histogram.is_unite = histo_config.get<bool>("unite", false);
   return histogram;
 };
 

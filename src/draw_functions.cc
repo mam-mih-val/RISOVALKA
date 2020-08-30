@@ -31,8 +31,13 @@ void DrawHistogram2D( const Picture&picture_config, const Histogram2D& histo ){
                         picture_config.y_axis_range.at(1));
   histo2d->GetXaxis()->SetRangeUser(picture_config.x_axis_range.at(0),
                                  picture_config.x_axis_range.at(1));
+  histo2d->SetMinimum(picture_config.z_axis_range.at(0));
+  histo2d->SetMaximum(picture_config.z_axis_range.at(1));
+  histo2d->GetZaxis()->SetTitle("");
   canvas->cd();
-  gStyle->SetPalette(kVisibleSpectrum);
+  gStyle->SetPalette(kRainBow);
+  if( histo.is_unite )
+    histo2d->Scale( 1./(double) histo2d->GetEntries() );
   histo2d->Draw("colz");
   if( text )
     text->Draw("same");
@@ -44,7 +49,7 @@ void DrawHistogram2D( const Picture&picture_config, const Histogram2D& histo ){
     formulas.back()->Draw("same");
     num++;
   }
-  if( histo.is_colz )
+  if( histo.is_log_z)
     gPad->SetLogz();
   canvas->SaveAs(picture_config.save_name.c_str());
 };

@@ -31,6 +31,7 @@ struct Picture{
   std::array<short, 2> resolution;
   std::vector<double> x_axis_range;
   std::vector<double> y_axis_range;
+  std::vector<double> z_axis_range;
   std::vector<double> ratio_range;
   std::vector<double> text_position;
   std::vector<double> legend_position;
@@ -76,7 +77,8 @@ struct Histogram1D{
 struct Histogram2D{
   std::string file;
   std::string name;
-  bool is_colz;
+  bool is_log_z;
+  bool is_unite;
 };
 
 void DrawHistogram2D( const Picture&picture_config, const Histogram2D& histo );
