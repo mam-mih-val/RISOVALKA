@@ -9,16 +9,6 @@ namespace Draw{
 void DrawHistogram2D( const Picture&picture_config, const Histogram2D& histo ){
   auto canvas = new TCanvas("canv", "", picture_config.resolution.at(0),
                             picture_config.resolution.at(1));
-  TLatex* text{nullptr};
-  try {
-    text = new TLatex(picture_config.text_position.at(0),picture_config.text_position.at(1),
-                      picture_config.text.c_str());
-    text->SetNDC();
-    text->SetTextSize(0.04);
-    text->SetLineWidth(1);
-  } catch (std::out_of_range&) {
-    std::cout << "TLatex position set incorrect" << std::endl;
-  }
   FileManager::Open(histo.file);
   auto histo2d = FileManager::GetObject<TH2F>( histo.name );
   try {
@@ -39,8 +29,20 @@ void DrawHistogram2D( const Picture&picture_config, const Histogram2D& histo ){
   if( histo.is_unite )
     histo2d->Scale( 1./(double) histo2d->GetEntries() );
   histo2d->Draw("colz");
-  if( text )
+  TLatex* text{nullptr};
+  for( size_t i=0; i<std::size(picture_config.texts); ++i ) {
+    try {
+    text = new TLatex(picture_config.text_positions.at(i).at(0),
+                      picture_config.text_positions.at(i).at(1),
+                      picture_config.texts.at(i).c_str());
+    text->SetNDC();
+    text->SetTextSize(picture_config.text_sizes.at(i));
+    text->SetLineWidth(1);
     text->Draw("same");
+    } catch (std::out_of_range&) {
+      std::cout << "TLatex position set incorrect" << std::endl;
+    }
+  }
   std::vector<TF1*> formulas;
   int num=0;
   for( const auto& formula : picture_config.formulas ){
@@ -57,16 +59,6 @@ void DrawHistogram2D( const Picture&picture_config, const Histogram2D& histo ){
 void Draw1D( const Picture&picture_config, const std::vector<Correlation>&correlation_configs,
             const std::vector<Graph>&graph_configs, const std::vector<Histogram1D>&histogram_configs){
   auto canvas = new TCanvas("canv", "", picture_config.resolution.at(0), picture_config.resolution.at(1));
-  TLatex* text{nullptr};
-  try {
-    text = new TLatex(picture_config.text_position.at(0),picture_config.text_position.at(1),
-                           picture_config.text.c_str());
-    text->SetNDC();
-    text->SetTextSize(0.04);
-    text->SetLineWidth(1);
-  } catch (std::out_of_range&) {
-    std::cout << "TLatex position set incorrect" << std::endl;
-  }
   std::string axes_title;
   try {
     axes_title = ";" + picture_config.axes_titles.at(0) + ";" +
@@ -136,25 +128,26 @@ void Draw1D( const Picture&picture_config, const std::vector<Correlation>&correl
   }
   auto line_zero = new TF1( "line", "0", -100, 100 );
   line_zero->Draw("same");
-  if( text )
-    text->Draw();
+  TLatex* text{nullptr};
+  for( size_t i=0; i<std::size(picture_config.texts); ++i ) {
+    try {
+      text = new TLatex(picture_config.text_positions.at(i).at(0),
+                        picture_config.text_positions.at(i).at(1),
+                        picture_config.texts.at(i).c_str());
+      text->SetNDC();
+      text->SetTextSize(picture_config.text_sizes.at(i));
+      text->SetLineWidth(1);
+      text->Draw("same");
+    } catch (std::out_of_range&) {
+      std::cout << "TLatex position set incorrect" << std::endl;
+    }
+  }
   canvas->SaveAs(picture_config.save_name.c_str());
 };
 
 void CompareCorrelations( const Picture&picture_config, const std::vector<Correlation>& reference_configs,
                           const std::vector<Correlation>& compare_configs){
   auto canvas = new TCanvas("canv", "", picture_config.resolution.at(0), picture_config.resolution.at(1));
-
-  TLatex* text{nullptr};
-  try {
-    text = new TLatex(picture_config.text_position.at(0),picture_config.text_position.at(1),
-                      picture_config.text.c_str());
-    text->SetNDC();
-    text->SetTextSize(0.04);
-    text->SetLineWidth(1);
-  } catch (std::out_of_range&) {
-    std::cout << "TLatex position set incorrect" << std::endl;
-  }
   std::string result_name;
   std::string ratio_name;
   try {
@@ -249,7 +242,20 @@ void CompareCorrelations( const Picture&picture_config, const std::vector<Correl
   auto line_zero = new TF1( "zero", "0", -100, 100 );
   line_zero->SetLineColor(kBlue);
   line_zero->Draw("same");
-  text->Draw();
+  TLatex* text{nullptr};
+  for( size_t i=0; i<std::size(picture_config.texts); ++i ) {
+    try {
+      text = new TLatex(picture_config.text_positions.at(i).at(0),
+                        picture_config.text_positions.at(i).at(1),
+                        picture_config.texts.at(i).c_str());
+      text->SetNDC();
+      text->SetTextSize(picture_config.text_sizes.at(i));
+      text->SetLineWidth(1);
+      text->Draw("same");
+    } catch (std::out_of_range&) {
+      std::cout << "TLatex position set incorrect" << std::endl;
+    }
+  }
   ratio_pad->cd();
   ratio_pad->SetTopMargin(0);
   ratio_pad->SetBottomMargin(gStyle->GetPadBottomMargin()*ratio_pad_scale);

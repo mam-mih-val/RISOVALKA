@@ -27,10 +27,14 @@ Draw::Picture GetPictureConfig(const std::string &json_file) {
   }
   // text
   try {
-    auto text_config = config.get_child("top text");
-    picture.text = text_config.get<std::string>("text", "");
-    picture.text_position = {text_config.get<double>("x1", 0.0),
-                             text_config.get<double>("y1", 0.0)};
+    auto text_configs = config.get_child("labels");
+    for(const auto& text_config : text_configs ) {
+      picture.texts.emplace_back(text_config.second.get<std::string>("text", ""));
+      std::vector text_position{text_config.second.get<double>("x1", 0.0),
+                                text_config.second.get<double>("y1", 0.0)};
+      picture.text_positions.emplace_back(text_position);
+      picture.text_sizes.emplace_back( text_config.second.get<double>("size") );
+    }
   } catch (const std::exception&) {}
   // legend_position
   try {
@@ -136,7 +140,7 @@ GetCorrelationConfigs( const std::string& json_file, const std::string& branch_n
 Draw::Style GetStyleConfig( const std::string& json_file ){
   boost::property_tree::ptree config;
   boost::property_tree::read_json(json_file, config);
-  Draw::Style style_config;
+  Draw::Style style_config{};
   style_config.pad_left_margin = config.get<float>("pad left margin");
   style_config.pad_right_margin = config.get<float>("pad right margin");
   style_config.pad_bottom_margin = config.get<float>("pad bottom margin");

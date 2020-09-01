@@ -26,14 +26,15 @@ namespace Draw{
 struct Picture{
   std::string save_name;
   std::vector<std::string> axes_titles;
-  std::string text;
+  std::vector<std::string> texts;
   std::string ratio_reference_title;
   std::array<short, 2> resolution;
   std::vector<double> x_axis_range;
   std::vector<double> y_axis_range;
   std::vector<double> z_axis_range;
   std::vector<double> ratio_range;
-  std::vector<double> text_position;
+  std::vector<std::vector<double>> text_positions;
+  std::vector<double> text_sizes;
   std::vector<double> legend_position;
   std::vector<std::string> formulas;
 };
