@@ -12,21 +12,14 @@
 class FileManager {
 public:
   template <class T>
-  [[nodiscard]] static T* GetObject(std::string_view name){
-    try {
-      assert(Instance()->file_);
-    } catch (const std::exception& e) {
-      std::cout << "FileManager::GetCorrelation: File is not set" << std::endl;
-      throw e;
-    }
+  [[nodiscard]] static T* GetObject(const std::string& name){
+    if(Instance()->file_)
+      throw std::runtime_error( "FileManager::GetObject(): file is not specified" );
     T* obj;
     Instance()->file_->GetObject(name.data(), obj);
-    try{
-      assert(obj);
-    } catch (const std::exception& e) {
-      std::cout << "FileManager::GetCorrelation: No such a DataContainer called"
-                << name << " in file" << std::endl;
-      throw e;
+    if( !obj ) {
+      std::string error;
+      throw std::runtime_error("FileManager::GetObject(): no such an object "+name+" in file");
     }
     return obj;
   }

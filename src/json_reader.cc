@@ -10,7 +10,12 @@ namespace JsonConfig {
 
 Draw::Picture GetPictureConfig(const std::string &json_file) {
   boost::property_tree::ptree config;
-  boost::property_tree::read_json(json_file, config);
+  try {
+    boost::property_tree::read_json(json_file, config);
+  } catch( const std::exception& e  ){
+    std::cout << "JsonConfig::GetPictureConfig()" << std::endl;
+    throw e;
+  }
   Draw::Picture picture;
   // save names
   picture.save_name = config.get<std::string>("save name", "canv.png");
@@ -92,7 +97,12 @@ Draw::Picture GetPictureConfig(const std::string &json_file) {
 
 Draw::Histogram2D GetHistogram2DConfig( const std::string& json_file ){
   boost::property_tree::ptree config;
-  boost::property_tree::read_json(json_file, config);
+  try {
+    boost::property_tree::read_json(json_file, config);
+  } catch( const std::exception& e  ){
+    std::cout << "JsonConfig::GetHistogram2DConfig()" << std::endl;
+    throw e;
+  }
   Draw::Histogram2D histogram;
 
   auto histo_config = config.get_child( "histogram 2D" );
@@ -106,7 +116,12 @@ Draw::Histogram2D GetHistogram2DConfig( const std::string& json_file ){
 std::vector<Draw::Correlation>
 GetCorrelationConfigs( const std::string& json_file, const std::string& branch_name ){
   boost::property_tree::ptree config;
-  boost::property_tree::read_json(json_file, config);
+  try {
+    boost::property_tree::read_json(json_file, config);
+  } catch( const std::exception& e  ){
+    std::cout << "JsonConfig::GetCorrelationConfigs()" << std::endl;
+    throw e;
+  }
   std::vector<Draw::Correlation> correlations;
   auto corr_config = config.get_child(branch_name);
   for( const auto& conf : corr_config ){
@@ -121,16 +136,19 @@ GetCorrelationConfigs( const std::string& json_file, const std::string& branch_n
     } catch (const std::exception& e) { throw e; }
     correlations.back().title = correlation_config.get<std::string>("title");
     correlations.back().file = correlation_config.get<std::string>("file");
-    auto rebin_config = correlation_config.get_child("rebin axis");
-    for( const auto& axis : rebin_config ){
-      auto title = axis.second.get<std::string>("name");
-      auto n_bins = axis.second.get<int>("n bins");
-      auto low_bin = axis.second.get<double>("low bin");
-      auto up_bin = axis.second.get<double>("up bin");
-      correlations.back().rebin_axes.emplace_back(title, n_bins, low_bin, up_bin);
-    }
-    correlations.back().projection_axis = correlation_config.get<std::string>("projection axis", "");
+    try {
+      auto rebin_config = correlation_config.get_child("selection axes");
+      for (const auto &axis : rebin_config) {
+        auto title = axis.second.get<std::string>("name");
+        auto n_bins = axis.second.get<int>("n bins");
+        auto low_bin = axis.second.get<double>("low bin");
+        auto up_bin = axis.second.get<double>("up bin");
+        correlations.back().selection_axes.emplace_back(title, n_bins, low_bin,
+                                                        up_bin);
+      }
+    }catch (const std::exception& e) {}
     correlations.back().scale = correlation_config.get<double>("scale", 1.0);
+    correlations.back().projection_axis = correlation_config.get<std::string>("projection axis", "");
     correlations.back().marker = MarkerConstants::MARKERS.at(correlation_config.get<std::string>("marker"));
     correlations.back().color = MarkerConstants::COLORS.at(correlation_config.get<std::string>("color"));
   }
@@ -139,7 +157,12 @@ GetCorrelationConfigs( const std::string& json_file, const std::string& branch_n
 
 Draw::Style GetStyleConfig( const std::string& json_file ){
   boost::property_tree::ptree config;
-  boost::property_tree::read_json(json_file, config);
+  try {
+    boost::property_tree::read_json(json_file, config);
+  } catch( const std::exception& e  ){
+    std::cout << "JsonConfig::GetStyleConfig()" << std::endl;
+    throw e;
+  }
   Draw::Style style_config{};
   style_config.pad_left_margin = config.get<float>("pad left margin");
   style_config.pad_right_margin = config.get<float>("pad right margin");

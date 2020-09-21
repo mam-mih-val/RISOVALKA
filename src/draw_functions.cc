@@ -73,9 +73,10 @@ void Draw1D( const Picture&picture_config, const std::vector<Correlation>&correl
     for( const auto& name : config.names ) {
       auto container =
           *(FileManager::GetObject<Qn::DataContainerStats>(name));
-      for (const auto &axis : config.rebin_axes)
-        container = container.Rebin(axis);
-      container = container.Projection({config.projection_axis});
+      for (const auto &axis : config.selection_axes)
+        container = container.Select(axis);
+      if( !std::empty(config.projection_axis) )
+        container = container.Projection({config.projection_axis});
       container = container * config.scale;
       containers.emplace_back(container);
     }
@@ -164,9 +165,10 @@ void CompareCorrelations( const Picture&picture_config, const std::vector<Correl
     for( const auto& name : config.names ) {
       auto container =
           *(FileManager::GetObject<Qn::DataContainerStats>(name));
-      for (const auto &axis : config.rebin_axes)
-        container = container.Rebin(axis);
-      container = container.Projection({config.projection_axis});
+      for (const auto &axis : config.selection_axes)
+        container = container.Select(axis);
+      if( !std::empty(config.projection_axis) )
+        container = container.Projection({config.projection_axis});
       container = container * config.scale;
       containers.emplace_back(container);
     }
@@ -185,9 +187,10 @@ void CompareCorrelations( const Picture&picture_config, const std::vector<Correl
     for( const auto& name : config.names ) {
       auto container =
           *(FileManager::GetObject<Qn::DataContainerStats>(name));
-      for (const auto &axis : config.rebin_axes)
-        container = container.Rebin(axis);
-      container = container.Projection({config.projection_axis});
+      for (const auto &axis : config.selection_axes)
+        container = container.Select(axis);
+      if( !std::empty(config.projection_axis) )
+        container = container.Projection({config.projection_axis});
       container = container * config.scale;
       containers.emplace_back(container);
     }

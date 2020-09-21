@@ -55,7 +55,7 @@ struct Correlation{
   std::string file;
   std::vector<std::string> names;
   std::string title;
-  std::vector<Qn::AxisD> rebin_axes;
+  std::vector<Qn::AxisD> selection_axes;
   std::string projection_axis;
   double scale{1.0};
   int color;
