@@ -13,7 +13,7 @@ class FileManager {
 public:
   template <class T>
   [[nodiscard]] static T* GetObject(const std::string& name){
-    if(Instance()->file_)
+    if(!Instance()->file_)
       throw std::runtime_error( "FileManager::GetObject(): file is not specified" );
     T* obj;
     Instance()->file_->GetObject(name.data(), obj);
