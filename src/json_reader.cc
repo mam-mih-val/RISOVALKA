@@ -19,6 +19,7 @@ Draw::Picture GetPictureConfig(const std::string &json_file) {
   Draw::Picture picture;
   // save names
   picture.save_name = config.get<std::string>("save name", "canv.png");
+  picture.save_points = config.get<bool>("save points", false);
   // resolution
   try {
     auto resolution_configs = config.get_child("resolution");
@@ -171,15 +172,33 @@ Draw::Style GetStyleConfig( const std::string& json_file ){
   style_config.frame_line_width = config.get<int>("frame line width");
   style_config.marker_size = config.get<int>("marker size");
   style_config.line_width = config.get<int>("line width");
-  auto title_size_config = config.get_child("title size");
-  style_config.title_size.at(0) = title_size_config.get<float>("X");
-  style_config.title_size.at(1) = title_size_config.get<float>("Y");
-  style_config.title_size.at(2) = title_size_config.get<float>("Z");
+  try {
+    auto title_size_config = config.get_child("title size");
+    style_config.title_size.at(0) = title_size_config.get<float>("X");
+    style_config.title_size.at(1) = title_size_config.get<float>("Y");
+    style_config.title_size.at(2) = title_size_config.get<float>("Z");
+  }catch (std::exception&) {}
 
-  auto title_offset_config = config.get_child("title offset");
-  style_config.title_offset.at(0) = title_offset_config.get<float>("X");
-  style_config.title_offset.at(1) = title_offset_config.get<float>("Y");
-  style_config.title_offset.at(2) = title_offset_config.get<float>("Z");
+  try {
+    auto title_offset_config = config.get_child("title offset");
+    style_config.title_offset.at(0) = title_offset_config.get<float>("X");
+    style_config.title_offset.at(1) = title_offset_config.get<float>("Y");
+    style_config.title_offset.at(2) = title_offset_config.get<float>("Z");
+  }catch (std::exception&) {}
+
+  try {
+    auto label_offset_config = config.get_child("label offset");
+    style_config.label_offset.at(0) = label_offset_config.get<float>("X");
+    style_config.label_offset.at(1) = label_offset_config.get<float>("Y");
+    style_config.label_offset.at(2) = label_offset_config.get<float>("Z");
+  }catch (std::exception&) {}
+
+  try {
+    auto label_size_config = config.get_child("label size");
+    style_config.label_size.at(0) = label_size_config.get<float>("X");
+    style_config.label_size.at(1) = label_size_config.get<float>("Y");
+    style_config.label_size.at(2) = label_size_config.get<float>("Z");
+  }catch (std::exception&) {}
 
   return style_config;
 }

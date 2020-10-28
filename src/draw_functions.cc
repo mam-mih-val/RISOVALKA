@@ -27,7 +27,7 @@ void DrawHistogram2D( const Picture&picture_config, const Histogram2D& histo ){
   canvas->cd();
   gStyle->SetPalette(kRainBow);
   if( histo.is_unite )
-    histo2d->Scale( 1./(double) histo2d->GetEntries() );
+    histo2d->Scale( 1./(double) histo2d->Integral("width") );
   histo2d->Draw("colz");
   TLatex* text{nullptr};
   for( size_t i=0; i<std::size(picture_config.texts); ++i ) {
@@ -38,6 +38,7 @@ void DrawHistogram2D( const Picture&picture_config, const Histogram2D& histo ){
     text->SetNDC();
     text->SetTextSize(picture_config.text_sizes.at(i));
     text->SetLineWidth(1);
+    text->SetTextColor(kBlack);
     text->Draw("same");
     } catch (std::out_of_range&) {
       std::cout << "TLatex position set incorrect" << std::endl;
@@ -66,7 +67,11 @@ void Draw1D( const Picture&picture_config, const std::vector<Correlation>&correl
   }catch (const std::exception&) {}
   auto* graph_stack = new TMultiGraph("graphs", axes_title.c_str());
   auto* histo_stack = new THStack( "histo", "" );
-
+  TFile* save_points_file;
+  if( picture_config.save_points ){
+    save_points_file = TFile::Open( std::data(picture_config.save_name+".root"), "recreate" );
+    save_points_file->cd();
+  }
   for( const auto& config : correlation_configs){
     FileManager::Open(config.file);
     std::vector<Qn::DataContainerStats> containers;
@@ -80,6 +85,7 @@ void Draw1D( const Picture&picture_config, const std::vector<Correlation>&correl
       container = container * config.scale;
       containers.emplace_back(container);
     }
+
     for (size_t i = 1; i < std::size(containers); ++i)
       containers.at(0) = containers.at(0) + containers.at(i);
     containers.at(0) = containers.at(0) * (1.0/ (double ) std::size(containers));
@@ -88,9 +94,13 @@ void Draw1D( const Picture&picture_config, const std::vector<Correlation>&correl
     graph->SetTitle(config.title.c_str());
     graph->SetLineColor(config.color);
     graph->SetMarkerColor(config.color);
+    if( save_points_file )
+      graph->Write( config.title.c_str() );
     graph->SetMarkerStyle(config.marker);
     graph_stack->Add(graph);
   }
+  if( save_points_file )
+    save_points_file->Close();
   for( const auto& config : graph_configs){
     FileManager::Open(config.file);
     auto graph = FileManager::GetObject<TGraph>(config.name);
@@ -153,8 +163,7 @@ void CompareCorrelations( const Picture&picture_config, const std::vector<Correl
   std::string ratio_name;
   try {
     result_name = ";;" + picture_config.axes_titles.at(1);
-    ratio_name = ";"+picture_config.axes_titles.at(0) + "; #frac{"+
-        picture_config.axes_titles.at(1)+ "}{"+picture_config.ratio_reference_title+"}";
+    ratio_name = ";"+picture_config.axes_titles.at(0) + ";"+ picture_config.axes_titles.at(2);
   }catch (const std::exception&) {}
   auto* result_stack = new TMultiGraph("results", result_name.c_str());
   auto* ratio_stack = new TMultiGraph("ratio", ratio_name.c_str());
@@ -176,6 +185,11 @@ void CompareCorrelations( const Picture&picture_config, const std::vector<Correl
       containers.at(0) = containers.at(0) + containers.at(i);
     containers.at(0) = containers.at(0) * (1.0/ (double ) std::size(containers));
     references.push_back(containers.at(0));
+  }
+  TFile* save_points_file{nullptr};
+  if( picture_config.save_points ){
+    save_points_file = TFile::Open( std::data(picture_config.save_name+".root"), "recreate" );
+    save_points_file->cd();
   }
   for( size_t i=1; i<std::size(references); ++i ){
     references.at(0) = references.at(0) + references.at(i);
@@ -203,6 +217,10 @@ void CompareCorrelations( const Picture&picture_config, const std::vector<Correl
     auto graph = Qn::ToTGraph( containers.at(0) );
     graph->SetTitle(config.title.c_str());
     graph->SetLineColor(config.color);
+    if( save_points_file ){
+      save_points_file->cd();
+      graph->Write(config.title.c_str());
+    }
     graph->SetMarkerColor(config.color);
     graph->SetMarkerStyle(config.marker);
     result_stack->Add(graph);
@@ -213,6 +231,9 @@ void CompareCorrelations( const Picture&picture_config, const std::vector<Correl
     graph->SetMarkerStyle(config.marker);
     ratio_stack->Add(graph);
   }
+  if( save_points_file )
+    save_points_file->Close();
+
   references.at(0).SetSetting(Qn::Stats::Settings::CORRELATEDERRORS);
   auto graph = Qn::ToTGraph( references.at(0) );
   graph->SetTitle(picture_config.ratio_reference_title.c_str());
@@ -292,13 +313,22 @@ void SetStyle(const Style& style){
   gStyle->SetFrameLineWidth(style.frame_line_width);
   gStyle->SetMarkerSize(style.marker_size);
   gStyle->SetLineWidth(style.line_width);
+
   gStyle->SetTitleSize(style.title_size.at(0), "X");
   gStyle->SetTitleSize(style.title_size.at(1), "Y");
   gStyle->SetTitleSize(style.title_size.at(2), "Z");
 
-  gStyle->SetTitleSize(style.title_offset.at(0), "X");
-  gStyle->SetTitleSize(style.title_offset.at(1), "Y");
-  gStyle->SetTitleSize(style.title_offset.at(2), "Z");
+//  gStyle->SetLabelSize(style.label_size.at(0), "X");
+//  gStyle->SetLabelSize(style.label_size.at(1), "Y");
+//  gStyle->SetLabelSize(style.label_size.at(2), "Z");
+//
+//  gStyle->SetLabelOffset(style.label_offset.at(0), "X");
+//  gStyle->SetLabelOffset(style.label_offset.at(1), "Y");
+//  gStyle->SetLabelOffset(style.label_offset.at(2), "Z");
+
+//  gStyle->SetTitleOffset(style.title_offset.at(0), "X");
+//  gStyle->SetTitleOffset(style.title_offset.at(1), "Y");
+//  gStyle->SetTitleOffset(style.title_offset.at(2), "Z");
 
   gStyle->SetOptStat(0);
 };

@@ -37,6 +37,7 @@ struct Picture{
   std::vector<double> text_sizes;
   std::vector<double> legend_position;
   std::vector<std::string> formulas;
+  bool save_points=false;
 };
 
 struct Style{
@@ -47,6 +48,8 @@ struct Style{
   double frame_line_width;
   std::array<double, 3> title_size;
   std::array<double, 3> title_offset;
+  std::array<double, 3> label_offset;
+  std::array<double, 3> label_size;
   int marker_size;
   int line_width;
 };

@@ -32,10 +32,10 @@ int main(int n_args, char** args){
     std::cout << options << std::endl;
     return 0;
   }
-  auto style = JsonConfig::GetStyleConfig("../src/config/style.json");
-  Draw::SetStyle(style);
   // 1-dimensional objects
   if( draw_object == "1D" or draw_object == "1d" or draw_object.empty() ) {
+    auto style = JsonConfig::GetStyleConfig("../src/config/style_1d.json");
+    Draw::SetStyle(style);
     auto picture_config = JsonConfig::GetPictureConfig(input_config);
     auto correlation_configs =
         JsonConfig::GetCorrelationConfigs(input_config, "correlations");
@@ -53,6 +53,8 @@ int main(int n_args, char** args){
   }
   // 2-dimensional objects
   if( draw_object == "2D" or draw_object == "2d" ) {
+    auto style = JsonConfig::GetStyleConfig("../src/config/style_2d.json");
+    Draw::SetStyle(style);
     auto picture_config = JsonConfig::GetPictureConfig(input_config);
     auto histogram_config = JsonConfig::GetHistogram2DConfig(input_config);
     Draw::DrawHistogram2D(picture_config, histogram_config);

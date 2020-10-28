@@ -62,7 +62,7 @@ public:
   void DrawWithRatios();
 private:
 
-  void ReadStyleConfig( const std::string& file_path="../src/config/style.json" );
+  void ReadStyleConfig( const std::string& file_path="../src/config/style_2d.json" );
   CanvasManager(){
       ReadStyleConfig();
   };
