@@ -20,6 +20,9 @@ Draw::Picture GetPictureConfig(const std::string &json_file) {
   // save names
   picture.save_name = config.get<std::string>("save name", "canv.png");
   picture.save_points = config.get<bool>("save points", false);
+  picture.reference_color = MarkerConstants::COLORS.at(config.get<std::string>("reference color", "black"));
+  picture.reference_marker = MarkerConstants::MARKERS.at(config.get<std::string>("reference color", "full circle"));
+  picture.is_reference_line = config.get<bool>("is reference line", false);;
   // resolution
   try {
     auto resolution_configs = config.get_child("resolution");

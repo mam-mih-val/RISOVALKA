@@ -168,6 +168,13 @@ void CompareCorrelations( const Picture&picture_config, const std::vector<Correl
   auto* result_stack = new TMultiGraph("results", result_name.c_str());
   auto* ratio_stack = new TMultiGraph("ratio", ratio_name.c_str());
   std::vector<Qn::DataContainerStats> references;
+  TLegend* legend;
+  try{
+    legend = new TLegend(picture_config.legend_position.at(0), picture_config.legend_position.at(1),
+                         picture_config.legend_position.at(2), picture_config.legend_position.at(3));
+  } catch (std::out_of_range&) {
+    legend = new TLegend();
+  }
   for( const auto& config : reference_configs){
     FileManager::Open(config.file);
     std::vector<Qn::DataContainerStats> containers;
@@ -223,6 +230,7 @@ void CompareCorrelations( const Picture&picture_config, const std::vector<Correl
     }
     graph->SetMarkerColor(config.color);
     graph->SetMarkerStyle(config.marker);
+    legend->AddEntry(graph, graph->GetTitle(),"P");
     result_stack->Add(graph);
     graph = Qn::ToTGraph( ratio );
     graph->SetTitle(config.title.c_str());
@@ -237,10 +245,17 @@ void CompareCorrelations( const Picture&picture_config, const std::vector<Correl
   references.at(0).SetSetting(Qn::Stats::Settings::CORRELATEDERRORS);
   auto graph = Qn::ToTGraph( references.at(0) );
   graph->SetTitle(picture_config.ratio_reference_title.c_str());
-  graph->SetLineColor(kBlack);
-  graph->SetMarkerColor(kBlack);
-  graph->SetMarkerStyle(kFullCircle);
-  result_stack->Add(graph);
+  if( !picture_config.is_reference_line ) {
+    graph->SetLineColor(picture_config.reference_color);
+    graph->SetMarkerColor(picture_config.reference_color);
+    graph->SetMarkerStyle(picture_config.reference_marker);
+    legend->AddEntry(graph, graph->GetTitle(),"P");
+    result_stack->Add(graph);
+  }else{
+    graph->SetLineColor(picture_config.reference_color);
+    legend->AddEntry(graph, graph->GetTitle(),"L");
+    result_stack->Add(graph, "L");
+  }
   canvas->cd();
   auto result_pad = new TPad("result", "result", 0.0, 0.35, 1.0, 1.0);
   auto ratio_pad = new TPad("ratio", "ratio", 0.0, 0.0, 1.0, .35);
@@ -256,13 +271,14 @@ void CompareCorrelations( const Picture&picture_config, const std::vector<Correl
   result_stack->SetMaximum(picture_config.y_axis_range.at(1));
   result_stack->GetXaxis()->SetLimits(picture_config.x_axis_range.at(0),
                                      picture_config.x_axis_range.at(1));
-  try{
-    gPad->BuildLegend(picture_config.legend_position.at(0), picture_config.legend_position.at(1),
-                      picture_config.legend_position.at(2), picture_config.legend_position.at(3),
-                      "", "P");
-  } catch (std::out_of_range&) {
-    gPad->BuildLegend();
-  }
+  legend->Draw();
+//  try{
+////    gPad->BuildLegend(picture_config.legend_position.at(0), picture_config.legend_position.at(1),
+////                      picture_config.legend_position.at(2), picture_config.legend_position.at(3),
+////                      "", "P");
+//  } catch (std::out_of_range&) {
+//    gPad->BuildLegend();
+//  }
   auto line_zero = new TF1( "zero", "0", -100, 100 );
   line_zero->SetLineColor(kBlue);
   line_zero->Draw("same");
@@ -295,7 +311,7 @@ void CompareCorrelations( const Picture&picture_config, const std::vector<Correl
   ratio_stack->GetXaxis()->SetLimits(picture_config.x_axis_range.at(0),
                                       picture_config.x_axis_range.at(1));
   auto line_one = new TF1( "one", "1", -100, 100 );
-  line_one->SetLineColor(kRed);
+  line_one->SetLineColor(picture_config.reference_color);
   line_one->Draw("same");
   line_zero->Draw("same");
   canvas->cd();

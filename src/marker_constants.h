@@ -13,7 +13,7 @@ const std::map<std::string, int> COLORS{
     {"red", kRed},
     {"orange", kOrange},
     {"yellow", kYellow},
-    {"green", kGreen},
+    {"green", kGreen+2},
     {"blue", kBlue},
     {"deep sea", kDeepSea},
     {"violet", kViolet},
@@ -29,6 +29,14 @@ const std::map<std::string, int> MARKERS{
     {"full triangle up", kFullTriangleUp},
     {"open triangle down", kOpenTriangleDown},
     {"full triangle down", kFullTriangleDown},
+    {"open cross", kOpenCross},
+    {"full cross", kFullCross},
+    {"open cross x", kOpenCrossX},
+    {"full cross x", kFullCrossX},
+    {"open star", kOpenStar},
+    {"full star", kFullStar},
+    {"four squares x", kFourSquaresX},
+    {"four squares +", kFourSquaresPlus},
 };
 }
 

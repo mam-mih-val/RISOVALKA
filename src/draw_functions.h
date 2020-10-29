@@ -37,6 +37,9 @@ struct Picture{
   std::vector<double> text_sizes;
   std::vector<double> legend_position;
   std::vector<std::string> formulas;
+  int reference_marker;
+  int reference_color;
+  bool is_reference_line;
   bool save_points=false;
 };
 
