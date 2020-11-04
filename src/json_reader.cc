@@ -8,7 +8,7 @@
 
 namespace JsonConfig {
 
-Draw::Picture GetPictureConfig(const std::string &json_file) {
+Draw::PictureConfig GetPictureConfig(const std::string &json_file) {
   boost::property_tree::ptree config;
   try {
     boost::property_tree::read_json(json_file, config);
@@ -16,7 +16,7 @@ Draw::Picture GetPictureConfig(const std::string &json_file) {
     std::cout << "JsonConfig::GetPictureConfig()" << std::endl;
     throw e;
   }
-  Draw::Picture picture;
+  Draw::PictureConfig picture;
   // save names
   picture.save_name = config.get<std::string>("save name", "canv.png");
   picture.save_points = config.get<bool>("save points", false);
@@ -99,7 +99,7 @@ Draw::Picture GetPictureConfig(const std::string &json_file) {
   return picture;
 };
 
-Draw::Histogram2D GetHistogram2DConfig( const std::string& json_file ){
+Draw::Histogram2DConfig GetHistogram2DConfig( const std::string& json_file ){
   boost::property_tree::ptree config;
   try {
     boost::property_tree::read_json(json_file, config);
@@ -107,7 +107,7 @@ Draw::Histogram2D GetHistogram2DConfig( const std::string& json_file ){
     std::cout << "JsonConfig::GetHistogram2DConfig()" << std::endl;
     throw e;
   }
-  Draw::Histogram2D histogram;
+  Draw::Histogram2DConfig histogram;
 
   auto histo_config = config.get_child( "histogram 2D" );
   histogram.file = histo_config.get<std::string>("file");
@@ -117,7 +117,7 @@ Draw::Histogram2D GetHistogram2DConfig( const std::string& json_file ){
   return histogram;
 };
 
-std::vector<Draw::Correlation>
+std::vector<Draw::CorrelationConfig>
 GetCorrelationConfigs( const std::string& json_file, const std::string& branch_name ){
   boost::property_tree::ptree config;
   try {
@@ -126,7 +126,7 @@ GetCorrelationConfigs( const std::string& json_file, const std::string& branch_n
     std::cout << "JsonConfig::GetCorrelationConfigs()" << std::endl;
     throw e;
   }
-  std::vector<Draw::Correlation> correlations;
+  std::vector<Draw::CorrelationConfig> correlations;
   auto corr_config = config.get_child(branch_name);
   for( const auto& conf : corr_config ){
     auto correlation_config = conf.second;
@@ -159,7 +159,7 @@ GetCorrelationConfigs( const std::string& json_file, const std::string& branch_n
   return correlations;
 };
 
-Draw::Style GetStyleConfig( const std::string& json_file ){
+Draw::StyleConfig GetStyleConfig( const std::string& json_file ){
   boost::property_tree::ptree config;
   try {
     boost::property_tree::read_json(json_file, config);
@@ -167,7 +167,7 @@ Draw::Style GetStyleConfig( const std::string& json_file ){
     std::cout << "JsonConfig::GetStyleConfig()" << std::endl;
     throw e;
   }
-  Draw::Style style_config{};
+  Draw::StyleConfig style_config{};
   style_config.pad_left_margin = config.get<float>("pad left margin");
   style_config.pad_right_margin = config.get<float>("pad right margin");
   style_config.pad_bottom_margin = config.get<float>("pad bottom margin");

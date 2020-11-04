@@ -15,6 +15,7 @@
 #include <TGraph.h>
 #include <TH1F.h>
 #include <TH2F.h>
+#include <TLegend.h>
 
 #include <Axis.hpp>
 #include <DataContainer.hpp>
@@ -23,7 +24,7 @@
 
 namespace Draw{
 
-struct Picture{
+struct PictureConfig {
   std::string save_name;
   std::vector<std::string> axes_titles;
   std::vector<std::string> texts;
@@ -43,7 +44,7 @@ struct Picture{
   bool save_points=false;
 };
 
-struct Style{
+struct StyleConfig{
   double pad_left_margin;
   double pad_right_margin;
   double pad_bottom_margin;
@@ -57,7 +58,7 @@ struct Style{
   int line_width;
 };
 
-struct Correlation{
+struct CorrelationConfig {
   std::string file;
   std::vector<std::string> names;
   std::string title;
@@ -67,36 +68,36 @@ struct Correlation{
   int color;
   int marker;
 };
-struct Graph{
+struct GraphConfig {
   std::string file;
   std::string name;
   std::string title;
   int color;
   int marker;
 };
-struct Histogram1D{
+struct Histogram1DConfig {
   std::string file;
   std::string name;
   std::string title;
   int color;
   int marker;
 };
-struct Histogram2D{
+struct Histogram2DConfig {
   std::string file;
   std::string name;
   bool is_log_z;
   bool is_unite;
 };
 
-void DrawHistogram2D( const Picture&picture_config, const Histogram2D& histo );
+void DrawHistogram2D( const PictureConfig &picture_config, const Histogram2DConfig & histo );
 
-void Draw1D( const Picture&picture_config, const std::vector<Correlation>&correlation_configs,
-            const std::vector<Graph>&graph_configs, const std::vector<Histogram1D>&histogram_configs);
+void Draw1D( const PictureConfig &picture_config, const std::vector<CorrelationConfig>&correlation_configs,
+            const std::vector<GraphConfig>&graph_configs, const std::vector<Histogram1DConfig>&histogram_configs);
 
-void CompareCorrelations( const Picture&picture_config, const std::vector<Correlation>& reference_configs,
-                          const std::vector<Correlation>& compare_configs);
+void CompareCorrelations( const PictureConfig &picture_config, const std::vector<CorrelationConfig>& reference_configs,
+                          const std::vector<CorrelationConfig>& compare_configs);
 
-void SetStyle( const Style& style );
+void SetStyle( const StyleConfig & style );
 }
 
 #endif // FLOW_DRAWING_TOOLS_SRC_DRAW_FUNCTIONS_H_

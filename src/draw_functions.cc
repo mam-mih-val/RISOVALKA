@@ -6,7 +6,7 @@
 
 namespace Draw{
 
-void DrawHistogram2D( const Picture&picture_config, const Histogram2D& histo ){
+void DrawHistogram2D( const PictureConfig &picture_config, const Histogram2DConfig & histo ){
   auto canvas = new TCanvas("canv", "", picture_config.resolution.at(0),
                             picture_config.resolution.at(1));
   FileManager::Open(histo.file);
@@ -57,8 +57,8 @@ void DrawHistogram2D( const Picture&picture_config, const Histogram2D& histo ){
   canvas->SaveAs(picture_config.save_name.c_str());
 };
 
-void Draw1D( const Picture&picture_config, const std::vector<Correlation>&correlation_configs,
-            const std::vector<Graph>&graph_configs, const std::vector<Histogram1D>&histogram_configs){
+void Draw1D( const PictureConfig &picture_config, const std::vector<CorrelationConfig>&correlation_configs,
+            const std::vector<GraphConfig>&graph_configs, const std::vector<Histogram1DConfig>&histogram_configs){
   auto canvas = new TCanvas("canv", "", picture_config.resolution.at(0), picture_config.resolution.at(1));
   std::string axes_title;
   try {
@@ -74,10 +74,16 @@ void Draw1D( const Picture&picture_config, const std::vector<Correlation>&correl
   }
   for( const auto& config : correlation_configs){
     FileManager::Open(config.file);
-    std::vector<Qn::DataContainerStats> containers;
+    std::vector<Qn::DataContainerStatCalculate> containers;
     for( const auto& name : config.names ) {
-      auto container =
-          *(FileManager::GetObject<Qn::DataContainerStats>(name));
+      Qn::DataContainerStatCalculate container;
+      try {
+        container =
+            Qn::DataContainerStatCalculate(*(FileManager::GetObject<Qn::DataContainerStatCollect>(name)));
+      } catch (std::exception&) {
+        container =
+            *(FileManager::GetObject<Qn::DataContainerStatCalculate>(name));
+      }
       for (const auto &axis : config.selection_axes)
         container = container.Select(axis);
       if( !std::empty(config.projection_axis) )
@@ -89,7 +95,7 @@ void Draw1D( const Picture&picture_config, const std::vector<Correlation>&correl
     for (size_t i = 1; i < std::size(containers); ++i)
       containers.at(0) = containers.at(0) + containers.at(i);
     containers.at(0) = containers.at(0) * (1.0/ (double ) std::size(containers));
-    containers.at(0).SetSetting(Qn::Stats::Settings::CORRELATEDERRORS);
+    containers.at(0).SetErrors(Qn::StatCalculate::ErrorType::BOOTSTRAP);
     auto graph = Qn::ToTGraph( containers.at(0) );
     graph->SetTitle(config.title.c_str());
     graph->SetLineColor(config.color);
@@ -156,8 +162,8 @@ void Draw1D( const Picture&picture_config, const std::vector<Correlation>&correl
   canvas->SaveAs(picture_config.save_name.c_str());
 };
 
-void CompareCorrelations( const Picture&picture_config, const std::vector<Correlation>& reference_configs,
-                          const std::vector<Correlation>& compare_configs){
+void CompareCorrelations( const PictureConfig &picture_config, const std::vector<CorrelationConfig>& reference_configs,
+                          const std::vector<CorrelationConfig>& compare_configs){
   auto canvas = new TCanvas("canv", "", picture_config.resolution.at(0), picture_config.resolution.at(1));
   std::string result_name;
   std::string ratio_name;
@@ -167,7 +173,7 @@ void CompareCorrelations( const Picture&picture_config, const std::vector<Correl
   }catch (const std::exception&) {}
   auto* result_stack = new TMultiGraph("results", result_name.c_str());
   auto* ratio_stack = new TMultiGraph("ratio", ratio_name.c_str());
-  std::vector<Qn::DataContainerStats> references;
+  std::vector<Qn::DataContainerStatCalculate> references;
   TLegend* legend;
   try{
     legend = new TLegend(picture_config.legend_position.at(0), picture_config.legend_position.at(1),
@@ -177,10 +183,16 @@ void CompareCorrelations( const Picture&picture_config, const std::vector<Correl
   }
   for( const auto& config : reference_configs){
     FileManager::Open(config.file);
-    std::vector<Qn::DataContainerStats> containers;
+    std::vector<Qn::DataContainerStatCalculate> containers;
     for( const auto& name : config.names ) {
-      auto container =
-          *(FileManager::GetObject<Qn::DataContainerStats>(name));
+      Qn::DataContainerStatCalculate container;
+      try {
+        container =
+            Qn::DataContainerStatCalculate(*(FileManager::GetObject<Qn::DataContainerStatCollect>(name)));
+      } catch (std::exception&) {
+        container =
+            *(FileManager::GetObject<Qn::DataContainerStatCalculate>(name));
+      }
       for (const auto &axis : config.selection_axes)
         container = container.Select(axis);
       if( !std::empty(config.projection_axis) )
@@ -204,10 +216,16 @@ void CompareCorrelations( const Picture&picture_config, const std::vector<Correl
   references.at(0) = references.at(0) * ( 1.0 / (double) std::size(references) );
   for( const auto& config : compare_configs){
     FileManager::Open(config.file);
-    std::vector<Qn::DataContainerStats> containers;
+    std::vector<Qn::DataContainerStatCalculate> containers;
     for( const auto& name : config.names ) {
-      auto container =
-          *(FileManager::GetObject<Qn::DataContainerStats>(name));
+      Qn::DataContainerStatCalculate container;
+      try {
+        container =
+            Qn::DataContainerStatCalculate(*(FileManager::GetObject<Qn::DataContainerStatCollect>(name)));
+      } catch (std::exception&) {
+        container =
+            *(FileManager::GetObject<Qn::DataContainerStatCalculate>(name));
+      }
       for (const auto &axis : config.selection_axes)
         container = container.Select(axis);
       if( !std::empty(config.projection_axis) )
@@ -218,9 +236,9 @@ void CompareCorrelations( const Picture&picture_config, const std::vector<Correl
     for (size_t i = 1; i < std::size(containers); ++i)
       containers.at(0) = containers.at(0) + containers.at(i);
     containers.at(0) = containers.at(0) * (1.0/ (double ) std::size(containers));
-    containers.at(0).SetSetting(Qn::Stats::Settings::CORRELATEDERRORS);
+    containers.at(0).SetErrors(Qn::StatCalculate::ErrorType::BOOTSTRAP);
     auto ratio = containers.at(0) / references.at(0);
-    ratio.SetSetting(Qn::Stats::Settings::CORRELATEDERRORS);
+    ratio.SetErrors(Qn::StatCalculate::ErrorType::BOOTSTRAP);
     auto graph = Qn::ToTGraph( containers.at(0) );
     graph->SetTitle(config.title.c_str());
     graph->SetLineColor(config.color);
@@ -242,7 +260,7 @@ void CompareCorrelations( const Picture&picture_config, const std::vector<Correl
   if( save_points_file )
     save_points_file->Close();
 
-  references.at(0).SetSetting(Qn::Stats::Settings::CORRELATEDERRORS);
+  references.at(0).SetErrors(Qn::StatCalculate::ErrorType::BOOTSTRAP);
   auto graph = Qn::ToTGraph( references.at(0) );
   graph->SetTitle(picture_config.ratio_reference_title.c_str());
   if( !picture_config.is_reference_line ) {
@@ -321,7 +339,7 @@ void CompareCorrelations( const Picture&picture_config, const std::vector<Correl
   canvas->SaveAs(picture_config.save_name.c_str());
 };
 
-void SetStyle(const Style& style){
+void SetStyle(const StyleConfig & style){
   gStyle->SetPadLeftMargin(style.pad_left_margin);
   gStyle->SetPadRightMargin(style.pad_right_margin);
   gStyle->SetPadBottomMargin(style.pad_bottom_margin);

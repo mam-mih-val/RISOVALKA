@@ -12,9 +12,6 @@
 
 int main(int n_args, char** args){
   namespace po = boost::program_options;
-//  if( n_args < 2 ){
-//    return 1;
-//  }
   std::string draw_object;
   std::string input_config;
   po::options_description options("Options");
@@ -39,7 +36,7 @@ int main(int n_args, char** args){
     auto picture_config = JsonConfig::GetPictureConfig(input_config);
     auto correlation_configs =
         JsonConfig::GetCorrelationConfigs(input_config, "correlations");
-    std::vector<Draw::Correlation> ref_correlation_configs;
+    std::vector<Draw::CorrelationConfig> ref_correlation_configs;
     try {
       ref_correlation_configs =
           JsonConfig::GetCorrelationConfigs(input_config, "reference");

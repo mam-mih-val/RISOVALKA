@@ -11,15 +11,15 @@
 
 namespace JsonConfig{
 
-Draw::Picture GetPictureConfig( const std::string& json_file );
+Draw::PictureConfig GetPictureConfig( const std::string& json_file );
 
-Draw::Histogram2D GetHistogram2DConfig( const std::string& json_file );
+Draw::Histogram2DConfig GetHistogram2DConfig( const std::string& json_file );
 
-std::vector<Draw::Correlation>
+std::vector<Draw::CorrelationConfig>
 GetCorrelationConfigs( const std::string& json_file,
                       const std::string& branch_name="correlations" );
 
-Draw::Style GetStyleConfig( const std::string& json_file );
+Draw::StyleConfig GetStyleConfig( const std::string& json_file );
 
 }
 
