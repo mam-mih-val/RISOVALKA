@@ -14,6 +14,7 @@
 #include <THStack.h>
 #include <TGraph.h>
 #include <TH1F.h>
+#include <TProfile.h>
 #include <TH2F.h>
 #include <TLegend.h>
 
@@ -63,8 +64,10 @@ struct CorrelationConfig {
   std::vector<std::string> names;
   std::string title;
   std::vector<Qn::AxisD> selection_axes;
+  std::vector<Qn::AxisD> rebin_axes;
   std::string projection_axis;
   double scale{1.0};
+  bool is_line{false};
   int color;
   int marker;
 };
@@ -79,6 +82,7 @@ struct Histogram1DConfig {
   std::string file;
   std::string name;
   std::string title;
+  double scale;
   int color;
   int marker;
 };
@@ -90,6 +94,10 @@ struct Histogram2DConfig {
 };
 
 void DrawHistogram2D( const PictureConfig &picture_config, const Histogram2DConfig & histo );
+
+void DrawHistograms1D( const PictureConfig &picture_config,
+                      const std::vector<Histogram1DConfig>&histogram_configs,
+                      const std::vector<Histogram1DConfig>&profile_configs );
 
 void Draw1D( const PictureConfig &picture_config, const std::vector<CorrelationConfig>&correlation_configs,
             const std::vector<GraphConfig>&graph_configs, const std::vector<Histogram1DConfig>&histogram_configs);

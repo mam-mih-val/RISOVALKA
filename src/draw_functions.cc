@@ -57,6 +57,79 @@ void DrawHistogram2D( const PictureConfig &picture_config, const Histogram2DConf
   canvas->SaveAs(picture_config.save_name.c_str());
 };
 
+void DrawHistograms1D(const PictureConfig &picture_config,
+                      const std::vector<Histogram1DConfig>&histogram_configs,
+                      const std::vector<Histogram1DConfig>&profile_configs){
+  auto canvas = new TCanvas("canv", "", picture_config.resolution.at(0),
+                            picture_config.resolution.at(1));
+  auto histo_stack = new THStack( "histograms", "" );
+  TLegend* legend;
+  try{
+    legend = new TLegend(picture_config.legend_position.at(0), picture_config.legend_position.at(1),
+                         picture_config.legend_position.at(2), picture_config.legend_position.at(3));
+  } catch (std::out_of_range&) {
+    legend = new TLegend();
+  }
+  try{
+    std::string stack_title = ";" + picture_config.axes_titles.at(0) + ";" +
+                              picture_config.axes_titles.at(1);
+    histo_stack->SetTitle(stack_title.c_str());
+  } catch (std::exception&) {}
+  TH1* histo1d{nullptr};
+  for( const auto &histo_config : histogram_configs ){
+    FileManager::Open(histo_config.file);
+    histo1d = FileManager::GetObject<TH1>(histo_config.name );
+    histo1d->Scale(histo_config.scale);
+    histo1d->SetTitle(histo_config.title.c_str());
+    histo1d->SetMarkerStyle(histo_config.marker);
+    histo1d->SetMarkerColor(histo_config.color);
+    histo1d->SetLineColor(histo_config.color);
+    histo1d->SetMarkerSize( gStyle->GetMarkerSize() );
+    histo1d->SetLineWidth( gStyle->GetLineWidth() );
+    histo_stack->Add(histo1d);
+    legend->AddEntry(histo1d, histo1d->GetTitle(), "P");
+  }
+  TProfile* profile{nullptr};
+  for( const auto &histo_config : profile_configs ){
+    FileManager::Open(histo_config.file);
+    profile = FileManager::GetObject<TProfile>(histo_config.name );
+    profile->Scale(histo_config.scale);
+    profile->SetTitle(histo_config.title.c_str());
+    profile->SetMarkerStyle(histo_config.marker);
+    profile->SetMarkerColor(histo_config.color);
+    profile->SetLineColor(histo_config.color);
+    profile->SetMarkerSize( gStyle->GetMarkerSize() );
+    profile->SetLineWidth( gStyle->GetLineWidth() );
+    histo_stack->Add(profile);
+    legend->AddEntry(profile, profile->GetTitle(), "P");
+  }
+  canvas->cd();
+  histo_stack->Draw();
+  histo_stack->GetYaxis()->SetRangeUser(picture_config.y_axis_range.at(0),
+                                        picture_config.y_axis_range.at(1));
+  histo_stack->GetXaxis()->SetRangeUser(picture_config.x_axis_range.at(0),
+                                        picture_config.x_axis_range.at(1));
+//  histo_stack->Draw("E1+X0");
+  histo_stack->Draw();
+  legend->Draw("same");
+  TLatex* text{nullptr};
+  for( size_t i=0; i<std::size(picture_config.texts); ++i ) {
+    try {
+      text = new TLatex(picture_config.text_positions.at(i).at(0),
+                        picture_config.text_positions.at(i).at(1),
+                        picture_config.texts.at(i).c_str());
+      text->SetNDC();
+      text->SetTextSize(picture_config.text_sizes.at(i));
+      text->SetLineWidth(1);
+      text->SetTextColor(kBlack);
+      text->Draw("same");
+    } catch (std::out_of_range&) {
+      std::cout << "TLatex position set incorrect" << std::endl;
+    }
+  }
+  canvas->SaveAs(picture_config.save_name.c_str());
+}
+
 void Draw1D( const PictureConfig &picture_config, const std::vector<CorrelationConfig>&correlation_configs,
             const std::vector<GraphConfig>&graph_configs, const std::vector<Histogram1DConfig>&histogram_configs){
   auto canvas = new TCanvas("canv", "", picture_config.resolution.at(0), picture_config.resolution.at(1));
@@ -67,7 +140,14 @@ void Draw1D( const PictureConfig &picture_config, const std::vector<CorrelationC
   }catch (const std::exception&) {}
   auto* graph_stack = new TMultiGraph("graphs", axes_title.c_str());
   auto* histo_stack = new THStack( "histo", "" );
-  TFile* save_points_file;
+  TLegend* legend;
+  try{
+    legend = new TLegend(picture_config.legend_position.at(0), picture_config.legend_position.at(1),
+                         picture_config.legend_position.at(2), picture_config.legend_position.at(3));
+  } catch (std::out_of_range&) {
+    legend = new TLegend();
+  }
+  TFile* save_points_file{nullptr};
   if( picture_config.save_points ){
     save_points_file = TFile::Open( std::data(picture_config.save_name+".root"), "recreate" );
     save_points_file->cd();
@@ -84,6 +164,8 @@ void Draw1D( const PictureConfig &picture_config, const std::vector<CorrelationC
         container =
             *(FileManager::GetObject<Qn::DataContainerStatCalculate>(name));
       }
+      for (const auto &axis : config.rebin_axes)
+        container = container.Rebin(axis);
       for (const auto &axis : config.selection_axes)
         container = container.Select(axis);
       if( !std::empty(config.projection_axis) )
@@ -102,8 +184,14 @@ void Draw1D( const PictureConfig &picture_config, const std::vector<CorrelationC
     graph->SetMarkerColor(config.color);
     if( save_points_file )
       graph->Write( config.title.c_str() );
+    if( config.is_line ) {
+      graph_stack->Add(graph, "L");
+      legend->AddEntry(graph, graph->GetTitle(), "L");
+      continue;
+    }
     graph->SetMarkerStyle(config.marker);
     graph_stack->Add(graph);
+    legend->AddEntry(graph, graph->GetTitle(), "P");
   }
   if( save_points_file )
     save_points_file->Close();
@@ -136,13 +224,14 @@ void Draw1D( const PictureConfig &picture_config, const std::vector<CorrelationC
     std::cout << "X axis range is set automatically" << std::endl;
   }
   histo_stack->Draw("same");
-  try{
-    gPad->BuildLegend(picture_config.legend_position.at(0), picture_config.legend_position.at(1),
-                      picture_config.legend_position.at(2), picture_config.legend_position.at(3),
-                      "", "P");
-  } catch (std::out_of_range&) {
-    gPad->BuildLegend();
-  }
+  legend->Draw();
+//  try{
+//    gPad->BuildLegend(picture_config.legend_position.at(0), picture_config.legend_position.at(1),
+//                      picture_config.legend_position.at(2), picture_config.legend_position.at(3),
+//                      "", "P");
+//  } catch (std::out_of_range&) {
+//    gPad->BuildLegend();
+//  }
   auto line_zero = new TF1( "line", "0", -100, 100 );
   line_zero->Draw("same");
   TLatex* text{nullptr};
@@ -352,17 +441,17 @@ void SetStyle(const StyleConfig & style){
   gStyle->SetTitleSize(style.title_size.at(1), "Y");
   gStyle->SetTitleSize(style.title_size.at(2), "Z");
 
-//  gStyle->SetLabelSize(style.label_size.at(0), "X");
-//  gStyle->SetLabelSize(style.label_size.at(1), "Y");
-//  gStyle->SetLabelSize(style.label_size.at(2), "Z");
-//
-//  gStyle->SetLabelOffset(style.label_offset.at(0), "X");
-//  gStyle->SetLabelOffset(style.label_offset.at(1), "Y");
-//  gStyle->SetLabelOffset(style.label_offset.at(2), "Z");
+  gStyle->SetLabelSize(style.label_size.at(0), "X");
+  gStyle->SetLabelSize(style.label_size.at(1), "Y");
+  gStyle->SetLabelSize(style.label_size.at(2), "Z");
 
-//  gStyle->SetTitleOffset(style.title_offset.at(0), "X");
-//  gStyle->SetTitleOffset(style.title_offset.at(1), "Y");
-//  gStyle->SetTitleOffset(style.title_offset.at(2), "Z");
+  gStyle->SetLabelOffset(style.label_offset.at(0), "X");
+  gStyle->SetLabelOffset(style.label_offset.at(1), "Y");
+  gStyle->SetLabelOffset(style.label_offset.at(2), "Z");
+
+  gStyle->SetTitleOffset(style.title_offset.at(0), "X");
+  gStyle->SetTitleOffset(style.title_offset.at(1), "Y");
+  gStyle->SetTitleOffset(style.title_offset.at(2), "Z");
 
   gStyle->SetOptStat(0);
 };

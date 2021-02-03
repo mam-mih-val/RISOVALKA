@@ -151,10 +151,22 @@ GetCorrelationConfigs( const std::string& json_file, const std::string& branch_n
                                                         up_bin);
       }
     }catch (const std::exception& e) {}
+    try {
+      auto rebin_config = correlation_config.get_child("rebin axes");
+      for (const auto &axis : rebin_config) {
+        auto title = axis.second.get<std::string>("name");
+        auto n_bins = axis.second.get<int>("n bins");
+        auto low_bin = axis.second.get<double>("low bin");
+        auto up_bin = axis.second.get<double>("up bin");
+        correlations.back().rebin_axes.emplace_back(title, n_bins, low_bin,
+                                                        up_bin);
+      }
+    }catch (const std::exception& e) {}
     correlations.back().scale = correlation_config.get<double>("scale", 1.0);
     correlations.back().projection_axis = correlation_config.get<std::string>("projection axis", "");
-    correlations.back().marker = MarkerConstants::MARKERS.at(correlation_config.get<std::string>("marker"));
-    correlations.back().color = MarkerConstants::COLORS.at(correlation_config.get<std::string>("color"));
+    correlations.back().is_line = correlation_config.get<bool>("is line", false);
+    correlations.back().marker = MarkerConstants::MARKERS.at(correlation_config.get<std::string>("marker", "open circle"));
+    correlations.back().color = MarkerConstants::COLORS.at(correlation_config.get<std::string>("color", "black"));
   }
   return correlations;
 };
@@ -204,6 +216,31 @@ Draw::StyleConfig GetStyleConfig( const std::string& json_file ){
   }catch (std::exception&) {}
 
   return style_config;
+}
+
+std::vector<Draw::Histogram1DConfig> GetHistogram1DConfig( const std::string& json_file,
+                                                           const std::string& branch_name ){
+  boost::property_tree::ptree config;
+  try {
+    boost::property_tree::read_json(json_file, config);
+  } catch( const std::exception& e  ){
+    std::cout << "JsonConfig::GetCorrelationConfigs()" << std::endl;
+    throw e;
+  }
+  std::vector<Draw::Histogram1DConfig> histograms;
+  auto corr_config = config.get_child(branch_name);
+  for( const auto& conf : corr_config ){
+    auto correlation_config = conf.second;
+    histograms.emplace_back();
+    histograms.back().name = correlation_config.get<std::string>("name");
+    histograms.back().title = correlation_config.get<std::string>("title", "");
+    histograms.back().file = correlation_config.get<std::string>("file");
+
+    histograms.back().scale = correlation_config.get<double>("scale", 1.0);
+    histograms.back().marker = MarkerConstants::MARKERS.at(correlation_config.get<std::string>("marker"));
+    histograms.back().color = MarkerConstants::COLORS.at(correlation_config.get<std::string>("color"));
+  }
+  return histograms;
 }
 
 }

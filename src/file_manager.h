@@ -15,7 +15,7 @@ public:
   [[nodiscard]] static T* GetObject(const std::string& name){
     if(!Instance()->file_)
       throw std::runtime_error( "FileManager::GetObject(): file is not specified" );
-    T* obj;
+    T* obj{nullptr};
     Instance()->file_->GetObject(name.data(), obj);
     if( !obj ) {
       std::string error;
