@@ -31,7 +31,37 @@ include_directories(
         ${CMAKE_SOURCE_DIR}
         ${Base_INCLUDE_DIR}
         ${Boost_INCLUDE_DIRS}
+        ${QnTools_INCLUDE_DIR}
 )
 
 add_executable(draw src/main.cc src/draw_functions.cc  src/json_reader.cc src/file_manager.cc)
 target_link_libraries(draw QnTools::Base ${ROOT_LIBRARIES} ${Boost_LIBRARIES} )
+#
+#set(SOURCES
+#        draw/drawable_object.cc
+#        draw/graph.cc
+#        draw/histogram_1_d.cc
+#        draw/correlation.cc
+#        draw/picture.cc)
+#set(HEADERS
+#        draw/drawable_object.h
+#        draw/graph.h
+#        draw/histogram_1_d.h
+#        draw/correlation.h
+#        draw/picture.h)
+#
+#set(PCM_FILE_NAME libDraw)
+#message(STATUS "QnTools include ${QnTools_INCLUDE_DIR}")
+#ROOT_GENERATE_DICTIONARY( G__Draw ${HEADERS}
+#        LINKDEF
+#        draw/DrawLinkDef.h
+#        OPTIONS
+##        -s ${PCM_FILE_NAME}
+#        -I ${QnTools_INCLUDE_DIR}/QnTools
+#        -I ${CMAKE_SOURCE_DIR}
+#        )
+#add_library(Draw SHARED ${SOURCES} G__Draw.cxx )
+#target_link_libraries(Draw PRIVATE QnTools::Base ${ROOT_LIBRARIES})
+#
+#add_executable(draw_picture draw/draw_picture.cc)
+#target_link_libraries(draw QnTools::Base ${ROOT_LIBRARIES} Draw )
