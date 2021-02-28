@@ -11,7 +11,7 @@
 namespace MarkerConstants{
 const std::map<std::string, int> COLORS{
     {"red", kRed},
-    {"orange", kOrange},
+    {"orange", kOrange+1},
     {"yellow", kYellow},
     {"green", kGreen+2},
     {"blue", kBlue},
@@ -19,6 +19,7 @@ const std::map<std::string, int> COLORS{
     {"violet", kViolet},
     {"black", kBlack},
     {"magenta", kMagenta},
+    {"cyan", kCyan+1},
 };
 const std::map<std::string, int> MARKERS{
     {"open circle", kOpenCircle},
