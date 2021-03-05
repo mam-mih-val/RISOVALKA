@@ -37,12 +37,16 @@ int main(int n_args, char** args){
     auto correlation_configs =
         JsonConfig::GetCorrelationConfigs(input_config, "correlations");
     std::vector<Draw::CorrelationConfig> ref_correlation_configs;
+    std::vector<Draw::GraphConfig> graphs_config;
+    try {
+      graphs_config = JsonConfig::GetGraphConfig(input_config, "graphs");
+    }catch (const std::exception&) {}
     try {
       ref_correlation_configs =
           JsonConfig::GetCorrelationConfigs(input_config, "reference");
     } catch (const std::exception&) {}
     if (std::empty(ref_correlation_configs))
-      Draw::Draw1D(picture_config, correlation_configs, {}, {});
+      Draw::Draw1D(picture_config, correlation_configs, graphs_config, {});
     else
       Draw::CompareCorrelations(picture_config, ref_correlation_configs,
                                 correlation_configs);

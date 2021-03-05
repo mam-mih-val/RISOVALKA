@@ -165,6 +165,7 @@ GetCorrelationConfigs( const std::string& json_file, const std::string& branch_n
     correlations.back().scale = correlation_config.get<double>("scale", 1.0);
     correlations.back().projection_axis = correlation_config.get<std::string>("projection axis", "");
     correlations.back().is_line = correlation_config.get<bool>("is line", false);
+    correlations.back().is_in_legend = correlation_config.get<bool>("add to legend", true);
     correlations.back().marker = MarkerConstants::MARKERS.at(correlation_config.get<std::string>("marker", "open circle"));
     correlations.back().color = MarkerConstants::COLORS.at(correlation_config.get<std::string>("color", "black"));
   }
@@ -241,6 +242,28 @@ std::vector<Draw::Histogram1DConfig> GetHistogram1DConfig( const std::string& js
     histograms.back().color = MarkerConstants::COLORS.at(correlation_config.get<std::string>("color"));
   }
   return histograms;
+}
+std::vector<Draw::GraphConfig> GetGraphConfig(const std::string &json_file,
+                                              const std::string &branch_name) {
+  boost::property_tree::ptree config;
+  try {
+    boost::property_tree::read_json(json_file, config);
+  } catch( const std::exception& e  ){
+    std::cout << "JsonConfig::GetCorrelationConfigs()" << std::endl;
+    throw e;
+  }
+  std::vector<Draw::GraphConfig> graphs;
+  auto corr_config = config.get_child(branch_name);
+  for( const auto& conf : corr_config ){
+    auto correlation_config = conf.second;
+    graphs.emplace_back();
+    graphs.back().name = correlation_config.get<std::string>("name");
+    graphs.back().title = correlation_config.get<std::string>("title", "");
+    graphs.back().file = correlation_config.get<std::string>("file");
+    graphs.back().marker = MarkerConstants::MARKERS.at(correlation_config.get<std::string>("marker"));
+    graphs.back().color = MarkerConstants::COLORS.at(correlation_config.get<std::string>("color"));
+  }
+  return graphs;
 }
 
 }

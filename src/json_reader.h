@@ -18,6 +18,9 @@ Draw::Histogram2DConfig GetHistogram2DConfig( const std::string& json_file );
 std::vector<Draw::Histogram1DConfig> GetHistogram1DConfig( const std::string& json_file,
                                                            const std::string& branch_name="histograms");
 
+std::vector<Draw::GraphConfig> GetGraphConfig( const std::string& json_file,
+                                               const std::string& branch_name="histograms");
+
 std::vector<Draw::CorrelationConfig>
 GetCorrelationConfigs( const std::string& json_file,
                       const std::string& branch_name="correlations" );

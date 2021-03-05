@@ -68,6 +68,7 @@ struct CorrelationConfig {
   std::string projection_axis;
   double scale{1.0};
   bool is_line{false};
+  bool is_in_legend{true};
   int color;
   int marker;
 };

@@ -186,12 +186,14 @@ void Draw1D( const PictureConfig &picture_config, const std::vector<CorrelationC
       graph->Write( config.title.c_str() );
     if( config.is_line ) {
       graph_stack->Add(graph, "L");
-      legend->AddEntry(graph, graph->GetTitle(), "L");
+      if( config.is_in_legend )
+        legend->AddEntry(graph, graph->GetTitle(), "L");
       continue;
     }
     graph->SetMarkerStyle(config.marker);
     graph_stack->Add(graph);
-    legend->AddEntry(graph, graph->GetTitle(), "P");
+    if( config.is_in_legend )
+      legend->AddEntry(graph, graph->GetTitle(), "P");
   }
   if( save_points_file )
     save_points_file->Close();
@@ -202,7 +204,8 @@ void Draw1D( const PictureConfig &picture_config, const std::vector<CorrelationC
     graph->SetLineColor(config.color);
     graph->SetMarkerColor(config.color);
     graph->SetMarkerStyle(config.marker);
-    graph_stack->Add(graph);
+    graph_stack->Add(graph, "P");
+    legend->AddEntry(graph, graph->GetTitle(), "P");
   }
   for( const auto& config : histogram_configs){
     FileManager::Open(config.file);
