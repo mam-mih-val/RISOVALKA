@@ -5,17 +5,21 @@
 #ifndef FLOW_DRAWING_TOOLS_SRC_CORRELATION_H_
 #define FLOW_DRAWING_TOOLS_SRC_CORRELATION_H_
 
+#include "drawable_object.hpp"
 #include <DataContainer.hpp>
 #include <utility>
-#include "drawable_object.h"
 
 class Correlation : public DrawableObject {
 public:
+  Correlation() = default;
   Correlation(const std::string &file_name,
               const std::vector<std::string> &objects,
               const std::string &title);
   ~Correlation() override;
-  TGraphErrors *GetPoints() override;
+  void RefreshPoints() override {
+    points_ = Qn::ToTGraph( correlation_ );
+    this->SetMarkerStyle();
+  }
   Qn::DataContainerStatCalculate &GetCorrelation() {
     return correlation_;
   }

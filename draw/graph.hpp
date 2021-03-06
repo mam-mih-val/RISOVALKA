@@ -5,15 +5,15 @@
 #ifndef FLOW_DRAWING_TOOLS_SRC_GRAPH_H_
 #define FLOW_DRAWING_TOOLS_SRC_GRAPH_H_
 
-#include "drawable_object.h"
+#include "drawable_object.hpp"
 
 class Graph : public DrawableObject {
 public:
+  Graph() = default;
   Graph(const std::string &file_name, const std::vector<std::string> &objects,
         const std::string &title);
-
   ~Graph() override;
-  virtual TGraphErrors *GetPoints() override;
+  void RefreshPoints() override;
   ClassDefOverride(Graph, 1)
 };
 

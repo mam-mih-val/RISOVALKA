@@ -2,7 +2,8 @@
 // Created by mikhail on 2/28/21.
 //
 
-#include "graph.h"
+#include "graph.hpp"
+ClassImp(Graph);
 
 Graph::Graph(const std::string &file_name,
              const std::vector<std::string> &objects, const std::string &title)
@@ -33,5 +34,5 @@ Graph::Graph(const std::string &file_name,
   }
   this->SetMarkerStyle();
 }
-TGraphErrors *Graph::GetPoints() { return DrawableObject::GetPoints(); }
+void Graph::RefreshPoints() { DrawableObject::RefreshPoints(); }
 Graph::~Graph() {}

@@ -2,7 +2,8 @@
 // Created by mikhail on 2/28/21.
 //
 
-#include "histogram_1_d.h"
+#include "histogram_1_d.hpp"
+ClassImp(Histogram1D);
 
 Histogram1D::Histogram1D(const std::string &file_name,
                          const std::vector<std::string> &objects,
@@ -19,10 +20,12 @@ Histogram1D::Histogram1D(const std::string &file_name,
   histogram_->Scale( 1.0 / (double) histograms.size() );
 
 }
-TGraphErrors *Histogram1D::GetPoints() {
-  if( points_ )
-    return points_;
-  points_ = new TGraphErrors( histogram_->GetNbinsX() );
+
+Histogram1D::~Histogram1D() {}
+
+void Histogram1D::RefreshPoints() {
+  if( !points_ )
+    points_ = new TGraphErrors( histogram_->GetNbinsX() );
   for( int i=0; i<histogram_->GetNbinsX(); ++i ){
     auto x = histogram_->GetBinCenter(i+1);
     auto y = histogram_->GetBinContent(i+1);
@@ -31,6 +34,4 @@ TGraphErrors *Histogram1D::GetPoints() {
     points_->SetPointError(i, 0, y_err);
   }
   this->SetMarkerStyle();
-  return points_;
 }
-Histogram1D::~Histogram1D() {}

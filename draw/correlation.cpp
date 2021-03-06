@@ -2,7 +2,9 @@
 // Created by mikhail on 2/28/21.
 //
 
-#include "correlation.h"
+#include "correlation.hpp"
+ClassImp(Correlation);
+
 Correlation::Correlation(const std::string &file_name,
                          const std::vector<std::string> &objects,
                          const std::string &title)
@@ -23,10 +25,3 @@ Correlation::Correlation(const std::string &file_name,
   correlation_ = correlation_/ (double) conatiners.size();
 }
 Correlation::~Correlation() {}
-TGraphErrors *Correlation::GetPoints() {
-  if(points_)
-    return points_;
-  points_ = Qn::ToTGraph( correlation_ );
-  this->SetMarkerStyle();
-  return points_;
-}
