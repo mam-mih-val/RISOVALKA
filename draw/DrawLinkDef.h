@@ -14,5 +14,8 @@
 #pragma link C++ class Histogram1D;
 #pragma link C++ class Correlation;
 #pragma link C++ class Picture;
+#pragma link C++ class HeapPicture;
+#pragma link C++ class Ratio<Correlation>;
+#pragma link C++ class Ratio<Histogram1D>;
 
 #endif

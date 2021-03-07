@@ -2,7 +2,7 @@
 // Created by mikhail on 2/28/21.
 //
 
-#include "correlation.hpp"
+#include "correlation.h"
 ClassImp(Correlation);
 
 Correlation::Correlation(const std::string &file_name,
@@ -25,3 +25,16 @@ Correlation::Correlation(const std::string &file_name,
   correlation_ = correlation_/ (double) conatiners.size();
 }
 Correlation::~Correlation() {}
+
+Correlation operator/( const Correlation& num, const Correlation& den){
+  Correlation result;
+  result.title_ = num.title_+"_ratio";
+  result.marker_ = num.marker_;
+  result.color_ = num.color_;
+  auto num_container = num.correlation_;
+  auto den_container = den.correlation_;
+  auto res_container = num_container / den_container;
+  result.correlation_ = res_container;
+
+  return result;
+}

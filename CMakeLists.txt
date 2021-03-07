@@ -42,13 +42,17 @@ set(SOURCES
         draw/graph.cpp
         draw/histogram_1_d.cpp
         draw/correlation.cpp
-        draw/picture.cpp)
+        draw/picture.cpp
+        draw/heap_picture.cpp
+        draw/ratio.cpp)
 set(HEADERS
-        draw/drawable_object.hpp
-        draw/graph.hpp
-        draw/histogram_1_d.hpp
-        draw/correlation.hpp
-        draw/picture.hpp)
+        draw/drawable_object.h
+        draw/graph.h
+        draw/histogram_1_d.h
+        draw/correlation.h
+        draw/picture.h
+        draw/heap_picture.h
+        draw/ratio.h)
 
 set(PCM_FILE_NAME libDraw)
 message(STATUS "QnTools include ${QnTools_INCLUDE_DIR}")
@@ -63,5 +67,5 @@ ROOT_GENERATE_DICTIONARY( G__Draw ${HEADERS}
 add_library(Draw SHARED ${SOURCES} G__Draw.cxx )
 target_link_libraries(Draw PRIVATE QnTools::Base ${ROOT_LIBRARIES})
 
-add_executable(draw draw/draw_picture.cpp)
-target_link_libraries(draw QnTools::Base ${ROOT_LIBRARIES} Draw )
+add_executable(draw_picture draw/draw_picture.cpp)
+target_link_libraries(draw_picture QnTools::Base ${ROOT_LIBRARIES} Draw )

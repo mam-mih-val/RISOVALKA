@@ -20,6 +20,7 @@ public:
                  std::string title)
       : file_name_(std::move(file_name)), objects_(std::move(objects)), title_(std::move(title)) {}
   virtual ~DrawableObject() = default;
+  int GetColor() const { return color_; }
   void Fit( TF1* function ){
     if(!points_)
       this->RefreshPoints();
@@ -56,13 +57,12 @@ protected:
   void SetMarkerStyle();
   std::string file_name_;
   std::vector<std::string> objects_;
-  std::string title_;
   int color_{kBlack};
   int marker_{kFullCircle};
   TF1* fit_{};
   TFile* file_{};
   TGraphErrors* points_{nullptr};
-  ClassDef(DrawableObject, 1)
+  ClassDef(DrawableObject, 1) std::string title_;
 };
 
 #endif // FLOW_DRAWING_TOOLS_SRC_DRAWABLE_OBJECT_H_

@@ -5,7 +5,7 @@
 #ifndef FLOW_DRAWING_TOOLS_SRC_GRAPH_H_
 #define FLOW_DRAWING_TOOLS_SRC_GRAPH_H_
 
-#include "drawable_object.hpp"
+#include "drawable_object.h"
 
 class Graph : public DrawableObject {
 public:

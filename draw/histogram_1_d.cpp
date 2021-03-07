@@ -2,7 +2,7 @@
 // Created by mikhail on 2/28/21.
 //
 
-#include "histogram_1_d.hpp"
+#include "histogram_1_d.h"
 ClassImp(Histogram1D);
 
 Histogram1D::Histogram1D(const std::string &file_name,
@@ -34,4 +34,17 @@ void Histogram1D::RefreshPoints() {
     points_->SetPointError(i, 0, y_err);
   }
   this->SetMarkerStyle();
+}
+
+Histogram1D operator/( const Histogram1D& num, const Histogram1D& den){
+  Histogram1D result;
+  result.title_ = num.title_+"_ratio";
+  result.marker_ = num.marker_;
+  result.color_ = num.color_;
+  auto num_histo = num.histogram_;
+  auto den_histo = den.histogram_;
+  auto res_histo = dynamic_cast<TH1F*>(num_histo->Clone( result.title_.c_str() ));
+  res_histo->Divide( den_histo );
+  result.histogram_ = res_histo;
+  return result;
 }

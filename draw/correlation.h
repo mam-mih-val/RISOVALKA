@@ -5,7 +5,7 @@
 #ifndef FLOW_DRAWING_TOOLS_SRC_CORRELATION_H_
 #define FLOW_DRAWING_TOOLS_SRC_CORRELATION_H_
 
-#include "drawable_object.hpp"
+#include "drawable_object.h"
 #include <DataContainer.hpp>
 #include <utility>
 
@@ -34,10 +34,11 @@ public:
   void Project(std::vector<std::string> axes){
     correlation_ = correlation_.Projection(std::move(axes));
   }
-
+  friend Correlation operator/( const Correlation& num, const Correlation& den);
 protected:
   Qn::DataContainerStatCalculate correlation_;
   ClassDefOverride(Correlation, 1)
 };
+
 
 #endif // FLOW_DRAWING_TOOLS_SRC_CORRELATION_H_

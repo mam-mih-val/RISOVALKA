@@ -5,6 +5,7 @@
 gStyle->SetPadLeftMargin(0.15);
 gStyle->SetPadRightMargin(0.05);
 gStyle->SetPadBottomMargin(0.1);
+gStyle->SetPadTopMargin(0.05);
 gStyle->SetLegendBorderSize(0);
 gStyle->SetFrameLineWidth(4);
 gStyle->SetMarkerSize(2);
