@@ -22,8 +22,7 @@ public:
   virtual ~DrawableObject() = default;
   int GetColor() const { return color_; }
   void Fit( TF1* function ){
-    if(!points_)
-      this->RefreshPoints();
+    this->RefreshPoints();
     points_->Fit(function);
     fit_ = dynamic_cast<TF1*>( points_->GetListOfFunctions()->At(0));
     fit_->SetLineColor(color_);

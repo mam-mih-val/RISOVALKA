@@ -34,6 +34,7 @@ public:
   void Project(std::vector<std::string> axes){
     correlation_ = correlation_.Projection(std::move(axes));
   }
+  void Scale(double num){ correlation_ = correlation_*num; }
   friend Correlation operator/( const Correlation& num, const Correlation& den);
 protected:
   Qn::DataContainerStatCalculate correlation_;
