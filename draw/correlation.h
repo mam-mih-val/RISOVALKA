@@ -17,8 +17,23 @@ public:
               const std::string &title);
   ~Correlation() override;
   void RefreshPoints() override {
+    correlation_.SetErrors(Qn::StatCalculate::ErrorType::BOOTSTRAP);
     points_ = Qn::ToTGraph( correlation_ );
+    if( fit_ )
+      points_->Fit(fit_);
     this->SetMarkerStyle();
+    systematical_errors_ = Qn::ToTGraph( correlation_ );
+    if( sys_error_value_ > std::numeric_limits<float>::min() ) {
+      for (int i = 0; i < systematical_errors_->GetN(); ++i) {
+        auto y = systematical_errors_->GetPointY(i);
+        auto y_err = systematical_errors_->GetErrorY(i);
+        y_err = y * sys_error_value_;
+        systematical_errors_->SetPointError(i, 0, y_err);
+      }
+    }
+    systematical_errors_->SetLineColor( color_ );
+    systematical_errors_->SetFillColor( color_ );
+
   }
   Qn::DataContainerStatCalculate &GetCorrelation() {
     return correlation_;
@@ -36,8 +51,16 @@ public:
   }
   void Scale(double num){ correlation_ = correlation_*num; }
   friend Correlation operator/( const Correlation& num, const Correlation& den);
+  void SetSysErrorValue(float sys_error_value) {
+    sys_error_value_ = sys_error_value;
+  }
+  float GetSysErrorValue() const { return sys_error_value_; }
+  TGraphErrors *GetSystematicalErrors() const { return systematical_errors_; }
+
 protected:
   Qn::DataContainerStatCalculate correlation_;
+  float sys_error_value_{0.0};
+  TGraphErrors* systematical_errors_{nullptr};
   ClassDefOverride(Correlation, 1)
 };
 

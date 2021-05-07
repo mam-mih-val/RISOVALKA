@@ -41,13 +41,16 @@ public:
     auto save_name = name+"."+type;
     canvas_->SaveAs( save_name.c_str() );
   }
+  TF1 *GetZeroLine() const { return zero_line_; }
   void DrawZeroLine(bool draw_zero_line) {
     Picture::draw_zero_line = draw_zero_line;
   }
   void SetAutoLegend(bool auto_legend) { auto_legend_ = auto_legend; }
   void AddText( TLatex text, float size=0.04 ){ texts_.push_back(new TLatex(text)); text_sizes_.push_back(size); }
   void AddLegend( TLegend* legend ){ legends_.push_back( legend ); auto_legend_=false; }
-
+  void SetIsLogY(bool is_log_y) { Picture::is_log_y = is_log_y; }
+  void SetIsLogX(bool is_log_x) { Picture::is_log_x = is_log_x; }
+  void SetIsLogZ(bool is_log_z) { Picture::is_log_z = is_log_z; }
 
 protected:
   std::string name_;
@@ -62,6 +65,9 @@ protected:
   std::vector<TLatex*> texts_;
   std::vector<float> text_sizes_;
   std::vector<TLegend*> legends_;
+  bool is_log_y{false};
+  bool is_log_x{false};
+  bool is_log_z{false};
   bool auto_legend_{true};
   ClassDef(Picture, 1)
 };

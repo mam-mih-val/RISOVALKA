@@ -12,19 +12,26 @@ void HeapPicture::Draw() {
   }
   for( auto obj : drawable_objects_ ){
     if( obj->IsLine() ) {
-      stack_->Add(obj->GetPoints(), "L");
+      std::string opt{"L+" + obj->GetErrorOption()};
+      stack_->Add(obj->GetPoints(), opt.c_str());
       if( auto_legend_ )
         legends_.back()->AddEntry(obj->GetPoints(), obj->GetTitle().c_str(),"L");
     } else {
-      stack_->Add(obj->GetPoints(), "P");
+      std::string opt{"P+" + obj->GetErrorOption()};
+      stack_->Add(obj->GetPoints(), opt.c_str());
       if( auto_legend_ )
         legends_.back()->AddEntry(obj->GetPoints(), obj->GetTitle().c_str(),"P");
     }
   }
   canvas_->cd();
-  stack_->Draw("AP");
+  if( is_log_x )
+    gPad->SetLogx();
+  if( is_log_y )
+    gPad->SetLogy();
+  stack_->Draw("APL");
   if( x_range_.at(0) < x_range_.at(1) ) {
-    stack_->GetXaxis()->SetRangeUser(x_range_.at(0), x_range_.at(1));
+    stack_->GetXaxis()->SetLimits(x_range_.at(0), x_range_.at(1));
+    zero_line_->SetRange(x_range_.at(0), x_range_.at(1));
     stack_->Draw();
   }
   if( y_range_.at(0) < y_range_.at(1) ) {

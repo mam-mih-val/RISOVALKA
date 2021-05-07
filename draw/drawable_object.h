@@ -5,21 +5,22 @@
 #ifndef FLOW_DRAWING_TOOLS_SRC_DRAWABLE_OBJECT_H_
 #define FLOW_DRAWING_TOOLS_SRC_DRAWABLE_OBJECT_H_
 
-#include <TGraphErrors.h>
+#include "readable_object.h"
 #include <TF1.h>
 #include <TFile.h>
+#include <TGraphErrors.h>
 #include <TObject.h>
 
 #include <utility>
 
-class DrawableObject : public TObject {
+class DrawableObject : public ReadableObject {
 public:
   DrawableObject() = default;
-  DrawableObject(std::string file_name,
-                 std::vector<std::string> objects,
+  DrawableObject(const std::string &file_name,
+                 const std::vector<std::string> &objects,
                  std::string title)
-      : file_name_(std::move(file_name)), objects_(std::move(objects)), title_(std::move(title)) {}
-  virtual ~DrawableObject() = default;
+      : ReadableObject(file_name, objects), title_(std::move(title)) {}
+  ~DrawableObject() override = default;
   int GetColor() const { return color_; }
   void Fit( TF1* function ){
     this->RefreshPoints();
@@ -29,8 +30,7 @@ public:
   }
   virtual void RefreshPoints() {}
   TGraphErrors* GetPoints() {
-    if(!points_)
-      this->RefreshPoints();
+    this->RefreshPoints();
     return points_;
   }
   TF1 *GetFit() const { return fit_; }
@@ -38,30 +38,21 @@ public:
   bool IsLine(){ return marker_ < 0; }
   void SavePoints(){ points_->Write(); }
   std::string GetTitle() { return title_;}
+  void SetTitle(const std::string &title) { title_ = title; }
+  const std::string &GetErrorOption() const { return error_option_; }
+  void SetErrorOption(const std::string &error_option) {
+    error_option_ = error_option;
+  }
 
 protected:
-  template <typename T>
-  T* ReadObjectFromFile(const std::string& obj_name){
-    if( !file_ )
-      file_ = TFile::Open(file_name_.c_str() );
-    if (!file_)
-      throw std::runtime_error( "No such file "+ file_name_);
-    T* obj;
-    file_->GetObject( obj_name.c_str(), obj );
-    if( !obj )
-      throw std::runtime_error( "No such object "+obj_name+" in file "+
-                               file_name_);
-    return obj;
-  }
   void SetMarkerStyle();
-  std::string file_name_;
-  std::vector<std::string> objects_;
   int color_{kBlack};
   int marker_{kFullCircle};
   TF1* fit_{};
-  TFile* file_{};
   TGraphErrors* points_{nullptr};
-  ClassDef(DrawableObject, 1) std::string title_;
+  std::string error_option_{"E5"};
+  std::string title_;
+  ClassDefOverride(DrawableObject, 1)
 };
 
 #endif // FLOW_DRAWING_TOOLS_SRC_DRAWABLE_OBJECT_H_

@@ -9,12 +9,15 @@
 #pragma link off all global;
 #pragma link off all typedef;
 
+#pragma link C++ class ReadableObject;
 #pragma link C++ class DrawableObject;
 #pragma link C++ class Graph;
 #pragma link C++ class Histogram1D;
+#pragma link C++ class Histogram2D;
 #pragma link C++ class Correlation;
 #pragma link C++ class Picture;
 #pragma link C++ class HeapPicture;
+#pragma link C++ class dv1dy_container;
 #pragma link C++ class Ratio<Correlation>;
 #pragma link C++ class Ratio<Histogram1D>;
 

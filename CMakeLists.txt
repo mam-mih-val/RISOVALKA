@@ -38,21 +38,29 @@ include_directories(
 #target_link_libraries(draw QnTools::Base ${ROOT_LIBRARIES} ${Boost_LIBRARIES} )
 #
 set(SOURCES
+        draw/readable_object.cpp
         draw/drawable_object.cpp
         draw/graph.cpp
         draw/histogram_1_d.cpp
+        draw/histogram_2_d.cpp
         draw/correlation.cpp
         draw/picture.cpp
         draw/heap_picture.cpp
-        draw/ratio.cpp)
+        draw/ratio.cpp
+        draw/dv1dy_container.cpp
+        )
 set(HEADERS
+        draw/readable_object.h
         draw/drawable_object.h
         draw/graph.h
         draw/histogram_1_d.h
+        draw/histogram_2_d.h
         draw/correlation.h
         draw/picture.h
         draw/heap_picture.h
-        draw/ratio.h)
+        draw/ratio.h
+        draw/dv1dy_container.h
+        )
 
 set(PCM_FILE_NAME libDraw)
 message(STATUS "QnTools include ${QnTools_INCLUDE_DIR}")

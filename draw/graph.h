@@ -14,6 +14,7 @@ public:
         const std::string &title);
   ~Graph() override;
   void RefreshPoints() override;
+  void SetPoints( TGraphErrors* graph ){ points_ = graph; }
   ClassDefOverride(Graph, 1)
 };
 

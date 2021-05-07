@@ -20,6 +20,8 @@ public:
     ratio_stack_ = new TMultiGraph(stack_name.c_str(), "");
   }
   void AddObject( T* obj ){ objects_.push_back(obj); }
+  void AddDrawableObject( DrawableObject* obj ){ drawable_objects_.push_back(obj); }
+
   void SetRatioRange(const std::array<float, 2> &ratio_range) {
     ratio_range_ = ratio_range;
   }
@@ -58,6 +60,19 @@ public:
         ratio_stack_->Add(obj->GetPoints(), "P");
       }
     }
+    for( auto obj : drawable_objects_ ){
+      if( obj->IsLine() ) {
+        std::string opt{"L+" + obj->GetErrorOption()};
+        stack_->Add(obj->GetPoints(), opt.c_str());
+        if( auto_legend_ )
+          legends_.back()->AddEntry(obj->GetPoints(), obj->GetTitle().c_str(),"L");
+      } else {
+        std::string opt{"P+" + obj->GetErrorOption()};
+        stack_->Add(obj->GetPoints(), opt.c_str());
+        if( auto_legend_ )
+          legends_.back()->AddEntry(obj->GetPoints(), obj->GetTitle().c_str(),"P");
+      }
+    }
     auto result_pad = new TPad("result", "result", 0.0, 0.35, 1.0, 1.0);
     auto ratio_pad = new TPad("ratio", "ratio", 0.0, 0.0, 1.0, .35);
     auto ratio_pad_scale = 1.0/0.35-0.3;
@@ -66,7 +81,7 @@ public:
     result_pad->SetBottomMargin(0);
     stack_->Draw("AP");
     if( x_range_.at(0) < x_range_.at(1) ) {
-      stack_->GetXaxis()->SetRangeUser(x_range_.at(0), x_range_.at(1));
+      stack_->GetXaxis()->SetLimits(x_range_.at(0), x_range_.at(1));
       stack_->Draw();
     }
     if( y_range_.at(0) < y_range_.at(1) ) {
@@ -96,7 +111,11 @@ public:
     ratio_pad->SetBottomMargin(gStyle->GetPadBottomMargin()*ratio_pad_scale);
     ratio_stack_->Draw("AP");
     if( x_range_.at(0) < x_range_.at(1) ) {
-      ratio_stack_->GetXaxis()->SetRangeUser(x_range_.at(0), x_range_.at(1));
+      ratio_stack_->GetXaxis()->SetLimits(x_range_.at(0), x_range_.at(1));
+      ratio_stack_->Draw();
+    }
+    if( y_range_.at(0) < y_range_.at(1) ) {
+      ratio_stack_->GetYaxis()->SetRangeUser(y_range_.at(0), y_range_.at(1));
       ratio_stack_->Draw();
     }
     if( ratio_range_.at(0) != ratio_range_.at(1) ) {
@@ -138,6 +157,7 @@ protected:
   std::vector<T*> ratios_;
   std::array<float, 2> ratio_range_{};
   TMultiGraph* ratio_stack_;
+  std::vector<DrawableObject*> drawable_objects_;
   ClassDefOverride(Ratio, 1)
 };
 

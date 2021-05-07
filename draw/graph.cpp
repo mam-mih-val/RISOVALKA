@@ -3,6 +3,7 @@
 //
 
 #include "graph.h"
+#include <TGraphAsymmErrors.h>
 ClassImp(Graph);
 
 Graph::Graph(const std::string &file_name,
@@ -11,7 +12,11 @@ Graph::Graph(const std::string &file_name,
   std::vector<TGraphErrors*> graphs;
   graphs.reserve(objects.size());
   for( const auto& name : objects ){
-    graphs.push_back( this->ReadObjectFromFile<TGraphErrors>(name) );
+    try {
+      graphs.push_back(this->ReadObjectFromFile<TGraphErrors>(name));
+    } catch (std::exception) {
+      graphs.push_back((TGraphErrors*)this->ReadObjectFromFile<TGraphAsymmErrors>(name));
+    }
   }
   points_ = new TGraphErrors(graphs.front()->GetN() );
   for( int i=0; i < graphs.front()->GetN(); ++i ){

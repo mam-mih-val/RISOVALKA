@@ -16,6 +16,11 @@ public:
     assert(obj);
     drawable_objects_.push_back(obj);
   }
+  void AddDrawables( const std::vector<DrawableObject*>& objects ){
+    for( auto obj : objects ){
+      this->AddDrawable(obj);
+    }
+  }
   void SetAxisTitles(const std::vector<std::string> &axis_titles) override;
   void Draw() override;
 
