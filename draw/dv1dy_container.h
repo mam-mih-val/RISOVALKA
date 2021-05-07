@@ -53,6 +53,7 @@ public:
   void Project(std::vector<std::string> axes){
     correlation_ = correlation_.Projection(std::move(axes));
   }
+  void SetMarker(int marker) { marker_ = marker; }
   const std::vector<Graph *> &GetSlopes() const { return slopes_; }
   const std::vector<Graph *> &GetOffsets() const { return offsets_; }
   const std::vector<TGraphErrors *> &GetSlopeGraphs() const { return slope_graphs_; }
