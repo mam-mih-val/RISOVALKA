@@ -33,12 +33,14 @@ void dv1dy_container::Calculate( const Qn::AxisD& remaining_axis, const Qn::Axis
       auto proj = correlation_.Rebin( { name, 1, lo, hi } );
       proj = proj.Rebin({arg_name, 1, arg_lo, arg_hi});
       proj = proj.Projection( { rapidity_axis.Name() } );
+      proj.SetErrors(Qn::StatCalculate::ErrorType::BOOTSTRAP);
       projections_.push_back( Qn::ToTGraph( proj ) );
       graph_name = name+"_"+std::to_string(lo)+"-"+std::to_string(hi)+"_"+
           arg_name+"_"+std::to_string(arg_lo)+"-"+std::to_string(arg_hi);
       projections_.back()->SetName( graph_name.c_str() );
       graph_name="fit_"+graph_name;
-      auto fit = new TF1( graph_name.c_str(), "pol1", rapidity_axis.GetFirstBinEdge(), rapidity_axis.GetLastBinEdge() );
+      auto fit = new TF1( graph_name.c_str(), formula_.c_str(), rapidity_axis.GetFirstBinEdge(), rapidity_axis.GetLastBinEdge() );
+      fit->SetParameters( -0.05, 0.5 );
       projections_.back()->Fit(fit);
       auto slope = fit->GetParameter(1);
       auto slope_err = fit->GetParError(1);
@@ -95,10 +97,10 @@ void dv1dy_container::FillGraphs() {
     slopes_.push_back( new Graph );
     slopes_.back()->SetPoints( graph );
     slopes_.back()->SetTitle(graph->GetTitle());
-    slopes_.back()->SetStyle(colors.at(i), marker_);
+    slopes_.back()->SetStyle(colors.at(i), slope_marker_);
     graph->SetLineColor(colors.at(i));
     graph->SetMarkerColor(colors.at(i));
-    graph->SetMarkerColor(marker_);
+    graph->SetMarkerColor(slope_marker_);
     ++i;
   }
   i=0;
@@ -106,10 +108,10 @@ void dv1dy_container::FillGraphs() {
     offsets_.push_back( new Graph );
     offsets_.back()->SetPoints( graph );
     offsets_.back()->SetTitle(graph->GetTitle());
-    offsets_.back()->SetStyle(colors.at(i), marker_);
+    offsets_.back()->SetStyle(colors.at(i), offset_marker_);
     graph->SetLineColor(colors.at(i));
     graph->SetMarkerColor(colors.at(i));
-    graph->SetMarkerColor(marker_);
+    graph->SetMarkerColor(offset_marker_);
     ++i;
   }
 }

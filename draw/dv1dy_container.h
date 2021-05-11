@@ -53,7 +53,11 @@ public:
   void Project(std::vector<std::string> axes){
     correlation_ = correlation_.Projection(std::move(axes));
   }
-  void SetMarker(int marker) { marker_ = marker; }
+  void SetFormula(const std::string &formula) {
+    dv1dy_container::formula_ = formula;
+  }
+  void SetSlopeMarker(int marker) { slope_marker_ = marker; }
+  void SetOffsetMarker(int marker) { offset_marker_ = marker; }
   const std::vector<Graph *> &GetSlopes() const { return slopes_; }
   const std::vector<Graph *> &GetOffsets() const { return offsets_; }
   const std::vector<TGraphErrors *> &GetSlopeGraphs() const { return slope_graphs_; }
@@ -64,6 +68,7 @@ public:
 
 protected:
   void FillGraphs();
+  std::string formula_{"pol1"};
   Qn::DataContainerStatCalculate correlation_;
   std::vector<TGraphErrors*> projections_;
   std::vector<TGraphErrors*> slope_graphs_;
@@ -72,7 +77,8 @@ protected:
   std::string slice_variable_units_;
   std::vector<Graph*> slopes_;
   std::vector<Graph*> offsets_;
-  int marker_{kFullCircle};
+  int slope_marker_{kFullCircle};
+  int offset_marker_{kOpenCircle};
   std::vector<int> palette_{
       kPink,
       kMagenta+1,

@@ -18,6 +18,7 @@
 #pragma link C++ class Picture;
 #pragma link C++ class HeapPicture;
 #pragma link C++ class dv1dy_container;
+#pragma link C++ class DoubleDifferentialCorrelation;
 #pragma link C++ class Ratio<Correlation>;
 #pragma link C++ class Ratio<Histogram1D>;
 

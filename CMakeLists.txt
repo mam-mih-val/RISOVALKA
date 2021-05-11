@@ -48,6 +48,7 @@ set(SOURCES
         draw/heap_picture.cpp
         draw/ratio.cpp
         draw/dv1dy_container.cpp
+        draw/double_differential_correlation.cpp
         )
 set(HEADERS
         draw/readable_object.h
@@ -60,6 +61,7 @@ set(HEADERS
         draw/heap_picture.h
         draw/ratio.h
         draw/dv1dy_container.h
+        draw/double_differential_correlation.h
         )
 
 set(PCM_FILE_NAME libDraw)
