@@ -14,9 +14,9 @@ void dv1dy_container::Calculate( const Qn::AxisD& remaining_axis, const Qn::Axis
     auto hi = slice_axis.GetUpperBinEdge(slice_bin);
     slope_graphs_.push_back( new TGraphErrors( remaining_axis.size() ) );
     offset_graphs_.push_back( new TGraphErrors( remaining_axis.size() ) );
-    std::string graph_name{ "dv1dy_"+name+"_"+std::to_string(lo)+"-"+std::to_string(hi) };
+    std::string graph_name{ "dv1dy_"+name+"_"+std::to_string( (int) lo)+"_"+std::to_string((int)hi) };
     slope_graphs_.back()->SetName(graph_name.c_str());
-    graph_name = "offset_"+name+"_"+std::to_string(lo)+"-"+std::to_string(hi);
+    graph_name = "offset_"+name+"_"+std::to_string((int)lo)+"_"+std::to_string((int)hi);
     offset_graphs_.back()->SetName(graph_name.c_str());
     std::ostringstream stream_lo;
     stream_lo << std::setprecision(2) << lo;
@@ -35,8 +35,8 @@ void dv1dy_container::Calculate( const Qn::AxisD& remaining_axis, const Qn::Axis
       proj = proj.Projection( { rapidity_axis.Name() } );
       proj.SetErrors(Qn::StatCalculate::ErrorType::BOOTSTRAP);
       projections_.push_back( Qn::ToTGraph( proj ) );
-      graph_name = name+"_"+std::to_string(lo)+"-"+std::to_string(hi)+"_"+
-          arg_name+"_"+std::to_string(arg_lo)+"-"+std::to_string(arg_hi);
+      graph_name = name+"_"+std::to_string(lo)+"_"+std::to_string(hi)+"_"+
+          arg_name+"_"+std::to_string(arg_lo)+"_"+std::to_string(arg_hi);
       projections_.back()->SetName( graph_name.c_str() );
       graph_name="fit_"+graph_name;
       auto fit = new TF1( graph_name.c_str(), formula_.c_str(), rapidity_axis.GetFirstBinEdge(), rapidity_axis.GetLastBinEdge() );

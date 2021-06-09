@@ -36,7 +36,12 @@ public:
     auto save_name = name_+"."+type;
     canvas_->SaveAs( save_name.c_str() );
   }
-  void SaveAs( const std::string& name, const std::string& type ){
+  void SavePoints(const std::string& name, const std::string& type){
+    assert(stack_);
+    auto save_name = name+"."+type;
+    stack_->SaveAs( save_name.c_str() );
+  }
+  void Save( const std::string& name, const std::string& type ){
     assert(canvas_);
     auto save_name = name+"."+type;
     canvas_->SaveAs( save_name.c_str() );
@@ -48,9 +53,9 @@ public:
   void SetAutoLegend(bool auto_legend) { auto_legend_ = auto_legend; }
   void AddText( TLatex text, float size=0.04 ){ texts_.push_back(new TLatex(text)); text_sizes_.push_back(size); }
   void AddLegend( TLegend* legend ){ legends_.push_back( legend ); auto_legend_=false; }
-  void SetIsLogY(bool is_log_y) { Picture::is_log_y = is_log_y; }
-  void SetIsLogX(bool is_log_x) { Picture::is_log_x = is_log_x; }
-  void SetIsLogZ(bool is_log_z) { Picture::is_log_z = is_log_z; }
+  void SetLogY(bool is_log_y=true) { Picture::is_log_y = is_log_y; }
+  void SetLogX(bool is_log_x=true) { Picture::is_log_x = is_log_x; }
+  void SetLogZ(bool is_log_z=true) { Picture::is_log_z = is_log_z; }
 
 protected:
   std::string name_;

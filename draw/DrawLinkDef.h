@@ -16,6 +16,7 @@
 #pragma link C++ class Histogram2D;
 #pragma link C++ class Correlation;
 #pragma link C++ class Picture;
+#pragma link C++ class Picture2D;
 #pragma link C++ class HeapPicture;
 #pragma link C++ class dv1dy_container;
 #pragma link C++ class DoubleDifferentialCorrelation;

@@ -38,6 +38,9 @@ public:
   Qn::DataContainerStatCalculate &GetCorrelation() {
     return correlation_;
   }
+  void Scale( double scale ){
+    correlation_ = correlation_*scale;
+  }
   void Rebin( const std::vector<Qn::AxisD>& axes){
     for( const auto& axis : axes)
       correlation_ = correlation_.Rebin(axis);

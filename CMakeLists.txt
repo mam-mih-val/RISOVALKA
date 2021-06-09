@@ -45,6 +45,7 @@ set(SOURCES
         draw/histogram_2_d.cpp
         draw/correlation.cpp
         draw/picture.cpp
+        draw/picture_2_d.cpp
         draw/heap_picture.cpp
         draw/ratio.cpp
         draw/dv1dy_container.cpp
@@ -58,6 +59,7 @@ set(HEADERS
         draw/histogram_2_d.h
         draw/correlation.h
         draw/picture.h
+        draw/picture_2_d.h
         draw/heap_picture.h
         draw/ratio.h
         draw/dv1dy_container.h

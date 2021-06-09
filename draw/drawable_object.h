@@ -50,7 +50,7 @@ protected:
   int marker_{kFullCircle};
   TF1* fit_{};
   TGraphErrors* points_{nullptr};
-  std::string error_option_{"E5"};
+  std::string error_option_{"Z"};
   std::string title_;
   ClassDefOverride(DrawableObject, 1)
 };
