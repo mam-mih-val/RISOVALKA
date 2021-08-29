@@ -2,18 +2,24 @@
 // Created by mikhail on 2/28/21.
 //
 
+#include <TProfile.h>
 #include "histogram_1_d.h"
+
 ClassImp(Histogram1D);
 
 Histogram1D::Histogram1D(const std::string &file_name,
                          const std::vector<std::string> &objects,
                          const std::string &title)
     : DrawableObject(file_name, objects, title) {
-  std::vector<TH1F*> histograms;
+  std::vector<TH1*> histograms;
   for( const auto& name : objects ){
-    histograms.push_back( this->ReadObjectFromFile<TH1F>(name) );
+    try {
+      histograms.push_back(this->ReadObjectFromFile<TH1F>(name));
+    } catch (std::exception&) {
+      histograms.push_back(dynamic_cast<TH1*>(this->ReadObjectFromFile<TProfile>(name)));
+    }
   }
-  histogram_ = (TH1F*) histograms.front()->Clone();
+  histogram_ = (TH1*) histograms.front()->Clone();
   for (size_t i=1; i<histograms.size(); ++i) {
     histogram_->Add( histograms.at(i) );
   }

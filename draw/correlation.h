@@ -12,6 +12,7 @@
 class Correlation : public DrawableObject {
 public:
   Correlation() = default;
+  Correlation(Correlation const&) = default;
   Correlation(const std::string &file_name,
               const std::vector<std::string> &objects,
               const std::string &title);

@@ -61,9 +61,23 @@ public:
   }
   void SetSlopeMarker(int marker) { slope_marker_ = marker; }
   void SetOffsetMarker(int marker) { offset_marker_ = marker; }
+  void SetRelativeSysError(double relative_sys_error) {
+    relative_sys_error_ = relative_sys_error;
+  }
+  void SetXSysError(double x_sys_error) { x_sys_error_ = x_sys_error; }
+  void SetSystematicsVariationAxes(const std::vector<Qn::AxisD> &systematics_variation_axes) {
+    assert( systematics_variation_axes.size() == 2 );
+    systematics_variation_axes_ = systematics_variation_axes;
+  }
   const std::vector<Graph *> &GetSlopes() const { return slopes_; }
   const std::vector<Graph *> &GetOffsets() const { return offsets_; }
   const std::vector<TGraphErrors *> &GetSlopeGraphs() const { return slope_graphs_; }
+  const std::vector<TGraphErrors *> &GetSlopeSystematicsGraphs() const {
+    return slope_systematics_graphs_;
+  }
+  const std::vector<Graph *> &GetSlopesSystematics() const {
+    return slopes_systematics_;
+  }
   const std::vector<TGraphErrors *> &GetOffsetGraphs() const {return offset_graphs_;}
   void Calculate( const Qn::AxisD& remaining_axis, const Qn::AxisD& slice_axis, const Qn::AxisD& rapidity_axis );
   void SaveToFile( const std::string& file_name );
@@ -75,13 +89,18 @@ protected:
   Qn::DataContainerStatCalculate correlation_;
   std::vector<TGraphErrors*> projections_;
   std::vector<TGraphErrors*> slope_graphs_;
+  std::vector<TGraphErrors*> slope_systematics_graphs_;
   std::vector<TGraphErrors*> offset_graphs_;
   std::string slice_variable_name_;
   std::string slice_variable_units_;
   std::vector<Graph*> slopes_;
+  std::vector<Graph*> slopes_systematics_;
   std::vector<Graph*> offsets_;
   int slope_marker_{kFullCircle};
   int offset_marker_{kOpenCircle};
+  double relative_sys_error_{0.0};
+  double x_sys_error_{0.0};
+  std::vector<Qn::AxisD> systematics_variation_axes_;
   std::vector<int> palette_{
       kPink,
       kMagenta+1,

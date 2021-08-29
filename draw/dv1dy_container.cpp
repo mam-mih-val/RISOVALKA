@@ -13,9 +13,12 @@ void dv1dy_container::Calculate( const Qn::AxisD& remaining_axis, const Qn::Axis
     auto lo = slice_axis.GetLowerBinEdge(slice_bin);
     auto hi = slice_axis.GetUpperBinEdge(slice_bin);
     slope_graphs_.push_back( new TGraphErrors( remaining_axis.size() ) );
+    slope_systematics_graphs_.push_back( new TGraphErrors( remaining_axis.size() ) );
     offset_graphs_.push_back( new TGraphErrors( remaining_axis.size() ) );
     std::string graph_name{ "dv1dy_"+name+"_"+std::to_string( (int) lo)+"_"+std::to_string((int)hi) };
     slope_graphs_.back()->SetName(graph_name.c_str());
+    graph_name = "dv1dy_systematics_"+name+"_"+std::to_string( (int) lo)+"_"+std::to_string((int)hi);
+    slope_systematics_graphs_.back()->SetName(graph_name.c_str());
     graph_name = "offset_"+name+"_"+std::to_string((int)lo)+"_"+std::to_string((int)hi);
     offset_graphs_.back()->SetName(graph_name.c_str());
     std::ostringstream stream_lo;
@@ -39,15 +42,46 @@ void dv1dy_container::Calculate( const Qn::AxisD& remaining_axis, const Qn::Axis
           arg_name+"_"+std::to_string(arg_lo)+"_"+std::to_string(arg_hi);
       projections_.back()->SetName( graph_name.c_str() );
       graph_name="fit_"+graph_name;
+      double variation_err=0.0;
+      if( !systematics_variation_axes_.empty() ){
+        std::string left_name = "left_" + graph_name;
+        auto proj_left = correlation_.Rebin( { name, 1, lo, hi } );
+        proj_left = proj_left.Rebin(systematics_variation_axes_.at(0));
+        proj_left = proj_left.Projection( { systematics_variation_axes_.at(0).Name() } );
+        proj_left.SetErrors(Qn::StatCalculate::ErrorType::BOOTSTRAP);
+        auto proj_left_graph = Qn::ToTGraph( proj_left );
+        auto left_fit = new TF1(left_name.c_str(), formula_.c_str());
+        proj_left_graph->Fit( left_fit );
+        auto left_slope  = left_fit->GetParameter(1);
+
+        auto proj_right = correlation_.Rebin( { name, 1, lo, hi } );
+        proj_right = proj_right.Rebin(systematics_variation_axes_.at(1));
+        proj_right = proj_right.Projection( { systematics_variation_axes_.at(1).Name() } );
+        proj_right.SetErrors(Qn::StatCalculate::ErrorType::BOOTSTRAP);
+        auto proj_right_graph = Qn::ToTGraph( proj_right );
+        std::string right_name = "right_" + graph_name;
+        auto right_fit = new TF1(right_name.c_str(), formula_.c_str());
+        proj_right_graph->Fit( right_fit );
+        auto right_slope  = right_fit->GetParameter(1);
+
+        variation_err = fabs(left_slope -right_slope)/2.0;
+
+        delete right_fit;
+        delete proj_right_graph;
+        delete left_fit;
+        delete proj_left_graph;
+      }
       auto fit = new TF1( graph_name.c_str(), formula_.c_str(), rapidity_axis.GetFirstBinEdge(), rapidity_axis.GetLastBinEdge() );
-      fit->SetParameters( -0.05, 0.5 );
       projections_.back()->Fit(fit);
       auto slope = fit->GetParameter(1);
       auto slope_err = fit->GetParError(1);
       auto offset = fit->GetParameter(0);
       auto offset_err = fit->GetParError(0);
+      auto slope_sys_err = sqrt(pow(slope*relative_sys_error_, 2)+pow(variation_err, 2));
       slope_graphs_.back()->SetPoint( argument_bin, argument, slope );
       slope_graphs_.back()->SetPointError( argument_bin, 0, slope_err );
+      slope_systematics_graphs_.back()->SetPoint(argument_bin, argument, slope);
+      slope_systematics_graphs_.back()->SetPointError(argument_bin, x_sys_error_, slope_sys_err);
       offset_graphs_.back()->SetPoint( argument_bin, argument, offset );
       offset_graphs_.back()->SetPointError( argument_bin, 0, offset_err );
     }
@@ -77,12 +111,12 @@ void dv1dy_container::FillGraphs() {
   std::vector<int> colors;
   if( slope_graphs_.size() < palette_.size() ){
     auto bias = palette_.size() / slope_graphs_.size();
-    for( int i=0; i<slope_graphs_.size(); ++i )
+    for( size_t i=0; i<slope_graphs_.size(); ++i )
       colors.push_back(palette_.at(i*bias));
   }else{
     auto bias=0;
     auto position=0;
-    for( int i=0; i<slope_graphs_.size(); ++i ) {
+    for( size_t i=0; i<slope_graphs_.size(); ++i ) {
       if( i<palette_.size() ) {
         colors.push_back(palette_.at(position+bias));
         position++;
@@ -98,6 +132,17 @@ void dv1dy_container::FillGraphs() {
     slopes_.back()->SetPoints( graph );
     slopes_.back()->SetTitle(graph->GetTitle());
     slopes_.back()->SetStyle(colors.at(i), slope_marker_);
+    graph->SetLineColor(colors.at(i));
+    graph->SetMarkerColor(colors.at(i));
+    graph->SetMarkerColor(slope_marker_);
+    ++i;
+  }
+  i=0;
+  for( auto graph : slope_systematics_graphs_ ){
+    slopes_systematics_.push_back( new Graph );
+    slopes_systematics_.back()->SetPoints( graph );
+    slopes_systematics_.back()->SetTitle(graph->GetTitle());
+    slopes_systematics_.back()->SetStyle(colors.at(i), slope_marker_);
     graph->SetLineColor(colors.at(i));
     graph->SetMarkerColor(colors.at(i));
     graph->SetMarkerColor(slope_marker_);

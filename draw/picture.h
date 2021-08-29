@@ -53,6 +53,7 @@ public:
   void SetAutoLegend(bool auto_legend) { auto_legend_ = auto_legend; }
   void AddText( TLatex text, float size=0.04 ){ texts_.push_back(new TLatex(text)); text_sizes_.push_back(size); }
   void AddLegend( TLegend* legend ){ legends_.push_back( legend ); auto_legend_=false; }
+  void AddFunction( TF1* function ){ functions_.push_back(function); }
   void SetLogY(bool is_log_y=true) { Picture::is_log_y = is_log_y; }
   void SetLogX(bool is_log_x=true) { Picture::is_log_x = is_log_x; }
   void SetLogZ(bool is_log_z=true) { Picture::is_log_z = is_log_z; }
@@ -62,6 +63,7 @@ protected:
   std::array<int, 2> resolution_;
   TCanvas* canvas_;
   TMultiGraph* stack_;
+  std::vector<TF1*> functions_;
   std::vector<std::string> axis_titles_;
   TF1* zero_line_{nullptr};
   bool draw_zero_line{true};

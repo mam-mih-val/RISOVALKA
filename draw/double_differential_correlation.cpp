@@ -50,6 +50,7 @@ void DoubleDifferentialCorrelation::FillGraphs() {
     projections_.back()->SetPoints( graph );
     projections_.back()->SetTitle(graph->GetTitle());
     projections_.back()->SetStyle(colors.at(i), marker_);
+    projections_.back()->SetErrorOption(error_option_);
     graph->SetLineColor(colors.at(i));
     graph->SetMarkerColor(colors.at(i));
     graph->SetMarkerColor(marker_);
@@ -64,4 +65,8 @@ void DoubleDifferentialCorrelation::SaveToFile(const std::string &file_name) {
   file_out->cd("/");
   file_out->mkdir("slopes");
   file_out->cd("slopes");
+}
+void DoubleDifferentialCorrelation::SetErrorOption(
+    const std::string &error_option) {
+  error_option_ = error_option;
 }

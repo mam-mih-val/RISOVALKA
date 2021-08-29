@@ -3,6 +3,7 @@
 //
 
 #include "heap_picture.h"
+#include "TH1.h"
 ClassImp(HeapPicture)
 
 void HeapPicture::Draw() {
@@ -29,6 +30,26 @@ void HeapPicture::Draw() {
   if( is_log_y )
     gPad->SetLogy();
   stack_->Draw("APL");
+  if( drawable_objects_.empty() ) {
+    functions_.at(0)->Draw();
+    if( x_range_.at(0) < x_range_.at(1) ) {
+      functions_.at(0)->GetXaxis()->SetLimits(x_range_.at(0), x_range_.at(1));
+      zero_line_->SetRange(x_range_.at(0), x_range_.at(1));
+      functions_.at(0)->Draw();
+    }
+    if( y_range_.at(0) < y_range_.at(1) ) {
+      functions_.at(0)->GetYaxis()->SetRangeUser(y_range_.at(0), y_range_.at(1));
+      functions_.at(0)->Draw();
+    }
+    for( size_t i=1; i<functions_.size(); ++i ){
+      functions_.at(i)->Draw("same");
+    }
+  } else {
+    for (auto func : functions_) {
+      if (func)
+        func->Draw("same");
+    }
+  }
   if( x_range_.at(0) < x_range_.at(1) ) {
     stack_->GetXaxis()->SetLimits(x_range_.at(0), x_range_.at(1));
     zero_line_->SetRange(x_range_.at(0), x_range_.at(1));

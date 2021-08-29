@@ -50,6 +50,7 @@ set(SOURCES
         draw/ratio.cpp
         draw/dv1dy_container.cpp
         draw/double_differential_correlation.cpp
+        draw/multi_correlation.cpp
         )
 set(HEADERS
         draw/readable_object.h
@@ -64,6 +65,7 @@ set(HEADERS
         draw/ratio.h
         draw/dv1dy_container.h
         draw/double_differential_correlation.h
+        draw/multi_correlation.h
         )
 
 set(PCM_FILE_NAME libDraw)

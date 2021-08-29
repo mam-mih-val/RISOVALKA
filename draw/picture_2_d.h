@@ -20,6 +20,7 @@ public:
   SetAxisTitles(const std::vector<std::string> &axis_titles) override;
   void SetZRange(const std::array<float, 2> &z_range) { z_range_ = z_range; }
   virtual void Draw() override;
+  TH2F *GetHistogram() const { return histogram_; }
 
 protected:
   TH2F* histogram_{nullptr};

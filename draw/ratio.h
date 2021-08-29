@@ -152,7 +152,7 @@ public:
 
 
 protected:
-  T* reference_;
+  T* reference_{nullptr};
   std::vector<T*> objects_;
   std::vector<T*> ratios_;
   std::array<float, 2> ratio_range_{};

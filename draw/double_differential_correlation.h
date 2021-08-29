@@ -57,12 +57,13 @@ public:
   void SetProjectionAxis(const Qn::AxisD &projection_axis) {
     projection_axis_ = projection_axis;
   }
-  const std::vector<Graph *> &GetProjections() const { return projections_; }
+  [[nodiscard]] const std::vector<Graph *> &GetProjections() const { return projections_; }
   void SetSliceAxis(const Qn::AxisD &slice_axis) { slice_axis_ = slice_axis; }
   void SetMarker(int marker) { marker_ = marker; }
   void SetPalette(const std::vector<int> &palette) { palette_ = palette; }
   void Calculate();
   void SaveToFile( const std::string& file_name );
+  void SetErrorOption(const std::string &error_option);
 protected:
   void FillGraphs();
   Qn::DataContainerStatCalculate correlation_;
@@ -71,6 +72,7 @@ protected:
   std::vector<TGraphErrors*> projection_points_;
   std::string slice_variable_name_;
   std::string slice_variable_units_;
+  std::string error_option_;
   std::vector<Graph*> projections_;
   int marker_{kFullCircle};
   std::vector<int> palette_{

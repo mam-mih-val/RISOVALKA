@@ -25,8 +25,9 @@ public:
   void Fit( TF1* function ){
     this->RefreshPoints();
     points_->Fit(function);
-    fit_ = dynamic_cast<TF1*>( points_->GetListOfFunctions()->At(0));
-    fit_->SetLineColor(color_);
+    fit_ = dynamic_cast<TF1*>( points_->GetListOfFunctions()->Last());
+    if(fit_)
+      fit_->SetLineColor(color_);
   }
   virtual void RefreshPoints() {}
   TGraphErrors* GetPoints() {
