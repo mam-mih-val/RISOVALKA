@@ -6,6 +6,46 @@
 #include <TGraphAsymmErrors.h>
 ClassImp(Graph);
 
+Graph::Graph( DrawableObject* other ) : DrawableObject(*other) {
+    points_ = new TGraphErrors( other->GetPoints()->GetN() );
+    points_->SetTitle( title_.c_str() );
+    for( int i=0; i<other->GetPoints()->GetN(); i++ ){
+      auto x = other->GetPoints()->GetPointX(i);
+      auto y = other->GetPoints()->GetPointY(i);
+      auto x_err = other->GetPoints()->GetErrorX(i);
+      auto y_err = other->GetPoints()->GetErrorY(i);
+      points_->SetPoint(i, x, y);
+      points_->SetPointError(i, x_err, y_err);
+    }
+};
+
+void Graph::RecalculateXaxis( const std::vector<double>& x_axis ){
+  if( x_axis.size() >= points_->GetN() ){
+    for( int i=0; i<points_->GetN(); i++ ){
+      auto x = x_axis.at(i);
+      auto y = points_->GetPointY(i);
+      auto x_err = points_->GetErrorX(i);
+      auto y_err = points_->GetErrorY(i);
+      points_->SetPoint(i, x, y);
+      points_->SetPointError(i, x_err, y_err);
+    }
+  }
+  if ( x_axis.size() < points_->GetN() ){
+    auto points_old = points_;
+    points_ = new TGraphErrors( x_axis.size() );
+    for( int i=0; i<points_->GetN(); i++ ){
+      auto x = x_axis.at(i);
+      auto y = points_old->GetPointY(i);
+      auto x_err = points_old->GetErrorX(i);
+      auto y_err = points_old->GetErrorY(i);
+      points_->SetPoint(i, x, y);
+      points_->SetPointError(i, x_err, y_err);
+    }
+    delete points_old;
+  }
+}
+
+
 Graph::Graph(const std::string &file_name,
              const std::vector<std::string> &objects, const std::string &title)
     : DrawableObject(file_name, objects, title) {

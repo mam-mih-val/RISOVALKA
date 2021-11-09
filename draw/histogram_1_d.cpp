@@ -14,7 +14,7 @@ Histogram1D::Histogram1D(const std::string &file_name,
   std::vector<TH1*> histograms;
   for( const auto& name : objects ){
     try {
-      histograms.push_back(this->ReadObjectFromFile<TH1F>(name));
+      histograms.push_back(this->ReadObjectFromFile<TH1>(name));
     } catch (std::exception&) {
       histograms.push_back(dynamic_cast<TH1*>(this->ReadObjectFromFile<TProfile>(name)));
     }

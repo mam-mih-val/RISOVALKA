@@ -18,7 +18,7 @@
 class Picture : public TObject {
 public:
   Picture() = default;
-  virtual ~Picture() = default;
+  ~Picture() override = default;
   Picture(std::string name, const std::array<int, 2> &resolution)
       : name_(std::move(name)), resolution_(resolution) {
     canvas_ =  new TCanvas( name_.c_str(), "", resolution.at(0), resolution.at(1) );
@@ -27,6 +27,7 @@ public:
     stack_ =  new TMultiGraph(stack_name.c_str(), "");
     zero_line_ = new TF1( "zero_line", "0", -100, 100 );
   }
+  [[nodiscard]] TCanvas *GetCanvas() const { return canvas_; }
   virtual void SetAxisTitles(const std::vector<std::string> &axis_titles) {}
   void SetXRange(const std::array<float, 2> &x_range) { x_range_ = x_range; }
   void SetYRange(const std::array<float, 2> &y_range) { y_range_ = y_range; }

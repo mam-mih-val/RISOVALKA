@@ -16,10 +16,10 @@ public:
   ~Histogram2D() override;
   void RefreshPoints() override;
   void Projection(const std::string& axis, int first_bin, int last_bin);
-  TH2F *GetHisto2D() const { return histo2d_; }
+  TH2* GetHisto2D() const { return histo2d_; }
 
 protected:
-  TH2F* histo2d_{nullptr};
+  TH2* histo2d_{nullptr};
   ClassDefOverride(Histogram2D, 1);
 };
 

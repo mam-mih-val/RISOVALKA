@@ -11,12 +11,12 @@ Histogram2D::Histogram2D(const std::string &file_name,
                          const std::string &title){
   file_name_ = file_name;
   title_ = title;
-  std::vector<TH2F*> histograms;
+  std::vector<TH2*> histograms;
   histograms.reserve(objects.size());
   for( const auto& name : objects ){
-    histograms.push_back( this->ReadObjectFromFile<TH2F>(name) );
+    histograms.push_back( this->ReadObjectFromFile<TH2>(name) );
   }
-  histo2d_ = dynamic_cast<TH2F*>(histograms.front()->Clone());
+  histo2d_ = dynamic_cast<TH2*>(histograms.front()->Clone());
   for (size_t i=1; i<histograms.size(); ++i) {
     histo2d_->Add( histograms.at(i) );
   }

@@ -16,14 +16,18 @@ public:
       : Picture(name, resolution), ReadableObject(file_name, objects) {
     histogram_ = ReadObjectFromFile<TH2F>( objects.front() );
   }
-  virtual void
+  void SetDrawOpt(const std::string &draw_option) {
+    draw_option_ = draw_option;
+  }
+  void
   SetAxisTitles(const std::vector<std::string> &axis_titles) override;
   void SetZRange(const std::array<float, 2> &z_range) { z_range_ = z_range; }
-  virtual void Draw() override;
-  TH2F *GetHistogram() const { return histogram_; }
+  void Draw() override;
+  [[nodiscard]] TH2F *GetHistogram() const { return histogram_; }
 
 protected:
   TH2F* histogram_{nullptr};
+  std::string draw_option_{"colz"};
   std::array<float,2> z_range_;
 };
 

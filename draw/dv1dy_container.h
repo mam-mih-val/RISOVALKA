@@ -59,48 +59,33 @@ public:
   void SetFormula(const std::string &formula) {
     dv1dy_container::formula_ = formula;
   }
-  void SetSlopeMarker(int marker) { slope_marker_ = marker; }
-  void SetOffsetMarker(int marker) { offset_marker_ = marker; }
-  void SetRelativeSysError(double relative_sys_error) {
-    relative_sys_error_ = relative_sys_error;
-  }
-  void SetXSysError(double x_sys_error) { x_sys_error_ = x_sys_error; }
-  void SetSystematicsVariationAxes(const std::vector<Qn::AxisD> &systematics_variation_axes) {
-    assert( systematics_variation_axes.size() == 2 );
-    systematics_variation_axes_ = systematics_variation_axes;
-  }
-  const std::vector<Graph *> &GetSlopes() const { return slopes_; }
-  const std::vector<Graph *> &GetOffsets() const { return offsets_; }
-  const std::vector<TGraphErrors *> &GetSlopeGraphs() const { return slope_graphs_; }
-  const std::vector<TGraphErrors *> &GetSlopeSystematicsGraphs() const {
-    return slope_systematics_graphs_;
-  }
-  const std::vector<Graph *> &GetSlopesSystematics() const {
-    return slopes_systematics_;
-  }
-  const std::vector<TGraphErrors *> &GetOffsetGraphs() const {return offset_graphs_;}
+  void SetMarkers(const std::vector<int> &markers) { markers_ = markers; }
+  const std::vector<Graph *> GetParGraphs(int i){ return fit_par_graphs_.at(i); }
+  const std::vector<Graph *> &GetSlopes() const { return fit_par_graphs_.at(1); }
+  const std::vector<Graph *> &GetOffsets() const { return fit_par_graphs_.at(0); }
+  const std::vector<TGraphErrors *> &GetParPoints(int i) const { return fit_par_points_.at(i); }
+  const std::vector<TGraphErrors *> &GetSlopePoints() const { return fit_par_points_.at(1); }
+  const std::vector<TGraphErrors *> &GetOffsetPoints() const {return fit_par_points_.at(1);}
   void Calculate( const Qn::AxisD& remaining_axis, const Qn::AxisD& slice_axis, const Qn::AxisD& rapidity_axis );
   void SaveToFile( const std::string& file_name );
   void SetPalette(const std::vector<int> &palette);
+  void SetFixedParameters(const std::map<int, double> &fixed_parameters) {
+    fixed_parameters_ = fixed_parameters;
+  }
+  void IsTrueOffset( bool is=true ){ is_true_offset_=is; }
 
 protected:
   void FillGraphs();
   std::string formula_{"pol1"};
+  bool is_true_offset_{false}; // Works only with polynomial fits
+  std::map<int, double> fixed_parameters_;
   Qn::DataContainerStatCalculate correlation_;
   std::vector<TGraphErrors*> projections_;
-  std::vector<TGraphErrors*> slope_graphs_;
-  std::vector<TGraphErrors*> slope_systematics_graphs_;
-  std::vector<TGraphErrors*> offset_graphs_;
+  std::vector<std::vector<TGraphErrors*>> fit_par_points_;
+  std::vector<std::vector<Graph*>> fit_par_graphs_;
   std::string slice_variable_name_;
   std::string slice_variable_units_;
-  std::vector<Graph*> slopes_;
-  std::vector<Graph*> slopes_systematics_;
-  std::vector<Graph*> offsets_;
-  int slope_marker_{kFullCircle};
-  int offset_marker_{kOpenCircle};
-  double relative_sys_error_{0.0};
-  double x_sys_error_{0.0};
-  std::vector<Qn::AxisD> systematics_variation_axes_;
+  std::vector<int> markers_;
   std::vector<int> palette_{
       kPink,
       kMagenta+1,

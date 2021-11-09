@@ -16,11 +16,13 @@
 class DrawableObject : public ReadableObject {
 public:
   DrawableObject() = default;
+  DrawableObject(const DrawableObject& ) = default;
   DrawableObject(const std::string &file_name,
                  const std::vector<std::string> &objects,
                  std::string title)
       : ReadableObject(file_name, objects), title_(std::move(title)) {}
   ~DrawableObject() override = default;
+
   int GetColor() const { return color_; }
   void Fit( TF1* function ){
     this->RefreshPoints();

@@ -12,8 +12,10 @@ public:
   Graph() = default;
   Graph(const std::string &file_name, const std::vector<std::string> &objects,
         const std::string &title);
+  explicit Graph( DrawableObject* );
   ~Graph() override;
   void RefreshPoints() override;
+  void RecalculateXaxis( const std::vector<double>& x_axis );
   void SetPoints( TGraphErrors* graph ){ points_ = graph; }
   ClassDefOverride(Graph, 1)
 };

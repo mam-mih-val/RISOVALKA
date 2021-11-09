@@ -20,6 +20,11 @@ public:
   void RefreshPoints() override {
     correlation_.SetErrors(Qn::StatCalculate::ErrorType::BOOTSTRAP);
     points_ = Qn::ToTGraph( correlation_ );
+    for( int i=0; i<points_->GetN(); ++i ){
+      auto y_err = points_->GetErrorY(i);
+      if( isnan( y_err ) )
+        points_->SetPointError(i, 0., 0.);
+    }
     if( fit_ )
       points_->Fit(fit_);
     this->SetMarkerStyle();
