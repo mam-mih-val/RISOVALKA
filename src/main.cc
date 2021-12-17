@@ -12,9 +12,6 @@
 
 int main(int n_args, char** args){
   namespace po = boost::program_options;
-//  if( n_args < 2 ){
-//    return 1;
-//  }
   std::string draw_object;
   std::string input_config;
   po::options_description options("Options");
@@ -39,7 +36,7 @@ int main(int n_args, char** args){
     auto picture_config = JsonConfig::GetPictureConfig(input_config);
     auto correlation_configs =
         JsonConfig::GetCorrelationConfigs(input_config, "correlations");
-    std::vector<Draw::Correlation> ref_correlation_configs;
+    std::vector<Draw::CorrelationConfig> ref_correlation_configs;
     try {
       ref_correlation_configs =
           JsonConfig::GetCorrelationConfigs(input_config, "reference");
@@ -60,5 +57,15 @@ int main(int n_args, char** args){
     Draw::DrawHistogram2D(picture_config, histogram_config);
     return 0;
   }
+  if( draw_object == "H1" or draw_object == "h1" ) {
+    auto picture_config = JsonConfig::GetPictureConfig(input_config);
+    auto histograms_configs = JsonConfig::GetHistogram1DConfig(input_config);
+    auto profiles_configs = JsonConfig::GetHistogram1DConfig(input_config, "profiles");
+    auto style = JsonConfig::GetStyleConfig("../src/config/style_1d.json");
+    Draw::SetStyle(style);
+    Draw::DrawHistograms1D(picture_config, histograms_configs, profiles_configs);
+    return 0;
+  }
+
 
 }
