@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
-project(flow_drawing_tools)
+project(RISOVALKA)
 set(CMAKE_CXX_FLAGS "-Wall")
-set (QnDrawer_VERSION_MAJOR 0)
-set (QnDrawer_VERSION_MINOR 9)
+set (RISOVALKA_VERSION_MAJOR 1)
+set (RISOVALKA_VERSION_MINOR 0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_BUILD_TYPE debug)
 
@@ -79,5 +79,5 @@ ROOT_GENERATE_DICTIONARY( G__Draw ${HEADERS}
 add_library(Draw SHARED ${SOURCES} G__Draw.cxx )
 target_link_libraries(Draw PRIVATE QnTools::Base ${ROOT_LIBRARIES})
 
-add_executable(draw_picture draw/draw_picture.cpp)
-target_link_libraries(draw_picture QnTools::Base ${ROOT_LIBRARIES} Draw )
+add_executable(PNCOBATb draw/draw_picture.cpp)
+target_link_libraries(PNCOBATb QnTools::Base ${ROOT_LIBRARIES} Draw )

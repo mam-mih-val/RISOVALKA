@@ -13,7 +13,7 @@
 class MultiCorrelation : public TObject {
 public:
   MultiCorrelation() = default;
-  MultiCorrelation(MultiCorrelation const &other) :marker_(other.marker_),
+  MultiCorrelation(MultiCorrelation const &other) :markers_(other.markers_),
                                                     palette_(other.palette_){
       for( auto corr : other.correlations_ )
         correlations_.push_back( new Correlation(*corr) );
@@ -29,15 +29,14 @@ public:
     this->ApplyStyle();
     return correlations_;
   }
-  void SetMarker(int marker) { marker_ = marker; }
+  void SetMarker(int marker) { markers_.at(0) = marker; }
   void SetPalette(const std::vector<int> &palette) { palette_ = palette; }
   void SetErrorOption(const std::string &error_option);
 
 protected:
   void ApplyStyle();
   std::vector<Correlation*> correlations_;
-  std::vector<int> markers_;
-  int marker_{kFullCircle};
+  std::vector<int> markers_{kFullCircle};
   std::vector<int> palette_{
       kPink,
       kMagenta+1,
