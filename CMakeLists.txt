@@ -34,9 +34,6 @@ include_directories(
         ${QnTools_INCLUDE_DIR}
 )
 
-#add_executable(draw src/main.cc src/draw_functions.cc  src/json_reader.cc src/file_manager.cc)
-#target_link_libraries(draw QnTools::Base ${ROOT_LIBRARIES} ${Boost_LIBRARIES} )
-#
 set(SOURCES
         draw/readable_object.cpp
         draw/drawable_object.cpp
@@ -76,7 +73,6 @@ ROOT_GENERATE_DICTIONARY( G__Draw ${HEADERS}
         LINKDEF
         draw/DrawLinkDef.h
         OPTIONS
-#        -s ${PCM_FILE_NAME}
         -I ${QnTools_INCLUDE_DIR}/QnTools
         -I ${CMAKE_SOURCE_DIR}
         )
