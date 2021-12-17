@@ -40,7 +40,14 @@ public:
   void SavePoints(const std::string& name, const std::string& type){
     assert(stack_);
     auto save_name = name+"."+type;
-    stack_->SaveAs( save_name.c_str() );
+    auto file_out = TFile::Open( save_name.c_str(), "recreate" );
+    TGraph* graph;
+    for( int i=0; i < stack_->GetListOfGraphs()->GetSize(); ++i ){
+      graph = dynamic_cast<TGraph*>(stack_->GetListOfGraphs()->At(i));
+      graph->Write( graph->GetTitle() );
+    }
+//    stack_->SaveAs( save_name.c_str() );
+    file_out->Close();
   }
   void Save( const std::string& name, const std::string& type ){
     assert(canvas_);
@@ -77,7 +84,7 @@ protected:
   bool is_log_x{false};
   bool is_log_z{false};
   bool auto_legend_{true};
-  ClassDef(Picture, 1)
+  ClassDefOverride(Picture, 1)
 };
 
 #endif // FLOW_DRAWING_TOOLS_SRC_PICTURE_H_

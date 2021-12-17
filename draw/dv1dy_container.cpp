@@ -45,8 +45,16 @@ void dv1dy_container::Calculate( const Qn::AxisD& remaining_axis, const Qn::Axis
       auto offset_error = proj.At(zero_bin).StandardErrorOfMean();
       proj = proj.Rebin(rapidity_axis);
       projections_.push_back( Qn::ToTGraph( proj ) );
-      std::string proj_graph_name = name+"_"+std::to_string(lo)+"_"+std::to_string(hi)+"_"+
-          arg_name+"_"+std::to_string(arg_lo)+"_"+std::to_string(arg_hi);
+      std::ostringstream stream_lo;
+      stream_lo << std::setprecision(2) << lo;
+      std::ostringstream stream_hi;
+      stream_hi << std::setprecision(2) << hi;
+      std::ostringstream stream_arg_lo;
+      stream_arg_lo << std::setprecision(2) << arg_lo;
+      std::ostringstream stream_arg_hi;
+      stream_arg_hi << std::setprecision(2) << arg_hi;
+      std::string proj_graph_name = name+"_"+stream_lo.str()+"_"+stream_hi.str()+"_"+
+          arg_name+"_"+stream_arg_lo.str()+"_"+stream_arg_hi.str();
       projections_.back()->SetName( proj_graph_name.c_str() );
       std::string fit_name="fit_"+proj_graph_name;
       auto fit = new TF1( fit_name.c_str(), formula_.c_str(), rapidity_axis.GetFirstBinEdge(), rapidity_axis.GetLastBinEdge() );
@@ -55,7 +63,7 @@ void dv1dy_container::Calculate( const Qn::AxisD& remaining_axis, const Qn::Axis
       for( auto pair : fixed_parameters_ ){
         fit->FixParameter( pair.first, pair.second );
       }
-      projections_.back()->Fit(fit);
+      projections_.back()->Fit(fit, "EX0");
       std::vector<double> parameter_val_;
       std::vector<double> parameter_err_;
       for( int i=0; i<n_par; ++i ){
@@ -113,7 +121,7 @@ void dv1dy_container::FillGraphs() {
     }
   }
   while( markers_.size() < fit_par_points_.front().size() ){
-    markers_.push_back( 20+markers_.size() );
+    markers_.push_back( kFullCircle );
   }
   int marker_num=0;
   for( const auto& graphs : fit_par_points_){

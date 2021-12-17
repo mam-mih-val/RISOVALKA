@@ -37,6 +37,7 @@ public:
     return points_;
   }
   TF1 *GetFit() const { return fit_; }
+  TGraphErrors *GetSysErrorPoints() const { return sys_error_points_; }
   void SetStyle( int color, int marker ){ color_=color; marker_=marker; }
   bool IsLine(){ return marker_ < 0; }
   void SavePoints(){ points_->Write(); }
@@ -46,6 +47,9 @@ public:
   void SetErrorOption(const std::string &error_option) {
     error_option_ = error_option;
   }
+  void SetSysErrors( double x_error, double relative_sys_error );
+  void SetSysErrors( double x_error, std::vector<double> systematical_errors );
+  void SetSysErrors( std::vector<double> x_errors, std::vector<double> y_errors );
 
 protected:
   void SetMarkerStyle();
@@ -53,6 +57,7 @@ protected:
   int marker_{kFullCircle};
   TF1* fit_{};
   TGraphErrors* points_{nullptr};
+  TGraphErrors* sys_error_points_{nullptr};
   std::string error_option_{"Z"};
   std::string title_;
   ClassDefOverride(DrawableObject, 1)

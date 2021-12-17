@@ -34,14 +34,13 @@ void DoubleDifferentialCorrelation::FillGraphs() {
   }else{
     auto bias=0;
     auto position=0;
-    for( size_t i=0; i<projection_points_.size(); ++i ) {
-      if( i<palette_.size() ) {
-        colors.push_back(palette_.at(position+bias));
-        position++;
-      } else{
+    while( projection_points_.size() > colors.size() ){
+      if( position >= palette_.size() ){
         position=0;
-        bias+=3;
+        bias++;
       }
+      colors.push_back( palette_.at( position )+bias );
+      position++;
     }
   }
   int i=0;

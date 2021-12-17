@@ -50,6 +50,7 @@ set(SOURCES
         draw/ratio.cpp
         draw/dv1dy_container.cpp
         draw/double_differential_correlation.cpp
+        draw/double_differential_histogram.cpp
         draw/multi_correlation.cpp
         )
 set(HEADERS
@@ -65,6 +66,7 @@ set(HEADERS
         draw/ratio.h
         draw/dv1dy_container.h
         draw/double_differential_correlation.h
+        draw/double_differential_histogram.h
         draw/multi_correlation.h
         )
 

@@ -17,11 +17,15 @@ void HeapPicture::Draw() {
       stack_->Add(obj->GetPoints(), opt.c_str());
       if( auto_legend_ )
         legends_.back()->AddEntry(obj->GetPoints(), obj->GetTitle().c_str(),"L");
+      if( obj->GetSysErrorPoints() )
+        stack_->Add( obj->GetSysErrorPoints(), "L+2" );
     } else {
       std::string opt{"P+" + obj->GetErrorOption()};
       stack_->Add(obj->GetPoints(), opt.c_str());
       if( auto_legend_ )
         legends_.back()->AddEntry(obj->GetPoints(), obj->GetTitle().c_str(),"P");
+      if( obj->GetSysErrorPoints() )
+        stack_->Add( obj->GetSysErrorPoints(), "P+2" );
     }
   }
   canvas_->cd();

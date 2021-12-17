@@ -17,7 +17,7 @@ public:
   ~Histogram1D() override;
   void RefreshPoints() override;
   TH1 *GetHistogram() const { return histogram_; }
-  void SetHistogram(TH1F *histogram) { histogram_ = histogram; }
+  void SetHistogram(TH1 *histogram) { histogram_ = histogram; }
   friend Histogram1D operator/( const Histogram1D& num, const Histogram1D& den);
 
 protected:

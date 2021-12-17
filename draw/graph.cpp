@@ -7,20 +7,34 @@
 ClassImp(Graph);
 
 Graph::Graph( DrawableObject* other ) : DrawableObject(*other) {
-    points_ = new TGraphErrors( other->GetPoints()->GetN() );
-    points_->SetTitle( title_.c_str() );
-    for( int i=0; i<other->GetPoints()->GetN(); i++ ){
-      auto x = other->GetPoints()->GetPointX(i);
-      auto y = other->GetPoints()->GetPointY(i);
-      auto x_err = other->GetPoints()->GetErrorX(i);
-      auto y_err = other->GetPoints()->GetErrorY(i);
-      points_->SetPoint(i, x, y);
-      points_->SetPointError(i, x_err, y_err);
+  points_ = new TGraphErrors( other->GetPoints()->GetN() );
+  points_ = new TGraphErrors( other->GetPoints()->GetN() );
+  points_->SetTitle( title_.c_str() );
+  for( int i=0; i<other->GetPoints()->GetN(); i++ ){
+    auto x = other->GetPoints()->GetPointX(i);
+    auto y = other->GetPoints()->GetPointY(i);
+    auto x_err = other->GetPoints()->GetErrorX(i);
+    auto y_err = other->GetPoints()->GetErrorY(i);
+    points_->SetPoint(i, x, y);
+    points_->SetPointError(i, x_err, y_err);
+  }
+  if( other->GetSysErrorPoints() ){
+    sys_error_points_ = new TGraphErrors( other->GetSysErrorPoints()->GetN() );
+    sys_error_points_ = new TGraphErrors( other->GetSysErrorPoints()->GetN() );
+    sys_error_points_->SetTitle( title_.c_str() );
+    for( int i=0; i<other->GetSysErrorPoints()->GetN(); i++ ){
+      auto x = other->GetSysErrorPoints()->GetPointX(i);
+      auto y = other->GetSysErrorPoints()->GetPointY(i);
+      auto x_err = other->GetSysErrorPoints()->GetErrorX(i);
+      auto y_err = other->GetSysErrorPoints()->GetErrorY(i);
+      sys_error_points_->SetPoint(i, x, y);
+      sys_error_points_->SetPointError(i, x_err, y_err);
     }
+  }
 };
 
 void Graph::RecalculateXaxis( const std::vector<double>& x_axis ){
-  if( x_axis.size() >= points_->GetN() ){
+  if( x_axis.size() >= (size_t) points_->GetN() ){
     for( int i=0; i<points_->GetN(); i++ ){
       auto x = x_axis.at(i);
       auto y = points_->GetPointY(i);
@@ -30,7 +44,7 @@ void Graph::RecalculateXaxis( const std::vector<double>& x_axis ){
       points_->SetPointError(i, x_err, y_err);
     }
   }
-  if ( x_axis.size() < points_->GetN() ){
+  if ( x_axis.size() < (size_t) points_->GetN() ){
     auto points_old = points_;
     points_ = new TGraphErrors( x_axis.size() );
     for( int i=0; i<points_->GetN(); i++ ){
@@ -54,7 +68,7 @@ Graph::Graph(const std::string &file_name,
   for( const auto& name : objects ){
     try {
       graphs.push_back(this->ReadObjectFromFile<TGraphErrors>(name));
-    } catch (std::exception) {
+    } catch (std::exception&) {
       graphs.push_back((TGraphErrors*)this->ReadObjectFromFile<TGraphAsymmErrors>(name));
     }
   }

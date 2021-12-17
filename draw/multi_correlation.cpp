@@ -27,7 +27,11 @@ void MultiCorrelation::ApplyStyle() {
   }
   int i=0;
   for( auto correlation : correlations_ ){
-    correlation->SetStyle(colors.at(i), marker_);
+    if( markers_.size() == 1 ) {
+      correlation->SetStyle(colors.at(i), markers_.front());
+    }else{
+      correlation->SetStyle(colors.at(i), markers_.at(i));
+    }
     ++i;
   }
 }

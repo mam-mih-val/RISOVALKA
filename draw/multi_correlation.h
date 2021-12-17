@@ -24,7 +24,7 @@ public:
   void Rebin( const std::vector<Qn::AxisD>& axes);
   void Select( const std::vector<Qn::AxisD>& axes);
   void Project(const std::vector<std::string>& axes);
-
+  void SetMarkers(const std::vector<int> &markers) { markers_ = markers; }
   [[nodiscard]] const std::vector<Correlation*> &GetCorrelations() {
     this->ApplyStyle();
     return correlations_;
@@ -36,6 +36,7 @@ public:
 protected:
   void ApplyStyle();
   std::vector<Correlation*> correlations_;
+  std::vector<int> markers_;
   int marker_{kFullCircle};
   std::vector<int> palette_{
       kPink,

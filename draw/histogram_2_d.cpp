@@ -31,11 +31,11 @@ void Histogram2D::RefreshPoints() {
 void Histogram2D::Projection(const std::string& axis, int first_bin, int last_bin) {
   auto proj_name = "proj_"+axis+std::to_string(first_bin)+"-"+std::to_string(last_bin)+"_"+std::string (histo2d_->GetName());
   if( axis == "X" || axis == "x" ){
-    histogram_ = dynamic_cast<TH1F*>(histo2d_->ProjectionX( proj_name.c_str(),first_bin, last_bin ));
+    histogram_ = dynamic_cast<TH1*>(histo2d_->ProjectionX( proj_name.c_str(),first_bin, last_bin ));
   }
   else if( axis == "Y" || axis == "y" ){
-    auto histo = histo2d_->ProjectionX( proj_name.c_str(),first_bin, last_bin );
-    histogram_ = (TH1F*) (histo2d_->ProjectionY( proj_name.c_str(),first_bin, last_bin ));
+//    auto histo = histo2d_->ProjectionX( proj_name.c_str(),first_bin, last_bin );
+    histogram_ = dynamic_cast<TH1*>(histo2d_->ProjectionY( proj_name.c_str(),first_bin, last_bin ));
   }
   else
     throw std::runtime_error("Unknown axis. Please use X or Y to set the axis");
