@@ -95,3 +95,24 @@ Graph::Graph(const std::string &file_name,
 }
 void Graph::RefreshPoints() { this->SetMarkerStyle(); }
 Graph::~Graph() {}
+
+void Graph::Scale( double s ){
+  for( int i=0; i<points_->GetN(); ++i ){
+    auto x = points_->GetPointX( i );
+    auto y = points_->GetPointY( i );
+    auto x_err = points_->GetErrorX( i );
+    auto y_err = points_->GetErrorY( i );
+    points_->SetPoint(i, x, y*s);
+    points_->SetPointError(i, x_err, y_err*s);
+  }
+  if( sys_error_points_ ){
+    for( int i=0; i<sys_error_points_->GetN(); ++i ){
+      auto x = sys_error_points_->GetPointX( i );
+      auto y = sys_error_points_->GetPointY( i );
+      auto x_err = sys_error_points_->GetErrorX( i );
+      auto y_err = sys_error_points_->GetErrorY( i );
+      sys_error_points_->SetPoint(i, x, y*s);
+      sys_error_points_->SetPointError(i, x_err, y_err*s);
+    }
+  }
+}

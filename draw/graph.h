@@ -16,6 +16,7 @@ public:
   ~Graph() override;
   void RefreshPoints() override;
   void RecalculateXaxis( const std::vector<double>& x_axis );
+  void Scale(double s);
   void SetPoints( TGraphErrors* graph ){ points_ = graph; }
   ClassDefOverride(Graph, 1)
 };

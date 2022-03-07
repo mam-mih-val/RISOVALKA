@@ -39,6 +39,7 @@ public:
     slice_variable_units_ = units;
   }
   void SetMarker(int marker) { marker_ = marker; }
+  void Scale(double x){ histo2d_->Scale(x); }
   void SetPalette(const std::vector<int> &palette) { palette_ = palette; }
   [[nodiscard]] const std::vector<Histogram1D *> &GetProjections() const { return projections_; }
 private:
