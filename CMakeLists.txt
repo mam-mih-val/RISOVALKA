@@ -1,35 +1,18 @@
 cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
 project(RISOVALKA)
-set(CMAKE_CXX_FLAGS "-Wall")
 set (RISOVALKA_VERSION_MAJOR 1)
 set (RISOVALKA_VERSION_MINOR 0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_BUILD_TYPE debug)
 
-list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS})
-
-find_package( Boost REQUIRED COMPONENTS program_options regex )
+find_package( Boost REQUIRED COMPONENTS program_options)
 find_package(ROOT REQUIRED)
-
-if (NOT ROOT_FOUND)
-    message(WARNING "ROOT was not found with CMAKE_PREFIX_PATH...")
-    list(APPEND CMAKE_MODULE_PATH $ENV{ROOTSYS}/etc/cmake)
-    find_package(ROOT REQUIRED)
-endif ()
-
-if (ROOT_USE_FILE)
-    message("-- ROOT_USE_FILE ${ROOT_USE_FILE}")
-    include(${ROOT_USE_FILE})
-endif()
-
-list(APPEND CMAKE_PREFIX_PATH $ENV{QnTools})
 
 find_package(QnTools REQUIRED)
 
 include_directories(
         QnDrawer/include
         ${CMAKE_SOURCE_DIR}
-        ${Base_INCLUDE_DIR}
         ${Boost_INCLUDE_DIRS}
         ${QnTools_INCLUDE_DIR}
 )
@@ -68,8 +51,7 @@ set(HEADERS
         )
 
 set(PCM_FILE_NAME libDraw)
-message(STATUS "QnTools include ${QnTools_INCLUDE_DIR}")
-ROOT_GENERATE_DICTIONARY( G__Draw ${HEADERS}
+ROOT_GENERATE_DICTIONARY(G__Draw ${HEADERS}
         LINKDEF
         draw/DrawLinkDef.h
         OPTIONS
@@ -77,7 +59,7 @@ ROOT_GENERATE_DICTIONARY( G__Draw ${HEADERS}
         -I ${CMAKE_SOURCE_DIR}
         )
 add_library(Draw SHARED ${SOURCES} G__Draw.cxx )
-target_link_libraries(Draw PRIVATE QnTools::Base ${ROOT_LIBRARIES})
+target_link_libraries(Draw PRIVATE QnTools::Base ROOT::RIO)
 
 add_executable(PNCOBATb draw/draw_picture.cpp)
-target_link_libraries(PNCOBATb QnTools::Base ${ROOT_LIBRARIES} Draw )
+target_link_libraries(PNCOBATb QnTools::Base ROOT::RIO Draw)
