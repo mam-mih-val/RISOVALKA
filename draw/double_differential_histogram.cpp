@@ -32,30 +32,5 @@ void DoubleDifferentialHistogram::Projection(const std::string &axis,
     std::string title{ stream_lo.str()+"<"+ slice_variable_name_ +"<"+stream_hi.str()+", "+slice_variable_units_ };
     projections_.back()->SetTitle( title );
   }
-  this->ColorObjects();
-}
-void DoubleDifferentialHistogram::ColorObjects() {
-  std::vector<int> colors;
-  if( projections_.size() < palette_.size() ){
-    auto bias = palette_.size() / projections_.size();
-    for( size_t i=0; i<projections_.size(); ++i )
-      colors.push_back(palette_.at(i*bias));
-  }else{
-    auto bias=0;
-    auto position=0;
-    for( size_t i=0; i<projections_.size(); ++i ) {
-      if( i<palette_.size() ) {
-        colors.push_back(palette_.at(position+bias));
-        position++;
-      } else{
-        position=0;
-        bias+=3;
-      }
-    }
-  }
-  int i=0;
-  for( auto projection : projections_ ){
-    projection->SetStyle(colors.at(i), marker_);
-    ++i;
-  }
+  this->ColorObjects( projections_ );
 }

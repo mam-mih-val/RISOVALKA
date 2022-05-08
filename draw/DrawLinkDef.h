@@ -22,6 +22,7 @@
 #pragma link C++ class DoubleDifferentialCorrelation;
 #pragma link C++ class DoubleDifferentialHistogram;
 #pragma link C++ class MultiCorrelation;
+#pragma link C++ class Palette;
 #pragma link C++ class Ratio<Correlation>;
 #pragma link C++ class Ratio<Histogram1D>;
 

@@ -23,39 +23,11 @@ void DoubleDifferentialCorrelation::Calculate() {
     stream_hi << std::setprecision(2) << hi;
     std::string title{ slice_variable_name_+" " + stream_lo.str()+"-"+stream_hi.str()+" "+slice_variable_units_ };
     projection_points_.back()->SetTitle(title.c_str());
-  }
-  FillGraphs();
-}
-void DoubleDifferentialCorrelation::FillGraphs() {
-  std::vector<int> colors;
-  if( projection_points_.size() < palette_.size() ){
-    auto bias = palette_.size() / projection_points_.size();
-    for( size_t i=0; i<projection_points_.size(); ++i )
-      colors.push_back(palette_.at(i*bias));
-  }else{
-    size_t bias=0;
-    size_t position=0;
-    while( projection_points_.size() > colors.size() ){
-      if( position >= palette_.size() ){
-        position=0;
-        bias++;
-      }
-      colors.push_back( palette_.at( position )+bias );
-      position++;
-    }
-  }
-  int i=0;
-  for( auto graph : projection_points_ ){
     projections_.push_back( new Graph );
-    projections_.back()->SetPoints( graph );
-    projections_.back()->SetTitle(graph->GetTitle());
-    projections_.back()->SetStyle(colors.at(i), marker_);
-    projections_.back()->SetErrorOption(error_option_);
-    graph->SetLineColor(colors.at(i));
-    graph->SetMarkerColor(colors.at(i));
-    graph->SetMarkerColor(marker_);
-    ++i;
+    projections_.back()->SetPoints( projection_points_.back() );
+    projections_.back()->SetTitle(projection_points_.back()->GetTitle());
   }
+  this->ColorObjects( projections_ );
 }
 void DoubleDifferentialCorrelation::SaveToFile(const std::string &file_name) {
   auto file_out = TFile::Open( file_name.c_str(), "recreate" );

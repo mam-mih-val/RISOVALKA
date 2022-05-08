@@ -7,15 +7,16 @@ set(CMAKE_BUILD_TYPE debug)
 
 find_package( Boost REQUIRED COMPONENTS program_options)
 find_package(ROOT REQUIRED)
-
 find_package(QnTools REQUIRED)
 
 include_directories(
-        QnDrawer/include
         ${CMAKE_SOURCE_DIR}
         ${Boost_INCLUDE_DIRS}
-        ${QnTools_INCLUDE_DIR}
+        ${ROOT_INCLUDE_DIRS}
+        ${QnTools_INCLUDE_DIR}/QnTools
 )
+
+message(STATUS ${QnTools_INCLUDE_DIR})
 
 set(SOURCES
         draw/readable_object.cpp
@@ -32,6 +33,7 @@ set(SOURCES
         draw/double_differential_correlation.cpp
         draw/double_differential_histogram.cpp
         draw/multi_correlation.cpp
+        draw/palette.cpp
         )
 set(HEADERS
         draw/readable_object.h
@@ -48,6 +50,7 @@ set(HEADERS
         draw/double_differential_correlation.h
         draw/double_differential_histogram.h
         draw/multi_correlation.h
+        draw/palette.h
         )
 
 set(PCM_FILE_NAME libDraw)

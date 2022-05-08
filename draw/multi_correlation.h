@@ -8,9 +8,10 @@
 #include "correlation.h"
 #include "graph.h"
 #include "readable_object.h"
-#include <QnTools/DataContainer.hpp>
+#include "palette.h"
+#include <DataContainer.hpp>
 
-class MultiCorrelation : public TObject {
+class MultiCorrelation : public Palette {
 public:
   MultiCorrelation() = default;
   MultiCorrelation(MultiCorrelation const &other) :markers_(other.markers_),
@@ -24,17 +25,13 @@ public:
   void Rebin( const std::vector<Qn::AxisD>& axes);
   void Select( const std::vector<Qn::AxisD>& axes);
   void Project(const std::vector<std::string>& axes);
-  void SetMarkers(const std::vector<int> &markers) { markers_ = markers; }
   [[nodiscard]] const std::vector<Correlation*> &GetCorrelations() {
-    this->ApplyStyle();
+    this->ColorObjects(correlations_);
     return correlations_;
   }
-  void SetMarker(int marker) { markers_.at(0) = marker; }
-  void SetPalette(const std::vector<int> &palette) { palette_ = palette; }
   void SetErrorOption(const std::string &error_option);
 
 protected:
-  void ApplyStyle();
   std::vector<Correlation*> correlations_;
   std::vector<int> markers_{kFullCircle};
   std::vector<int> palette_{
@@ -50,7 +47,6 @@ protected:
       kOrange-3,
       kRed,
   };
-  ClassDefOverride( MultiCorrelation, 1 );
 };
 
 #endif // FLOW_DRAWING_TOOLS_DRAW_MULTI_CORRELATION_H_

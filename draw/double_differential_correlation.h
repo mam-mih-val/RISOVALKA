@@ -12,8 +12,9 @@
 #include "correlation.h"
 #include "graph.h"
 #include "readable_object.h"
+#include "palette.h"
 
-class DoubleDifferentialCorrelation : public ReadableObject {
+class DoubleDifferentialCorrelation : public ReadableObject, public Palette{
 public:
   DoubleDifferentialCorrelation() = default;
   DoubleDifferentialCorrelation(const std::string &file_name,
@@ -59,13 +60,10 @@ public:
   }
   [[nodiscard]] const std::vector<Graph *> &GetProjections() const { return projections_; }
   void SetSliceAxis(const Qn::AxisD &slice_axis) { slice_axis_ = slice_axis; }
-  void SetMarker(int marker) { marker_ = marker; }
-  void SetPalette(const std::vector<int> &palette) { palette_ = palette; }
   void Calculate();
   void SaveToFile( const std::string& file_name );
   void SetErrorOption(const std::string &error_option);
 protected:
-  void FillGraphs();
   Qn::DataContainerStatCalculate correlation_;
   Qn::AxisD projection_axis_;
   Qn::AxisD slice_axis_;
@@ -74,21 +72,6 @@ protected:
   std::string slice_variable_units_;
   std::string error_option_;
   std::vector<Graph*> projections_;
-  int marker_{kFullCircle};
-  std::vector<int> palette_{
-      kPink,
-      kMagenta+1,
-      kViolet-8,
-      kBlue,
-      kAzure-4,
-      kCyan+1,
-      kGreen+2,
-      kSpring-4,
-      kYellow-3,
-      kOrange-3,
-      kRed,
-  };
-
 };
 
 #endif // FLOW_DRAWING_TOOLS_DRAW_DOUBLE_DIFFERENTIAL_CORRELATION_H_

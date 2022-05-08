@@ -6,35 +6,6 @@
 
 ClassImp(MultiCorrelation);
 
-void MultiCorrelation::ApplyStyle() {
-  std::vector<int> colors;
-  if( correlations_.size() < palette_.size() ){
-    auto bias = palette_.size() / correlations_.size();
-    for( size_t i=0; i<correlations_.size(); ++i )
-      colors.push_back(palette_.at(i*bias));
-  }else{
-    auto bias=0;
-    auto position=0;
-    for( size_t i=0; i<correlations_.size(); ++i ) {
-      if( i<palette_.size() ) {
-        colors.push_back(palette_.at(position+bias));
-        position++;
-      } else{
-        position=0;
-        bias+=3;
-      }
-    }
-  }
-  int i=0;
-  for( auto correlation : correlations_ ){
-    if( markers_.size() == 1 ) {
-      correlation->SetStyle(colors.at(i), markers_.front());
-    }else{
-      correlation->SetStyle(colors.at(i), markers_.at(i));
-    }
-    ++i;
-  }
-}
 void MultiCorrelation::Scale(double scale) {
   for( auto &corr : correlations_ ){
     corr->Scale(scale);

@@ -13,8 +13,9 @@
 #include "graph.h"
 #include "histogram_1_d.h"
 #include "readable_object.h"
+#include "palette.h"
 
-class DoubleDifferentialHistogram : public ReadableObject {
+class DoubleDifferentialHistogram : public ReadableObject, public Palette {
 public:
   DoubleDifferentialHistogram() = default;
   DoubleDifferentialHistogram(const std::string &file_name,
@@ -38,12 +39,9 @@ public:
     slice_variable_name_ = name;
     slice_variable_units_ = units;
   }
-  void SetMarker(int marker) { marker_ = marker; }
   void Scale(double x){ histo2d_->Scale(x); }
-  void SetPalette(const std::vector<int> &palette) { palette_ = palette; }
   [[nodiscard]] const std::vector<Histogram1D *> &GetProjections() const { return projections_; }
 private:
-  void ColorObjects();
   TH2* histo2d_{nullptr};
   std::vector<Histogram1D*> projections_;
   std::string slice_variable_name_;
