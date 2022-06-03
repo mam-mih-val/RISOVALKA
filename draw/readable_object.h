@@ -10,14 +10,16 @@
 #include <utility>
 #include <vector>
 
-class ReadableObject : public TObject {
+class ReadableObject {
 public:
+  [[nodiscard]] const std::string &GetFileName() const { return file_name_; }
+  [[nodiscard]] const std::vector<std::string> &GetOriginatingObjects() const { return objects_; }
+protected:
   ReadableObject() = default;
   ReadableObject(std::string file_name,
                  std::vector<std::string> objects)
       : file_name_(std::move(file_name)), objects_(std::move(objects)) {}
-  ~ReadableObject() override = default;
-protected:
+  virtual ~ReadableObject() = default;
   template <typename T>
   T* ReadObjectFromFile(const std::string& obj_name){
     if( !file_ )
@@ -34,7 +36,6 @@ protected:
   std::string file_name_;
   std::vector<std::string> objects_;
   TFile* file_{};
-  ClassDefOverride(ReadableObject, 1)
 };
 
 #endif // FLOW_DRAWING_TOOLS_DRAW_READABLE_OBJECT_H_

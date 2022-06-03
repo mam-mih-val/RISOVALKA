@@ -22,7 +22,6 @@ public:
 
 protected:
   TH1* histogram_;
-  ClassDefOverride(Histogram1D, 1)
 };
 
 #endif // FLOW_DRAWING_TOOLS_SRC_HISTOGRAM_1_D_H_

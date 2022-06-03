@@ -26,7 +26,6 @@ public:
 
 protected:
   std::vector<DrawableObject*> drawable_objects_;
-  ClassDefOverride(HeapPicture, 1)
 };
 
 #endif // FLOW_DRAWING_TOOLS_DRAW_HEAP_PICTURE_H_

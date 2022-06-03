@@ -3,7 +3,6 @@
 //
 
 #include "drawable_object.h"
-ClassImp(DrawableObject);
 
 void DrawableObject::SetMarkerStyle() {
   points_->SetTitle(title_.c_str());

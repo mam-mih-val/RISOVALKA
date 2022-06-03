@@ -18,7 +18,6 @@ public:
   void RecalculateXaxis( const std::vector<double>& x_axis );
   void Scale(double s);
   void SetPoints( TGraphErrors* graph ){ points_ = graph; }
-  ClassDefOverride(Graph, 1)
 };
 
 #endif // FLOW_DRAWING_TOOLS_SRC_GRAPH_H_

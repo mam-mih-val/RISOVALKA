@@ -20,7 +20,6 @@ public:
 
 protected:
   TH2* histo2d_{nullptr};
-  ClassDefOverride(Histogram2D, 1);
 };
 
 #endif // FLOW_DRAWING_TOOLS_DRAW_HISTOGRAM_2_D_H_

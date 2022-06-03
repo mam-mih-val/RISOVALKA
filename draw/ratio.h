@@ -91,7 +91,7 @@ public:
     stack_->GetHistogram()->SetLabelSize(gStyle->GetLabelSize("Y")*result_pad_scale, "Y");
     stack_->GetHistogram()->SetTitleSize(gStyle->GetTitleSize("Y")*result_pad_scale, "Y");
     stack_->GetHistogram()->SetTitleOffset(gStyle->GetTitleOffset("Y")*result_pad_scale, "Y");
-    if( draw_zero_line )
+    if(draw_zero_line_)
       zero_line_->Draw("same");
     int i=0;
     for( auto text : texts_ ){
@@ -129,7 +129,6 @@ public:
     ratio_stack_->GetHistogram()->SetTitleOffset(gStyle->GetTitleOffset("Y")* ratio_pad_scale, "Y");
     ratio_stack_->GetHistogram()->SetTitleSize(gStyle->GetTitleSize("X")* ratio_pad_scale, "X");
     ratio_stack_->GetYaxis()->SetNdivisions(5,5, 0);
-//    ratio_stack_-
     if( std::size( axis_titles_ ) > 0 )
       ratio_stack_->GetXaxis()->SetTitle( axis_titles_.at(0).c_str() );
     if( std::size( axis_titles_ ) > 2 )
@@ -158,7 +157,6 @@ protected:
   std::array<float, 2> ratio_range_{};
   TMultiGraph* ratio_stack_;
   std::vector<DrawableObject*> drawable_objects_;
-  ClassDefOverride(Ratio, 1)
 };
 
 #endif // FLOW_DRAWING_TOOLS_DRAW_RATIO_H_

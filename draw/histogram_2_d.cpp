@@ -4,8 +4,6 @@
 
 #include "histogram_2_d.h"
 
-ClassImp(Histogram2D);
-
 Histogram2D::Histogram2D(const std::string &file_name,
                          const std::vector<std::string> &objects,
                          const std::string &title){

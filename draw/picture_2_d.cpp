@@ -13,11 +13,11 @@ void Picture2D::SetAxisTitles(const std::vector<std::string> &axis_titles) {
 void Picture2D::Draw() {
   canvas_->cd();
   histogram_->Draw(draw_option_.c_str());
-  if( is_log_x )
+  if(is_log_x_)
     gPad->SetLogx();
-  if( is_log_y )
+  if(is_log_y_)
     gPad->SetLogy();
-  if( is_log_z )
+  if(is_log_z_)
     gPad->SetLogz();
   if( x_range_.at(0) < x_range_.at(1) ) {
     histogram_->GetXaxis()->SetRangeUser(x_range_.at(0), x_range_.at(1));

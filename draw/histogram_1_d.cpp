@@ -5,8 +5,6 @@
 #include <TProfile.h>
 #include "histogram_1_d.h"
 
-ClassImp(Histogram1D);
-
 Histogram1D::Histogram1D(const std::string &file_name,
                          const std::vector<std::string> &objects,
                          const std::string &title)

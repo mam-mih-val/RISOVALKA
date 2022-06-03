@@ -4,7 +4,6 @@
 
 #include "graph.h"
 #include <TGraphAsymmErrors.h>
-ClassImp(Graph);
 
 Graph::Graph( DrawableObject* other ) : DrawableObject(*other) {
   points_ = new TGraphErrors( other->GetPoints()->GetN() );

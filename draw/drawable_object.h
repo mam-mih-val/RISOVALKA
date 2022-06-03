@@ -23,7 +23,7 @@ public:
       : ReadableObject(file_name, objects), title_(std::move(title)) {}
   ~DrawableObject() override = default;
 
-  int GetColor() const { return color_; }
+  [[nodiscard]] int GetColor() const { return color_; }
   void Fit( TF1* function ){
     this->RefreshPoints();
     points_->Fit(function);
@@ -36,14 +36,14 @@ public:
     this->RefreshPoints();
     return points_;
   }
-  TF1 *GetFit() const { return fit_; }
-  TGraphErrors *GetSysErrorPoints() const { return sys_error_points_; }
+  [[nodiscard]] TF1 *GetFit() const { return fit_; }
+  [[nodiscard]] TGraphErrors *GetSysErrorPoints() const { return sys_error_points_; }
   void SetStyle( int color, int marker ){ color_=color; marker_=marker; }
-  bool IsLine(){ return marker_ < 0; }
+  [[nodiscard]] bool IsLine() const{ return marker_ < 0; }
   void SavePoints(){ points_->Write(); }
   std::string GetTitle() { return title_;}
   void SetTitle(const std::string &title) { title_ = title; }
-  const std::string &GetErrorOption() const { return error_option_; }
+  [[nodiscard]] const std::string &GetErrorOption() const { return error_option_; }
   void SetErrorOption(const std::string &error_option) {
     error_option_ = error_option;
   }
@@ -60,7 +60,6 @@ protected:
   TGraphErrors* sys_error_points_{nullptr};
   std::string error_option_{"Z"};
   std::string title_;
-  ClassDefOverride(DrawableObject, 1)
 };
 
 #endif // FLOW_DRAWING_TOOLS_SRC_DRAWABLE_OBJECT_H_

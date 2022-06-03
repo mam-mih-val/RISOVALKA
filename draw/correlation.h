@@ -58,7 +58,6 @@ protected:
   Qn::DataContainerStatCalculate average_;
   std::vector<Qn::DataContainerStatCalculate> combinations_;
   bool calculate_systematics_from_variation_{false};
-  ClassDefOverride(Correlation, 1)
 };
 
 

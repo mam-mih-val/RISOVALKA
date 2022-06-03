@@ -4,7 +4,6 @@
 
 #include "heap_picture.h"
 #include "TH1.h"
-ClassImp(HeapPicture)
 
 void HeapPicture::Draw() {
   if(auto_legend_){
@@ -29,9 +28,9 @@ void HeapPicture::Draw() {
     }
   }
   canvas_->cd();
-  if( is_log_x )
+  if(is_log_x_)
     gPad->SetLogx();
-  if( is_log_y )
+  if(is_log_y_)
     gPad->SetLogy();
   stack_->Draw("APL");
   if( drawable_objects_.empty() ) {
@@ -63,7 +62,7 @@ void HeapPicture::Draw() {
     stack_->GetYaxis()->SetRangeUser(y_range_.at(0), y_range_.at(1));
     stack_->Draw();
   }
-  if( draw_zero_line )
+  if(draw_zero_line_)
     zero_line_->Draw("same");
   int i=0;
   for( auto text : texts_ ){

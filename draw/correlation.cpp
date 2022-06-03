@@ -3,7 +3,6 @@
 //
 
 #include "correlation.h"
-ClassImp(Correlation);
 
 Correlation::Correlation(const std::string &file_name,
                          const std::vector<std::string> &objects,
