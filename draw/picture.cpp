@@ -36,3 +36,15 @@ void Picture::SavePoints(const std::string& name, const std::string& type){
   //    stack_->SaveAs( save_name.c_str() );
   file_out->Close();
 }
+void Picture::CopyStyle(Picture* other) {
+  resolution_ = other->resolution_;
+  axis_titles_ = other->axis_titles_;
+  draw_zero_line_ = other->draw_zero_line_;
+  x_range_ = other->x_range_;
+  y_range_ = other->y_range_;
+  texts_ = other->texts_;
+  text_sizes_ = other->text_sizes_;
+  is_log_y_ = other->is_log_y_;
+  is_log_x_= other->is_log_x_;
+  is_log_z_ = other->is_log_z_;
+}

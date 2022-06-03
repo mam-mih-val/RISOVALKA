@@ -24,6 +24,7 @@ public:
   void SetZRange(const std::array<float, 2> &z_range) { z_range_ = z_range; }
   void Draw() override;
   [[nodiscard]] TH2F *GetHistogram() const { return histogram_; }
+  void CopyStyle(Picture2D* other);
 
 protected:
   TH2F* histogram_{nullptr};

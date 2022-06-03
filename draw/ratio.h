@@ -27,6 +27,7 @@ public:
   }
   void SetReference(T *reference) { reference_ = reference; }
   void Draw() override{
+    this->Picture::Draw();
     if(auto_legend_){
       assert(legends_.empty());
       legends_.emplace_back( new TLegend() );
@@ -148,6 +149,10 @@ public:
     auto title = ";"+axis_titles.at(0)+";"+axis_titles.at(1);
     stack_->SetTitle( title.c_str() );
   };
+  void CopyStyle(Ratio<T>* other){
+    this->Picture::CopyStyle(other);
+    ratio_range_ = other->ratio_range_;
+  }
 
 
 protected:

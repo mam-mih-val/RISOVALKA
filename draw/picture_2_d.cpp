@@ -11,6 +11,7 @@ void Picture2D::SetAxisTitles(const std::vector<std::string> &axis_titles) {
 }
 
 void Picture2D::Draw() {
+  this->Picture::Draw();
   canvas_->cd();
   histogram_->Draw(draw_option_.c_str());
   if(is_log_x_)
@@ -41,4 +42,8 @@ void Picture2D::Draw() {
     text->Draw("same");
     ++i;
   }
+}
+void Picture2D::CopyStyle(Picture2D* other) {
+  this->Picture::CopyStyle(other);
+  draw_option_ = other->draw_option_;
 }

@@ -34,6 +34,7 @@ set(SOURCES
         draw/double_differential_histogram.cpp
         draw/multi_correlation.cpp
         draw/palette.cpp
+        draw/book.cpp
         )
 set(HEADERS
         draw/readable_object.h
@@ -51,6 +52,7 @@ set(HEADERS
         draw/double_differential_histogram.h
         draw/multi_correlation.h
         draw/palette.h
+        draw/book.h
         )
 
 set(PCM_FILE_NAME libDraw)

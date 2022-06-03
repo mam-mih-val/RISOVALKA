@@ -24,7 +24,8 @@ public:
   virtual void SetAxisTitles(const std::vector<std::string> &axis_titles) {}
   void SetXRange(const std::array<float, 2> &x_range) { x_range_ = x_range; }
   void SetYRange(const std::array<float, 2> &y_range) { y_range_ = y_range; }
-  virtual void Draw() {};
+  bool IsDrawn() const { return is_drawn_; }
+  virtual void Draw() { is_drawn_ = true; };
   void Save( const std::string& type );
   void Save( const std::string& name, const std::string& type );
   void SavePoints(const std::string& name, const std::string& type);
@@ -37,6 +38,7 @@ public:
   void SetLogY(bool is_log_y=true) { is_log_y_ = is_log_y; }
   void SetLogX(bool is_log_x=true) { is_log_x_ = is_log_x; }
   void SetLogZ(bool is_log_z=true) { is_log_z_ = is_log_z; }
+  void CopyStyle(Picture* other);
 
 protected:
   std::string name_;
@@ -55,6 +57,7 @@ protected:
   bool is_log_y_{false};
   bool is_log_x_{false};
   bool is_log_z_{false};
+  bool is_drawn_{false};
   bool auto_legend_{true};
 };
 
