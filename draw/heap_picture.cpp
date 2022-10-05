@@ -6,6 +6,7 @@
 #include "TH1.h"
 
 void HeapPicture::Draw() {
+  this->Picture::Draw();
   if(auto_legend_){
     assert(legends_.empty());
     legends_.emplace_back( new TLegend() );
@@ -75,6 +76,7 @@ void HeapPicture::Draw() {
   }
   for(auto legend : legends_) {
     assert(legend);
+    legend->SetFillStyle(0);
     legend->Draw("same");
   }
 }

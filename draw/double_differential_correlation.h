@@ -58,7 +58,11 @@ public:
   void SetProjectionAxis(const Qn::AxisD &projection_axis) {
     projection_axis_ = projection_axis;
   }
-  [[nodiscard]] const std::vector<Graph *> &GetProjections() const { return projections_; }
+  [[nodiscard]] const std::vector<Graph *> &GetProjections() {
+    if( projections_.empty() )
+      this->Calculate();
+    return projections_;
+  }
   void SetSliceAxis(const Qn::AxisD &slice_axis) { slice_axis_ = slice_axis; }
   void Calculate();
   void SaveToFile( const std::string& file_name );
