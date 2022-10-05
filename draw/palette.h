@@ -20,13 +20,14 @@ public:
   void SetMarker(int marker) {
     markers_.at(0) = marker; }
   void SetPalette(const std::vector<int> &palette) { palette_ = palette; }
+  void BiasPalette( bool bias_palette = true ){ bias_palette_ = bias_palette; }
 protected:
   template<class T>
   void ColorObjects(std::vector<T*> objects){
     if( !std::is_base_of<DrawableObject, T>::value )
       throw std::runtime_error( __func__ + std::string(" vector of objects is not based of DrawableObject") );
     std::vector<int> colors;
-    if( objects.size() < palette_.size() ){
+    if( objects.size() < palette_.size() && bias_palette_ ){
       auto bias = palette_.size() / objects.size();
       for( size_t i=0; i<objects.size(); ++i )
         colors.push_back(palette_.at(i*bias));
@@ -70,6 +71,7 @@ protected:
       kOrange-3,
       kRed,
   };
+  bool bias_palette_{true};
 };
 
 #endif // RISOVALKA_DRAW_PALETTE_H_
