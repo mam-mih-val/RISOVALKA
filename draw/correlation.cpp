@@ -6,7 +6,8 @@
 
 Correlation::Correlation(const std::string &file_name,
                          const std::vector<std::string> &objects,
-                         const std::string &title)
+                         const std::string &title,
+                         const std::vector<double>& weights)
     : DrawableObject(file_name, objects, title) {
   std::vector<Qn::DataContainerStatCalculate> containers;
   for( const auto& name : objects ){
@@ -16,6 +17,16 @@ Correlation::Correlation(const std::string &file_name,
     } catch (std::exception&) {
       containers.emplace_back(
           *(this->ReadObjectFromFile<Qn::DataContainerStatCollect>(name)));
+    }
+  }
+  if( !weights.empty() ) {
+    int idx=0;
+    for (auto &container: containers) {
+      try{ container = container * weights.at(idx); }catch( const std::out_of_range& e){
+        std::string error_msg = std::string(__func__ ) + ": The vector of weights is shorter than the vector of averaging Qn::DataContainer's";
+        throw std::out_of_range(error_msg);
+      }
+      idx++;
     }
   }
   average_ = containers.front();

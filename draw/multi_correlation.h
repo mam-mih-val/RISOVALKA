@@ -20,7 +20,10 @@ public:
         correlations_.push_back( new Correlation(*corr) );
   };
   ~MultiCorrelation() override = default;
-  void AddCorrelation( const std::string& file, const std::vector<std::string>& objects, const std::string& title );
+  void AddCorrelation( const std::string& file,
+                       const std::vector<std::string>& objects,
+                       const std::string& title,
+                       const std::vector<double>& weights_={});
   void Scale( double scale );
   void Rebin( const std::vector<Qn::AxisD>& axes);
   void Select( const std::vector<Qn::AxisD>& axes);

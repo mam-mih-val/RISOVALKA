@@ -21,12 +21,23 @@ public:
   }
   void
   SetAxisTitles(const std::vector<std::string> &axis_titles) override;
+
+  void SetTitleSize(const std::vector<float> &title_font_size) {
+    title_size_ = title_font_size;
+  }
+
+  void SetLabelSize(const std::vector<float> &label_size) {
+    label_size_ = label_size;
+  }
+
   void SetZRange(const std::array<float, 2> &z_range) { z_range_ = z_range; }
   void Draw() override;
   [[nodiscard]] TH2F *GetHistogram() const { return histogram_; }
   void CopyStyle(Picture2D* other);
 
 protected:
+  std::vector<float> title_size_;
+  std::vector<float> label_size_;
   TH2F* histogram_{nullptr};
   std::string draw_option_{"colz"};
   std::array<float,2> z_range_;

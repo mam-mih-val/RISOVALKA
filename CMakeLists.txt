@@ -64,7 +64,7 @@ ROOT_GENERATE_DICTIONARY(G__Draw ${HEADERS}
         -I ${CMAKE_SOURCE_DIR}
         )
 add_library(Draw SHARED ${SOURCES} G__Draw.cxx )
-target_link_libraries(Draw PRIVATE QnTools::Base ROOT::RIO)
+target_link_libraries(Draw PRIVATE QnTools::Base ROOT::RIO ROOT::ProofBench)
 
 add_executable(PNCOBATb draw/draw_picture.cpp)
-target_link_libraries(PNCOBATb QnTools::Base ROOT::RIO Draw)
+target_link_libraries(PNCOBATb ROOT::RIO Draw)

@@ -17,7 +17,8 @@ public:
   Correlation(Correlation const&) = default;
   Correlation(const std::string &file_name,
               const std::vector<std::string> &objects,
-              const std::string &title);
+              const std::string &title,
+              const std::vector<double>& weights = {});
   ~Correlation() override;
   void RefreshPoints() override;
   Qn::DataContainerStatCalculate &GetCorrelation() {

@@ -33,6 +33,16 @@ void Picture2D::Draw() {
     histogram_->SetMaximum(z_range_.at(1));
     histogram_->Draw(draw_option_.c_str());
   }
+  if( ! title_size_.empty() ){
+    assert(title_size_.size() == 2);
+    histogram_->GetXaxis()->SetTitleSize(title_size_.at(0));
+    histogram_->GetYaxis()->SetTitleSize(title_size_.at(1));
+  }
+  if( ! label_size_.empty() ){
+    assert(label_size_.size() == 2);
+    histogram_->GetXaxis()->SetLabelSize(label_size_.at(0));
+    histogram_->GetYaxis()->SetLabelSize(label_size_.at(1));
+  }
   int i=0;
   for( auto text : texts_ ){
     text->SetNDC();
