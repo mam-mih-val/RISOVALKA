@@ -12,8 +12,9 @@ public:
   Graph() = default;
   Graph(const std::string &file_name, const std::vector<std::string> &objects,
         const std::string &title);
+  Graph(const std::string &file_name, const std::string &title, const std::string &format="%lg %lg %lg %lg");
   explicit Graph( DrawableObject* );
-  ~Graph() override;
+  ~Graph() override = default;
   void RefreshPoints() override;
   void RecalculateXaxis( const std::vector<double>& x_axis );
   void Scale(double s);

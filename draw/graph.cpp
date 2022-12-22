@@ -93,7 +93,6 @@ Graph::Graph(const std::string &file_name,
   this->SetMarkerStyle();
 }
 void Graph::RefreshPoints() { this->SetMarkerStyle(); }
-Graph::~Graph() {}
 
 void Graph::Scale( double s ){
   for( int i=0; i<points_->GetN(); ++i ){
@@ -114,4 +113,10 @@ void Graph::Scale( double s ){
       sys_error_points_->SetPointError(i, x_err, y_err*s);
     }
   }
+}
+
+Graph::Graph(const std::string &file_name, const std::string &title, const std::string &format) {
+  title_ = title;
+  points_ = new TGraphErrors(file_name.c_str(), format.c_str() );
+  points_->SetTitle(title.c_str());
 }
