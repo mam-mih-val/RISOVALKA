@@ -5,7 +5,7 @@ set (RISOVALKA_VERSION_MINOR 0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_BUILD_TYPE debug)
 
-find_package( Boost REQUIRED COMPONENTS program_options)
+find_package(Boost REQUIRED COMPONENTS program_options)
 find_package(ROOT REQUIRED)
 find_package(QnTools REQUIRED)
 

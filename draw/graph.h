@@ -18,6 +18,8 @@ public:
   void RefreshPoints() override;
   void RecalculateXaxis( const std::vector<double>& x_axis );
   void Scale(double s);
+  void ScaleXaxis( double scale );
+  void TranslateXaxis( double translation );
   void SetPoints( TGraphErrors* graph ){ points_ = graph; }
 };
 

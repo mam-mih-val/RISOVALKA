@@ -120,3 +120,45 @@ Graph::Graph(const std::string &file_name, const std::string &title, const std::
   points_ = new TGraphErrors(file_name.c_str(), format.c_str() );
   points_->SetTitle(title.c_str());
 }
+
+void Graph::ScaleXaxis(double scale) {
+  for( int i=0; i<points_->GetN(); ++i ){
+    auto x = points_->GetPointX( i );
+    auto y = points_->GetPointY( i );
+    auto x_err = points_->GetErrorX( i );
+    auto y_err = points_->GetErrorY( i );
+    points_->SetPoint(i, x*scale, y);
+    points_->SetPointError(i, x_err, y_err);
+  }
+  if( sys_error_points_ ){
+    for( int i=0; i<sys_error_points_->GetN(); ++i ){
+      auto x = sys_error_points_->GetPointX( i );
+      auto y = sys_error_points_->GetPointY( i );
+      auto x_err = sys_error_points_->GetErrorX( i );
+      auto y_err = sys_error_points_->GetErrorY( i );
+      sys_error_points_->SetPoint(i, x*scale, y);
+      sys_error_points_->SetPointError(i, x_err, y_err);
+    }
+  }
+}
+
+void Graph::TranslateXaxis(double translation) {
+  for( int i=0; i<points_->GetN(); ++i ){
+    auto x = points_->GetPointX( i );
+    auto y = points_->GetPointY( i );
+    auto x_err = points_->GetErrorX( i );
+    auto y_err = points_->GetErrorY( i );
+    points_->SetPoint(i, x+translation, y);
+    points_->SetPointError(i, x_err, y_err);
+  }
+  if( sys_error_points_ ){
+    for( int i=0; i<sys_error_points_->GetN(); ++i ){
+      auto x = sys_error_points_->GetPointX( i );
+      auto y = sys_error_points_->GetPointY( i );
+      auto x_err = sys_error_points_->GetErrorX( i );
+      auto y_err = sys_error_points_->GetErrorY( i );
+      sys_error_points_->SetPoint(i, x+translation, y);
+      sys_error_points_->SetPointError(i, x_err, y_err);
+    }
+  }
+}

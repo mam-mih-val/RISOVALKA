@@ -55,10 +55,15 @@ public:
         calculate_systematics_from_variation;
   }
 
+  void SetErrorType(Qn::StatCalculate::ErrorType error_type) {
+    error_type_ = error_type;
+  }
+
 protected:
   Qn::DataContainerStatCalculate average_;
   std::vector<Qn::DataContainerStatCalculate> combinations_;
   bool calculate_systematics_from_variation_{false};
+  Qn::StatCalculate::ErrorType error_type_{Qn::Stat::ErrorType::BOOTSTRAP};
 };
 
 

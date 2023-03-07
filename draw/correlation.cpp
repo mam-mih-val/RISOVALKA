@@ -51,7 +51,7 @@ Correlation operator/( const Correlation& num, const Correlation& den){
 }
 
 void Correlation::RefreshPoints() {
-  average_.SetErrors(Qn::StatCalculate::ErrorType::BOOTSTRAP);
+  average_.SetErrors(error_type_);
   points_ = Qn::ToTGraph(average_);
   for( int i=0; i<points_->GetN(); ++i ){
     auto y_err = points_->GetErrorY(i);
