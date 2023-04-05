@@ -11,6 +11,7 @@
 class Book {
 public:
   Book() = default;
+  ~Book() = default;
   void SavePDF(const std::string& file_name);
   void SaveRoot(const std::string& file_name);
   void ApplyLayoutAll(){ for( auto pic : canvases_ ){ pic->CopyStyle(layout_); } }

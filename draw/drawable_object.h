@@ -24,9 +24,12 @@ public:
   ~DrawableObject() override = default;
 
   [[nodiscard]] int GetColor() const { return color_; }
-  void Fit( TF1* function ){
+  void Fit( TF1* function, std::vector<float> range = {} ){
     this->RefreshPoints();
-    points_->Fit(function);
+    if( range.size() < 2 )
+      points_->Fit(function);
+    else
+      points_->Fit(function, "", "", range.at(0), range.at(1));
     fit_ = dynamic_cast<TF1*>( points_->GetListOfFunctions()->Last());
     if(fit_)
       fit_->SetLineColor(color_);

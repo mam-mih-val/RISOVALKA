@@ -79,6 +79,10 @@ void HeapPicture::Draw() {
     legend->SetFillStyle(0);
     legend->Draw("same");
   }
+  for( auto line : lines_ ){
+    assert(line);
+    line->Draw("same");
+  }
 }
 void HeapPicture::SetAxisTitles(const std::vector<std::string> &axis_titles) {
   assert(axis_titles.size()==2);

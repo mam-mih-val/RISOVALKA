@@ -14,16 +14,20 @@
 #pragma link C++ class Graph;
 #pragma link C++ class Histogram1D;
 #pragma link C++ class Histogram2D;
-#pragma link C++ class Correlation;
 #pragma link C++ class Picture;
 #pragma link C++ class Picture2D;
 #pragma link C++ class HeapPicture;
-#pragma link C++ class dv1dy_container;
-#pragma link C++ class DoubleDifferentialCorrelation;
-#pragma link C++ class DoubleDifferentialHistogram;
-#pragma link C++ class MultiCorrelation;
-#pragma link C++ class Palette;
-#pragma link C++ class Ratio<Correlation>;
 #pragma link C++ class Ratio<Histogram1D>;
+#pragma link C++ class DoubleDifferentialHistogram;
+#pragma link C++ class Palette;
+#pragma link C++ class Book;
 
-#endif
+#ifdef USE_QN_TOOLS
+#pragma link C++ class Correlation;
+#pragma link C++ class DoubleDifferentialCorrelation;
+#pragma link C++ class dv1dy_container;
+#pragma link C++ class MultiCorrelation;
+#pragma link C++ class Ratio<Correlation>;
+#endif // USE_QN_TOOLS
+
+#endif // defined(__ROOTCLING__) || defined(__MAKECINT__)

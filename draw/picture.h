@@ -10,6 +10,7 @@
 #include <TAxis.h>
 #include <TObject.h>
 #include <TLegend.h>
+#include <TLine.h>
 
 #include "drawable_object.h"
 #include <TLatex.h>
@@ -33,6 +34,11 @@ public:
   void DrawZeroLine(bool draw_zero_line) { draw_zero_line_ = draw_zero_line; }
   void SetAutoLegend(bool auto_legend) { auto_legend_ = auto_legend; }
   void AddText( const TLatex& text, float size=0.04 ){ texts_.push_back(new TLatex(text)); text_sizes_.push_back(size); }
+  void AddLine( const TLine& line, int color=kRed, int style=1 ){
+    lines_.push_back(new TLine(line));
+    lines_.back()->SetLineColor(color);
+    lines_.back()->SetLineStyle(style);
+  }
   void AddLegend( TLegend* legend ){ legends_.push_back( legend ); auto_legend_=false; }
   void AddFunction( TF1* function ){ functions_.push_back(function); }
   void SetLogY(bool is_log_y=true) { is_log_y_ = is_log_y; }
@@ -54,6 +60,7 @@ protected:
   std::vector<TLatex*> texts_;
   std::vector<float> text_sizes_;
   std::vector<TLegend*> legends_;
+  std::vector<TLine*> lines_;
   bool is_log_y_{false};
   bool is_log_x_{false};
   bool is_log_z_{false};
