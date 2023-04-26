@@ -30,10 +30,15 @@ Correlation::Correlation(const std::string &file_name,
     }
   }
   average_ = containers.front();
-  for( size_t i=1; i< containers.size(); ++i )
-    average_ = average_ + containers.at(i);
-  average_ = average_ / (double)containers.size();
+  auto* list_merge = new TList;
+  for( size_t i=1; i< containers.size(); ++i ) {
+    auto* to_merge = new Qn::DataContainerStatCalculate( containers.at(i) );
+    list_merge->Add(to_merge);
+  }
+  average_.Merge( list_merge );
+//  average_ = average_ / (double)containers.size();
   combinations_ = containers;
+  delete list_merge;
 }
 Correlation::~Correlation() {}
 
