@@ -32,7 +32,7 @@ if(QnTools_FOUND)
         draw/multi_correlation.cpp
         draw/palette.cpp
         draw/book.cpp
-        draw/file_manager.cc
+#        draw/file_manager.cc
         )
     set(HEADERS
         draw/readable_object.h
@@ -51,7 +51,7 @@ if(QnTools_FOUND)
         draw/multi_correlation.h
         draw/palette.h
         draw/book.h
-        draw/file_manager.h
+#        draw/file_manager.h
 
             )
 else()
