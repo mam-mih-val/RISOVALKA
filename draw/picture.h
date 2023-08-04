@@ -21,7 +21,7 @@ public:
   Picture() = default;
   virtual ~Picture() = default;
   Picture(std::string name, const std::array<int, 2> &resolution);
-  [[nodiscard]] TCanvas *GetCanvas() const { return canvas_; }
+  [[nodiscard]] TCanvas *GetCanvas() const { return canvas_.get(); }
   virtual void SetAxisTitles(const std::vector<std::string> &axis_titles) {}
   void SetXRange(const std::array<float, 2> &x_range) { x_range_ = x_range; }
   void SetYRange(const std::array<float, 2> &y_range) { y_range_ = y_range; }
@@ -30,17 +30,17 @@ public:
   void Save( const std::string& type );
   void Save( const std::string& name, const std::string& type );
   void SavePoints(const std::string& name, const std::string& type);
-  [[nodiscard]] TF1 *GetZeroLine() const { return zero_line_; }
+  [[nodiscard]] TF1 *GetZeroLine() const { return zero_line_.get(); }
   void DrawZeroLine(bool draw_zero_line) { draw_zero_line_ = draw_zero_line; }
   void SetAutoLegend(bool auto_legend) { auto_legend_ = auto_legend; }
-  void AddText( const TLatex& text, float size=0.04 ){ texts_.push_back(new TLatex(text)); text_sizes_.push_back(size); }
+  void AddText( const TLatex& text, float size=0.04 ){ texts_.push_back ( std::make_unique<TLatex>(text) ); text_sizes_.push_back(size); }
   void AddLine( const TLine& line, int color=kRed, int style=1 ){
-    lines_.push_back(new TLine(line));
+    lines_.push_back( std::make_unique<TLine>(line) );
     lines_.back()->SetLineColor(color);
     lines_.back()->SetLineStyle(style);
   }
-  void AddLegend( TLegend* legend ){ legends_.push_back( legend ); auto_legend_=false; }
-  void AddFunction( TF1* function ){ functions_.push_back(function); }
+  void AddLegend( TLegend* legend ){ legends_.push_back( std::unique_ptr<TLegend>(legend) ); auto_legend_ = false; }
+  void AddFunction( TF1* function ){ functions_.push_back( std::unique_ptr<TF1>(function) ); }
   void SetLogY(bool is_log_y=true) { is_log_y_ = is_log_y; }
   void SetLogX(bool is_log_x=true) { is_log_x_ = is_log_x; }
   void SetLogZ(bool is_log_z=true) { is_log_z_ = is_log_z; }
@@ -49,18 +49,19 @@ public:
 protected:
   std::string name_;
   std::array<int, 2> resolution_;
-  TCanvas* canvas_;
-  TMultiGraph* stack_;
-  std::vector<TF1*> functions_;
+  std::unique_ptr<TCanvas> canvas_;
+  std::unique_ptr<TMultiGraph> stack_;
+  std::vector< std::unique_ptr<TF1> > functions_;
   std::vector<std::string> axis_titles_;
-  TF1* zero_line_{nullptr};
-  bool draw_zero_line_{true};
+  std::unique_ptr<TF1> zero_line_{};
   std::array<float, 2> x_range_;
   std::array<float, 2> y_range_;
-  std::vector<TLatex*> texts_;
+  std::vector<std::unique_ptr<TLatex>> texts_;
   std::vector<float> text_sizes_;
-  std::vector<TLegend*> legends_;
-  std::vector<TLine*> lines_;
+  std::vector< std::unique_ptr<TLegend> > legends_;
+  std::vector<std::unique_ptr<TLine>> lines_;
+
+  bool draw_zero_line_{true};
   bool is_log_y_{false};
   bool is_log_x_{false};
   bool is_log_z_{false};

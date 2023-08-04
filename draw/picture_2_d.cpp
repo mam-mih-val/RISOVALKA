@@ -44,7 +44,7 @@ void Picture2D::Draw() {
     histogram_->GetYaxis()->SetLabelSize(label_size_.at(1));
   }
   int i=0;
-  for( auto text : texts_ ){
+  for( const auto& text : texts_ ){
     text->SetNDC();
     text->SetTextSize(text_sizes_.at(i));
 //    text->SetLineWidth(1);

@@ -19,7 +19,7 @@ protected:
   ReadableObject(std::string file_name,
                  std::vector<std::string> objects)
       : file_name_(std::move(file_name)), objects_(std::move(objects)) {}
-  virtual ~ReadableObject() = default;
+  virtual ~ReadableObject() { if(file_) file_->Close(); };
   template <typename T>
   T* ReadObjectFromFile(const std::string& obj_name){
     if( !file_ )

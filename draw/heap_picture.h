@@ -14,7 +14,11 @@ public:
   ~HeapPicture() override;
   void AddDrawable( DrawableObject* obj ){
     assert(obj);
-    drawable_objects_.push_back(obj);
+    drawable_objects_.push_back( std::unique_ptr<DrawableObject>(obj) );
+  }
+  void AddDrawable( std::unique_ptr<DrawableObject>&& obj ){
+    assert(obj);
+    drawable_objects_.push_back( std::move(obj) );
   }
   void AddDrawables( const std::vector<DrawableObject*>& objects ){
     for( auto obj : objects ){
@@ -25,7 +29,7 @@ public:
   void Draw() override;
 
 protected:
-  std::vector<DrawableObject*> drawable_objects_;
+  std::vector< std::unique_ptr<DrawableObject> > drawable_objects_;
 };
 
 #endif // FLOW_DRAWING_TOOLS_DRAW_HEAP_PICTURE_H_

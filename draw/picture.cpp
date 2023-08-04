@@ -6,11 +6,11 @@
 
 Picture::Picture(std::string name, const std::array<int, 2> &resolution)
     : name_(std::move(name)), resolution_(resolution) {
-  canvas_ =  new TCanvas( name_.c_str(), "", resolution.at(0), resolution.at(1) );
+  canvas_ =  std::make_unique<TCanvas>( name_.c_str(), "", resolution.at(0), resolution.at(1) );
   canvas_->SetBatch(true);
   std::string stack_name = name_+"_stack";
-  stack_ =  new TMultiGraph(stack_name.c_str(), "");
-  zero_line_ = new TF1( "zero_line", "0", -100, 100 );
+  stack_ =  std::make_unique<TMultiGraph>(stack_name.c_str(), "");
+  zero_line_ = std::make_unique<TF1>( "zero_line", "0", -100, 100 );
 }
 void Picture::Save( const std::string& type ){
   assert(canvas_);
@@ -42,7 +42,7 @@ void Picture::CopyStyle(Picture* other) {
   draw_zero_line_ = other->draw_zero_line_;
   x_range_ = other->x_range_;
   y_range_ = other->y_range_;
-  texts_ = other->texts_;
+  texts_ = std::move(other->texts_);
   text_sizes_ = other->text_sizes_;
   is_log_y_ = other->is_log_y_;
   is_log_x_= other->is_log_x_;

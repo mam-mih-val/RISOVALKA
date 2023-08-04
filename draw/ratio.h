@@ -95,7 +95,7 @@ public:
     if(draw_zero_line_)
       zero_line_->Draw("same");
     int i=0;
-    for( auto text : texts_ ){
+    for( const auto& text : texts_ ){
       text->SetNDC();
       text->SetTextSize(text_sizes_.at(i));
 //    text->SetLineWidth(1);
@@ -103,7 +103,7 @@ public:
       text->Draw("same");
       ++i;
     }
-    for(auto legend : legends_) {
+    for( const auto& legend : legends_) {
       assert(legend);
       legend->Draw("same");
     }

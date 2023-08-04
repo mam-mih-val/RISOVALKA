@@ -13,18 +13,19 @@ public:
   Book() = default;
   ~Book() = default;
   void SavePDF(const std::string& file_name);
+  void SavePostscript(const std::string& file_name);
   void SaveRoot(const std::string& file_name);
-  void ApplyLayoutAll(){ for( auto pic : canvases_ ){ pic->CopyStyle(layout_); } }
-  void SetLayout(Picture *layout) { layout_ = layout; }
+  void ApplyLayoutAll(){ for( const auto& pic : canvases_ ){ pic->CopyStyle(layout_.get()); } }
+  void SetLayout(Picture *layout) { layout_.reset(layout); }
   void AddPage( Picture* pic, bool apply_layout=true ){
-    canvases_.push_back( pic );
+    canvases_.push_back( std::unique_ptr<Picture>(pic) );
     if( apply_layout && layout_ )
-      pic->CopyStyle(layout_);
+      pic->CopyStyle( layout_.get() );
   }
 
 protected:
-  std::vector<Picture*> canvases_;
-  Picture* layout_{nullptr};
+  std::vector<std::unique_ptr<Picture>> canvases_;
+  std::unique_ptr<Picture> layout_;
 };
 
 #endif // RISOVALKA_DRAW_BOOK_H_

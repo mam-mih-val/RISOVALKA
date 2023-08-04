@@ -11,7 +11,7 @@ void HeapPicture::Draw() {
     assert(legends_.empty());
     legends_.emplace_back( new TLegend() );
   }
-  for( auto obj : drawable_objects_ ){
+  for( const auto& obj : drawable_objects_ ){
     if( obj->IsLine() ) {
       std::string opt{"L+" + obj->GetErrorOption()};
       stack_->Add(obj->GetPoints(), opt.c_str());
@@ -49,7 +49,7 @@ void HeapPicture::Draw() {
       functions_.at(i)->Draw("same");
     }
   } else {
-    for (auto func : functions_) {
+    for (const auto& func : functions_) {
       if (func)
         func->Draw("same");
     }
@@ -66,20 +66,20 @@ void HeapPicture::Draw() {
   if(draw_zero_line_)
     zero_line_->Draw("same");
   int i=0;
-  for( auto text : texts_ ){
+  for( const auto& text : texts_ ){
     text->SetNDC();
     text->SetTextSize(text_sizes_.at(i));
 //    text->SetLineWidth(1);
 //    text.SetLineColor(kBlack);
-    text->Draw("same");
+    text->Draw("same+batch");
     ++i;
   }
-  for(auto legend : legends_) {
+  for(const auto& legend : legends_) {
     assert(legend);
     legend->SetFillStyle(0);
     legend->Draw("same");
   }
-  for( auto line : lines_ ){
+  for( const auto& line : lines_ ){
     assert(line);
     line->Draw("same");
   }

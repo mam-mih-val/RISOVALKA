@@ -32,6 +32,7 @@ if(QnTools_FOUND)
         draw/multi_correlation.cpp
         draw/palette.cpp
         draw/book.cpp
+        draw/file_manager.cc
         )
     set(HEADERS
         draw/readable_object.h
@@ -50,7 +51,9 @@ if(QnTools_FOUND)
         draw/multi_correlation.h
         draw/palette.h
         draw/book.h
-        )
+        draw/file_manager.h
+
+            )
 else()
     message( "QnTools is not found and the project will be compiled without related to drawing correlations" )
     include_directories(${CMAKE_SOURCE_DIR} ${Boost_INCLUDE_DIRS} ${ROOT_INCLUDE_DIRS} )
@@ -88,11 +91,11 @@ add_library(Draw SHARED ${SOURCES} G__Draw.cxx )
 
 if(QnTools_FOUND)
     ROOT_GENERATE_DICTIONARY(G__Draw ${HEADERS} LINKDEF draw/DrawLinkDef.h OPTIONS -DUSE_QN_TOOLS)
-    target_link_libraries(Draw PUBLIC QnTools::Base ROOT::RIO ROOT::ProofBench)
+    target_link_libraries(Draw PUBLIC QnTools::Base ROOT::RIO ROOT::ProofBench ROOT::Postscript ROOT::ASImage ROOT::Graf ROOT::Ged)
     target_compile_definitions(Draw PUBLIC -DUSE_QN_TOOLS)
 else()
     ROOT_GENERATE_DICTIONARY(G__Draw ${HEADERS} LINKDEF draw/DrawLinkDef.h)
-    target_link_libraries(Draw PUBLIC ROOT::RIO ROOT::ProofBench)
+    target_link_libraries(Draw PUBLIC ROOT::RIO ROOT::ProofBench ROOT::Postscript)
 endif()
 
 add_executable(PNCOBATb draw/draw_picture.cpp)
