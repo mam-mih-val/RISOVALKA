@@ -13,14 +13,14 @@ public:
   Graph(const std::string &file_name, const std::vector<std::string> &objects,
         const std::string &title);
   Graph(const std::string &file_name, const std::string &title, const std::string &format="%lg %lg %lg %lg");
-  explicit Graph( DrawableObject* );
+  explicit Graph( const DrawableObject& other ) : DrawableObject(other){};
   ~Graph() override = default;
   void RefreshPoints() override;
   void RecalculateXaxis( const std::vector<double>& x_axis );
   void Scale(double s);
   void ScaleXaxis( double scale );
   void TranslateXaxis( double translation );
-  void SetPoints( TGraphErrors* graph ){ points_ = graph; }
+  void SetPoints( TGraphErrors* graph ){ points_.reset(graph); }
 };
 
 #endif // FLOW_DRAWING_TOOLS_SRC_GRAPH_H_

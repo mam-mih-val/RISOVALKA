@@ -4,6 +4,18 @@
 
 #include "drawable_object.h"
 
+#include <memory>
+
+DrawableObject::DrawableObject(const DrawableObject &other)  {
+  color_ = other.color_;
+  marker_ = other.marker_;
+  points_ = std::make_unique<TGraphErrors>( *other.points_ );
+  if( other.sys_error_points_ )
+    sys_error_points_ = std::make_unique<TGraphErrors>( *other.sys_error_points_ );
+  error_option_ = other.error_option_;
+  title_ = other.title_;
+}
+
 void DrawableObject::SetMarkerStyle() {
   points_->SetTitle(title_.c_str());
   if( marker_ > 0 )
@@ -29,7 +41,7 @@ void DrawableObject::SetMarkerStyle() {
 
 void DrawableObject::SetSysErrors( double x_error, double relative_sys_error ){
   this->RefreshPoints();
-  sys_error_points_ = new TGraphErrors( points_->GetN() );
+  sys_error_points_ = std::make_unique<TGraphErrors>( points_->GetN() );
   for( int i=0; i<points_->GetN(); ++i ){
     auto x = points_->GetPointX(i);
     auto y = points_->GetPointY(i);
@@ -41,7 +53,7 @@ void DrawableObject::SetSysErrors( double x_error, double relative_sys_error ){
 
 void DrawableObject::SetSysErrors( double x_error, std::vector<double> systematical_errors ){
   this->RefreshPoints();
-  sys_error_points_ = new TGraphErrors( points_->GetN() );
+  sys_error_points_ = std::make_unique<TGraphErrors>( points_->GetN() );
   for( int i=0; i<points_->GetN(); ++i ){
     auto x = points_->GetPointX(i);
     auto y = points_->GetPointY(i);
@@ -53,7 +65,7 @@ void DrawableObject::SetSysErrors( double x_error, std::vector<double> systemati
 
 void DrawableObject::SetSysErrors( std::vector<double> x_errors, std::vector<double> y_errors ){
   this->RefreshPoints();
-  sys_error_points_ = new TGraphErrors( points_->GetN() );
+  sys_error_points_ = std::make_unique<TGraphErrors>( points_->GetN() );
   for( int i=0; i<points_->GetN(); ++i ){
     auto x = points_->GetPointX(i);
     auto y = points_->GetPointY(i);

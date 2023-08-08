@@ -23,9 +23,9 @@ public:
   void BiasPalette( bool bias_palette = true ){ bias_palette_ = bias_palette; }
 protected:
   template<class T>
-  void ColorObjects(std::vector<T*> objects){
-    if( !std::is_base_of<DrawableObject, T>::value )
-      throw std::runtime_error( __func__ + std::string(" vector of objects is not based of DrawableObject") );
+  void ColorObjects(const std::vector<T>& objects){
+//    if( !std::is_base_of<DrawableObject, T>::value )
+//      throw std::runtime_error( __func__ + std::string(" vector of objects is not based of DrawableObject") );
     std::vector<int> colors;
     if( objects.size() < palette_.size() && bias_palette_ ){
       auto bias = palette_.size() / objects.size();
@@ -44,7 +44,7 @@ protected:
       }
     }
     int i=0;
-    for( auto obj : objects ){
+    for( const auto& obj : objects ){
       if( markers_.size() != 1 ) {
         try {
           obj->SetStyle(colors.at(i), markers_.at(i));

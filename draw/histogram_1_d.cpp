@@ -12,12 +12,12 @@ Histogram1D::Histogram1D(const std::string &file_name,
   std::vector<TH1*> histograms;
   for( const auto& name : objects ){
     try {
-      histograms.push_back(this->ReadObjectFromFile<TH1>(name));
+      histograms.push_back(FileManager::ReadObject<TH1>(file_name, name));
     } catch (std::exception&) {
-      histograms.push_back(dynamic_cast<TH1*>(this->ReadObjectFromFile<TProfile>(name)));
+      histograms.push_back(dynamic_cast<TH1*>(FileManager::ReadObject<TProfile>(file_name, name)));
     }
   }
-  histogram_ = (TH1*) histograms.front()->Clone();
+  histogram_= std::unique_ptr<TH1>( dynamic_cast<TH1*>(histograms.front()->Clone()));
   for (size_t i=1; i<histograms.size(); ++i) {
     histogram_->Add( histograms.at(i) );
   }
@@ -29,7 +29,7 @@ Histogram1D::~Histogram1D() {}
 
 void Histogram1D::RefreshPoints() {
   if( !points_ )
-    points_ = new TGraphErrors( histogram_->GetNbinsX() );
+    points_ = std::make_unique<TGraphErrors>( histogram_->GetNbinsX() );
   for( int i=0; i<histogram_->GetNbinsX(); ++i ){
     auto x = histogram_->GetBinCenter(i+1);
     auto y = histogram_->GetBinContent(i+1);
@@ -40,15 +40,20 @@ void Histogram1D::RefreshPoints() {
   this->SetMarkerStyle();
 }
 
-Histogram1D operator/( const Histogram1D& num, const Histogram1D& den){
+Histogram1D&& operator/( const Histogram1D& num, const Histogram1D& den){
   Histogram1D result;
   result.title_ = num.title_+"_ratio";
   result.marker_ = num.marker_;
   result.color_ = num.color_;
-  auto num_histo = num.histogram_;
-  auto den_histo = den.histogram_;
-  auto res_histo = dynamic_cast<TH1F*>(num_histo->Clone( result.title_.c_str() ));
-  res_histo->Divide( den_histo );
-  result.histogram_ = res_histo;
-  return result;
+
+  const auto& num_histo = num.histogram_;
+  const auto& den_histo = den.histogram_;
+  auto res_histo = std::unique_ptr<TH1>( dynamic_cast<TH1F*>(num_histo->Clone( result.title_.c_str() )) );
+  res_histo->Divide( den_histo.get() );
+  result.histogram_ = std::move(res_histo);
+  return std::move(result);
+}
+
+Histogram1D::Histogram1D(const Histogram1D &other) : DrawableObject(other) {
+  histogram_ = std::unique_ptr<TH1>( dynamic_cast< TH1* >( other.histogram_->Clone() ) );
 }

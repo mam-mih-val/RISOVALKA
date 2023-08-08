@@ -16,8 +16,8 @@ public:
   MultiCorrelation() = default;
   MultiCorrelation(MultiCorrelation const &other) :markers_(other.markers_),
                                                     palette_(other.palette_){
-      for( auto corr : other.correlations_ )
-        correlations_.push_back( new Correlation(*corr) );
+      for( const auto& corr : other.correlations_ )
+        correlations_.push_back( std::make_unique<Correlation>( *corr ) );
   };
   ~MultiCorrelation() override = default;
   void AddCorrelation( const std::string& file,
@@ -28,14 +28,14 @@ public:
   void Rebin( const std::vector<Qn::AxisD>& axes);
   void Select( const std::vector<Qn::AxisD>& axes);
   void Project(const std::vector<std::string>& axes);
-  [[nodiscard]] const std::vector<Correlation*> &GetCorrelations() {
+  [[nodiscard]] const std::vector<std::unique_ptr<Correlation>> &GetCorrelations() {
     this->ColorObjects(correlations_);
     return correlations_;
   }
   void SetErrorOption(const std::string &error_option);
 
 protected:
-  std::vector<Correlation*> correlations_;
+  std::vector<std::unique_ptr<Correlation>> correlations_;
   std::vector<int> markers_{kFullCircle};
   std::vector<int> palette_{
       kPink,

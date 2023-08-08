@@ -35,5 +35,5 @@ void MultiCorrelation::AddCorrelation(const std::string& file,
                                       const std::vector<std::string>& objects,
                                       const std::string& title,
                                       const std::vector<double>& weights_) {
-  correlations_.push_back( new Correlation( file, objects, title, weights_ ) );
+  correlations_.push_back( std::make_unique<Correlation>( file, objects, title, weights_ ) );
 }

@@ -18,7 +18,22 @@ public:
   }
   void AddDrawable( std::unique_ptr<DrawableObject>&& obj ){
     assert(obj);
-    drawable_objects_.push_back( std::move(obj) );
+    if( obj->IsLine() ){
+      std::string opt{"L+" + obj->GetErrorOption()};
+      stack_->Add(obj->GetPoints(), opt.c_str());
+      if( auto_legend_ )
+        legends_.back()->AddEntry(obj->GetPoints(), obj->GetTitle().c_str(),"L");
+      if( obj->GetSysErrorPoints() )
+        stack_->Add( obj->GetSysErrorPoints(), "L+2" );
+    } else{
+      std::string opt{"P+" + obj->GetErrorOption()};
+      stack_->Add(obj->GetPoints(), opt.c_str());
+      if( auto_legend_ )
+        legends_.back()->AddEntry(obj->GetPoints(), obj->GetTitle().c_str(),"P");
+      if( obj->GetSysErrorPoints() )
+        stack_->Add( obj->GetSysErrorPoints(), "P+2" );
+    }
+//    drawable_objects_.push_back( std::move(obj) );
   }
   void AddDrawables( const std::vector<DrawableObject*>& objects ){
     for( auto obj : objects ){

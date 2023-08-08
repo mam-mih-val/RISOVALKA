@@ -10,6 +10,7 @@
 #include <DataContainer.hpp>
 
 #include "drawable_object.h"
+#include "file_manager.h"
 
 class Correlation : public DrawableObject {
 public:

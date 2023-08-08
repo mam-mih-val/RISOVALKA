@@ -13,10 +13,10 @@ Correlation::Correlation(const std::string &file_name,
   for( const auto& name : objects ){
     try {
       containers.emplace_back(
-          *(this->ReadObjectFromFile<Qn::DataContainerStatCalculate>(name)));
+          *(FileManager::ReadObject<Qn::DataContainerStatCalculate>(file_name, name)));
     } catch (std::exception&) {
       containers.emplace_back(
-          *(this->ReadObjectFromFile<Qn::DataContainerStatCollect>(name)));
+          *(FileManager::ReadObject<Qn::DataContainerStatCollect>(file_name, name)));
     }
   }
   if( !weights.empty() ) {
@@ -29,10 +29,11 @@ Correlation::Correlation(const std::string &file_name,
       idx++;
     }
   }
-  average_ = containers.front();
+  average_ = containers.back();
+  containers.pop_back();
   auto* list_merge = new TList;
-  for( size_t i=1; i< containers.size(); ++i ) {
-    auto* to_merge = new Qn::DataContainerStatCalculate( containers.at(i) );
+  for( const auto& container : containers ) {
+    auto* to_merge = new Qn::DataContainerStatCalculate( container );
     list_merge->Add(to_merge);
   }
   average_.Merge( list_merge );
@@ -40,7 +41,7 @@ Correlation::Correlation(const std::string &file_name,
   combinations_ = containers;
   delete list_merge;
 }
-Correlation::~Correlation() {}
+Correlation::~Correlation() = default;
 
 Correlation operator/( const Correlation& num, const Correlation& den){
   Correlation result;
@@ -57,20 +58,20 @@ Correlation operator/( const Correlation& num, const Correlation& den){
 
 void Correlation::RefreshPoints() {
   average_.SetErrors(error_type_);
-  points_ = Qn::ToTGraph(average_);
+  points_.reset(Qn::ToTGraph(average_));
   for( int i=0; i<points_->GetN(); ++i ){
     auto y_err = points_->GetErrorY(i);
     if( isnan( y_err ) )
       points_->SetPointError(i, 0., 0.);
   }
   if( fit_ )
-    points_->Fit(fit_);
+    points_->Fit(fit_.get());
   if( calculate_systematics_from_variation_ ){
     std::vector<Qn::DataContainerStatCalculate> variations;
     for( const auto& combination : combinations_ ){
       variations.emplace_back( average_ - combination );
     }
-    sys_error_points_ = Qn::ToTGraph( average_ );
+    sys_error_points_.reset( Qn::ToTGraph( average_ ) );
     for( int i=0; i<sys_error_points_->GetN(); ++i ){
       auto x_hi = average_.GetAxes().front().GetUpperBinEdge(i);
       auto x_lo = average_.GetAxes().front().GetLowerBinEdge(i);

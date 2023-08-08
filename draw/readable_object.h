@@ -10,6 +10,8 @@
 #include <utility>
 #include <vector>
 
+#include "file_manager.h"
+
 class ReadableObject {
 public:
   [[nodiscard]] const std::string &GetFileName() const { return file_name_; }

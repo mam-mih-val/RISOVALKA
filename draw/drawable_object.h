@@ -13,15 +13,15 @@
 
 #include <utility>
 
-class DrawableObject : public ReadableObject {
+class DrawableObject {
 public:
   DrawableObject() = default;
-  DrawableObject(const DrawableObject& ) = default;
+  DrawableObject(const DrawableObject& );
   DrawableObject(const std::string &file_name,
                  const std::vector<std::string> &objects,
                  std::string title)
-      : ReadableObject(file_name, objects), title_(std::move(title)) {}
-  ~DrawableObject() override = default;
+      : title_(std::move(title)) {}
+  virtual ~DrawableObject() = default;
 
   [[nodiscard]] int GetColor() const { return color_; }
   void Fit( TF1* function, std::vector<float> range = {} ){
@@ -30,17 +30,21 @@ public:
       points_->Fit(function);
     else
       points_->Fit(function, "", "", range.at(0), range.at(1));
-    fit_ = dynamic_cast<TF1*>( points_->GetListOfFunctions()->Last());
+    fit_.reset(dynamic_cast<TF1*>(points_->GetListOfFunctions()->Last()));
     if(fit_)
       fit_->SetLineColor(color_);
   }
   virtual void RefreshPoints() {}
   TGraphErrors* GetPoints() {
     this->RefreshPoints();
-    return points_;
+    return points_.get();
   }
-  [[nodiscard]] TF1 *GetFit() const { return fit_; }
-  [[nodiscard]] TGraphErrors *GetSysErrorPoints() const { return sys_error_points_; }
+  TGraphErrors* ReleasePoints() {
+    this->RefreshPoints();
+    return points_.release();
+  }
+  [[nodiscard]] TF1 *GetFit() const { return fit_.get(); }
+  [[nodiscard]] TGraphErrors *GetSysErrorPoints() const { return sys_error_points_.get(); }
   void SetStyle( int color, int marker ){ color_=color; marker_=marker; }
   [[nodiscard]] bool IsLine() const{ return marker_ < 0; }
   void SavePoints(){ points_->Write(); }
@@ -58,9 +62,9 @@ protected:
   void SetMarkerStyle();
   int color_{kBlack};
   int marker_{kFullCircle};
-  TF1* fit_{};
-  TGraphErrors* points_{nullptr};
-  TGraphErrors* sys_error_points_{nullptr};
+  std::unique_ptr<TF1> fit_{nullptr};
+  std::unique_ptr<TGraphErrors> points_{nullptr};
+  std::unique_ptr<TGraphErrors> sys_error_points_{nullptr};
   std::string error_option_{"Z"};
   std::string title_;
 };
