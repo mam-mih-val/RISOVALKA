@@ -85,7 +85,12 @@ protected:
   std::vector<std::vector<Graph*>> fit_par_graphs_;
   std::string slice_variable_name_;
   std::string slice_variable_units_;
-  std::vector<int> markers_;
+  std::vector<int> markers_{
+    kFullCircle,
+    kFullCircle,
+    kFullCircle,
+    kFullCircle,
+  };
   std::vector<int> palette_{
       kPink,
       kMagenta+1,

@@ -14,20 +14,19 @@
 #include "readable_object.h"
 #include "palette.h"
 
-class DoubleDifferentialCorrelation : public ReadableObject, public Palette{
+class DoubleDifferentialCorrelation : public Palette{
 public:
   DoubleDifferentialCorrelation() = default;
   DoubleDifferentialCorrelation(const std::string &file_name,
-                                const std::vector<std::string> &objects)
-      : ReadableObject(file_name, objects) {
+                                const std::vector<std::string> &objects) {
     std::vector<Qn::DataContainerStatCalculate> containers;
     for( const auto& name : objects ){
       try {
         containers.emplace_back(
-            *(this->ReadObjectFromFile<Qn::DataContainerStatCalculate>(name)));
+            *(FileManager::ReadObject<Qn::DataContainerStatCalculate>(file_name, name)));
       } catch (std::exception&) {
         containers.emplace_back(
-            *(this->ReadObjectFromFile<Qn::DataContainerStatCollect>(name)));
+            *(FileManager::ReadObject<Qn::DataContainerStatCollect>(file_name, name)));
       }
     }
     correlation_ = containers.front();

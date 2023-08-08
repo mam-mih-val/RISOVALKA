@@ -5,12 +5,43 @@
 #include "heap_picture.h"
 #include "TH1.h"
 
-void HeapPicture::Draw() {
-  this->Picture::Draw();
-  if(auto_legend_){
-    assert(legends_.empty());
+void HeapPicture::AddDrawable( DrawableObject* obj ){
+  assert(obj);
+  if(auto_legend_ && legends_.empty()){
     legends_.emplace_back( new TLegend() );
   }
+  auto points = obj->ReleasePoints();
+  if( obj->IsLine() ){
+    std::string opt{"L+" + obj->GetErrorOption()};
+    stack_->Add(points, opt.c_str());
+    if( auto_legend_ )
+      legends_.back()->AddEntry(points, obj->GetTitle().c_str(),"L");
+    if( obj->GetSysErrorPoints() )
+      stack_->Add( obj->GetSysErrorPoints(), "L+2" );
+  } else{
+    std::string opt{"P+" + obj->GetErrorOption()};
+    stack_->Add(points, opt.c_str());
+    if( auto_legend_ )
+      legends_.back()->AddEntry(points, obj->GetTitle().c_str(),"P");
+    if( obj->GetSysErrorPoints() )
+      stack_->Add( obj->GetSysErrorPoints(), "P+2" );
+  }
+//    drawable_objects_.push_back( std::unique_ptr<DrawableObject>(obj) );
+}
+
+void HeapPicture::AddDrawable( const std::unique_ptr<DrawableObject>& obj ) {
+  assert(obj);
+  AddDrawable(obj.get());
+//    drawable_objects_.push_back( std::move(obj) );
+}
+void HeapPicture::AddDrawables( const std::vector<DrawableObject*>& objects ){
+  for( auto obj : objects ){
+    this->AddDrawable(obj);
+  }
+}
+
+void HeapPicture::Draw() {
+  this->Picture::Draw();
 //  for( const auto& obj : drawable_objects_ ){
 //    if( obj->IsLine() ) {
 //      std::string opt{"L+" + obj->GetErrorOption()};
@@ -34,26 +65,26 @@ void HeapPicture::Draw() {
   if(is_log_y_)
     gPad->SetLogy();
   stack_->Draw("APL");
-  if( drawable_objects_.empty() ) {
-    functions_.at(0)->Draw();
-    if( x_range_.at(0) < x_range_.at(1) ) {
-      functions_.at(0)->GetXaxis()->SetLimits(x_range_.at(0), x_range_.at(1));
-      zero_line_->SetRange(x_range_.at(0), x_range_.at(1));
-      functions_.at(0)->Draw();
-    }
-    if( y_range_.at(0) < y_range_.at(1) ) {
-      functions_.at(0)->GetYaxis()->SetRangeUser(y_range_.at(0), y_range_.at(1));
-      functions_.at(0)->Draw();
-    }
-    for( size_t i=1; i<functions_.size(); ++i ){
-      functions_.at(i)->Draw("same");
-    }
-  } else {
-    for (const auto& func : functions_) {
-      if (func)
-        func->Draw("same");
-    }
-  }
+//  if( drawable_objects_.empty() ) {
+//    functions_.at(0)->Draw();
+//    if( x_range_.at(0) < x_range_.at(1) ) {
+//      functions_.at(0)->GetXaxis()->SetLimits(x_range_.at(0), x_range_.at(1));
+//      zero_line_->SetRange(x_range_.at(0), x_range_.at(1));
+//      functions_.at(0)->Draw();
+//    }
+//    if( y_range_.at(0) < y_range_.at(1) ) {
+//      functions_.at(0)->GetYaxis()->SetRangeUser(y_range_.at(0), y_range_.at(1));
+//      functions_.at(0)->Draw();
+//    }
+//    for( size_t i=1; i<functions_.size(); ++i ){
+//      functions_.at(i)->Draw("same");
+//    }
+//  } else {
+//    for (const auto& func : functions_) {
+//      if (func)
+//        func->Draw("same");
+//    }
+//  }
   if( x_range_.at(0) < x_range_.at(1) ) {
     stack_->GetXaxis()->SetLimits(x_range_.at(0), x_range_.at(1));
     zero_line_->SetRange(x_range_.at(0), x_range_.at(1));

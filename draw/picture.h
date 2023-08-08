@@ -32,7 +32,7 @@ public:
   void SavePoints(const std::string& name, const std::string& type);
   [[nodiscard]] TF1 *GetZeroLine() const { return zero_line_.get(); }
   void DrawZeroLine(bool draw_zero_line) { draw_zero_line_ = draw_zero_line; }
-  void SetAutoLegend(bool auto_legend) { auto_legend_ = auto_legend; }
+  void SetAutoLegend(bool auto_legend=true) { auto_legend_ = auto_legend; }
   void AddText( const TLatex& text, float size=0.04 ){ texts_.push_back ( std::make_unique<TLatex>(text) ); text_sizes_.push_back(size); }
   void AddLine( const TLine& line, int color=kRed, int style=1 ){
     lines_.push_back( std::make_unique<TLine>(line) );

@@ -5,16 +5,18 @@
 #ifndef FLOW_DRAWING_TOOLS_DRAW_PICTURE_2_D_H_
 #define FLOW_DRAWING_TOOLS_DRAW_PICTURE_2_D_H_
 
-#include "picture.h"
 #include <TH2F.h>
 
-class Picture2D : public Picture, public ReadableObject {
+#include "picture.h"
+#include "file_manager.h"
+
+class Picture2D : public Picture {
 public:
   Picture2D(const std::string &name, const std::array<int, 2> &resolution,
             const std::string &file_name,
-            const std::vector<std::string> &objects)
-      : Picture(name, resolution), ReadableObject(file_name, objects) {
-    histogram_ = ReadObjectFromFile<TH2F>( objects.front() );
+            const std::string &object)
+      : Picture(name, resolution) {
+    histogram_ = std::unique_ptr<TH2F>(FileManager::ReadObject<TH2F>( file_name, object ));
   }
   void SetDrawOpt(const std::string &draw_option) {
     draw_option_ = draw_option;
@@ -32,13 +34,13 @@ public:
 
   void SetZRange(const std::array<float, 2> &z_range) { z_range_ = z_range; }
   void Draw() override;
-  [[nodiscard]] TH2F *GetHistogram() const { return histogram_; }
+  [[nodiscard]] TH2F *GetHistogram() const { return histogram_.get(); }
   void CopyStyle(Picture2D* other);
 
 protected:
   std::vector<float> title_size_;
   std::vector<float> label_size_;
-  TH2F* histogram_{nullptr};
+  std::unique_ptr<TH2F> histogram_{};
   std::string draw_option_{"colz"};
   std::array<float,2> z_range_;
 };

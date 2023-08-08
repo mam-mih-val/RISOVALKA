@@ -29,6 +29,9 @@
 #pragma link C++ class dv1dy_container+;
 #pragma link C++ class MultiCorrelation+;
 #pragma link C++ class Ratio<Correlation>+;
+#pragma link C++ class Composition<Correlation>+;
+#pragma link C++ class Composition<dv1dy_container>+;
+#pragma link C++ class Composition<MultiCorrelation>+;
 #endif // USE_QN_TOOLS
 
 #endif // defined(__ROOTCLING__) || defined(__MAKECINT__)

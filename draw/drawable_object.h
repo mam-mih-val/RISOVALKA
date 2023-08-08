@@ -45,6 +45,7 @@ public:
   }
   [[nodiscard]] TF1 *GetFit() const { return fit_.get(); }
   [[nodiscard]] TGraphErrors *GetSysErrorPoints() const { return sys_error_points_.get(); }
+  [[nodiscard]] TGraphErrors *ReleaseSysErrorPoints() { return sys_error_points_.release(); }
   void SetStyle( int color, int marker ){ color_=color; marker_=marker; }
   [[nodiscard]] bool IsLine() const{ return marker_ < 0; }
   void SavePoints(){ points_->Write(); }

@@ -33,6 +33,7 @@ if(QnTools_FOUND)
         draw/palette.cpp
         draw/book.cpp
         draw/file_manager.cc
+        draw/composition.cc
         )
     set(HEADERS
         draw/readable_object.h
@@ -52,6 +53,8 @@ if(QnTools_FOUND)
         draw/palette.h
         draw/book.h
         draw/file_manager.h
+        draw/composition.h
+
             )
 else()
     message( "QnTools is not found and the project will be compiled without related to drawing correlations" )
