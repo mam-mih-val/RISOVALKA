@@ -8,6 +8,7 @@
 #include <TGraphErrors.h>
 #include <TF1.h>
 #include <DataContainer.hpp>
+#include <memory>
 
 #include "correlation.h"
 #include "graph.h"
@@ -34,6 +35,9 @@ public:
       correlation_ = correlation_+ containers.at(i);
     correlation_ = correlation_/ (double)containers.size();
   }
+  DoubleDifferentialCorrelation( const DoubleDifferentialCorrelation& other ) : Palette( other ) {
+    correlation_ = other.correlation_;
+  }
   ~DoubleDifferentialCorrelation() override = default;
   Qn::DataContainerStatCalculate &GetCorrelation() {
     return correlation_;
@@ -57,7 +61,7 @@ public:
   void SetProjectionAxis(const Qn::AxisD &projection_axis) {
     projection_axis_ = projection_axis;
   }
-  [[nodiscard]] const std::vector<Graph *> &GetProjections() {
+  [[nodiscard]] const std::vector<std::unique_ptr<Graph>> &GetProjections() {
     if( projections_.empty() )
       this->Calculate();
     return projections_;
@@ -74,7 +78,7 @@ protected:
   std::string slice_variable_name_;
   std::string slice_variable_units_;
   std::string error_option_;
-  std::vector<Graph*> projections_;
+  std::vector<std::unique_ptr<Graph>> projections_;
 };
 
 #endif // FLOW_DRAWING_TOOLS_DRAW_DOUBLE_DIFFERENTIAL_CORRELATION_H_

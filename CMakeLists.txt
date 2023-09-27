@@ -5,16 +5,16 @@ set (RISOVALKA_VERSION_MINOR 0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_BUILD_TYPE debug)
 
-find_package(Boost REQUIRED COMPONENTS program_options)
+# find_package(Boost REQUIRED COMPONENTS program_options)
 find_package(ROOT REQUIRED)
 find_package(QnTools QUIET)
 
-include_directories(${CMAKE_SOURCE_DIR} ${Boost_INCLUDE_DIRS} ${ROOT_INCLUDE_DIRS} ${QnTools_INCLUDE_DIR}/QnTools)
+include_directories(${CMAKE_SOURCE_DIR} ${ROOT_INCLUDE_DIRS} ${QnTools_INCLUDE_DIR}/QnTools)
 
 
 if(QnTools_FOUND)
     message(STATUS ${QnTools_INCLUDE_DIR})
-    include_directories(${CMAKE_SOURCE_DIR} ${Boost_INCLUDE_DIRS} ${ROOT_INCLUDE_DIRS} ${QnTools_INCLUDE_DIR}/QnTools)
+    include_directories(${CMAKE_SOURCE_DIR} ${ROOT_INCLUDE_DIRS} ${QnTools_INCLUDE_DIR}/QnTools)
     set(SOURCES
         draw/readable_object.cpp
         draw/drawable_object.cpp
@@ -58,7 +58,7 @@ if(QnTools_FOUND)
             )
 else()
     message( "QnTools is not found and the project will be compiled without related to drawing correlations" )
-    include_directories(${CMAKE_SOURCE_DIR} ${Boost_INCLUDE_DIRS} ${ROOT_INCLUDE_DIRS} )
+    include_directories(${CMAKE_SOURCE_DIR} ${ROOT_INCLUDE_DIRS} )
     set(SOURCES
             draw/readable_object.cpp
             draw/drawable_object.cpp
@@ -101,4 +101,5 @@ else()
 endif()
 
 add_executable(PNCOBATb draw/draw_picture.cpp)
-target_link_libraries(PNCOBATb ROOT::RIO Draw)
+target_link_libraries(PNCOBATb PRIVATE ROOT::RIO Draw)
+target_compile_options(PNCOBATb PRIVATE -Wall -Wextra -Wpedantic)

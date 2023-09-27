@@ -23,6 +23,7 @@ public:
       : title_(std::move(title)) {}
   virtual ~DrawableObject() = default;
 
+  bool IsDrawn(){ return static_cast<bool>(points_); }
   [[nodiscard]] int GetColor() const { return color_; }
   void Fit( TF1* function, std::vector<float> range = {} ){
     this->RefreshPoints();

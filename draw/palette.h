@@ -21,11 +21,13 @@ public:
     markers_.at(0) = marker; }
   void SetPalette(const std::vector<int> &palette) { palette_ = palette; }
   void BiasPalette( bool bias_palette = true ){ bias_palette_ = bias_palette; }
+  std::pair<int, int> GetStyle( int i ){ return { palette_.at(i), markers_.at(i) }; }
+  int GetColor( int i ){ return palette_.at(i); }
+  int GetMarker( int i ){ return palette_.at(i); }
+
 protected:
   template<class T>
   void ColorObjects(const std::vector<T>& objects){
-//    if( !std::is_base_of<DrawableObject, T>::value )
-//      throw std::runtime_error( __func__ + std::string(" vector of objects is not based of DrawableObject") );
     std::vector<int> colors;
     if( objects.size() < palette_.size() && bias_palette_ ){
       auto bias = palette_.size() / objects.size();

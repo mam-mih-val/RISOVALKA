@@ -14,10 +14,11 @@
 class MultiCorrelation : public Palette {
 public:
   MultiCorrelation() = default;
-  MultiCorrelation(MultiCorrelation const &other) :markers_(other.markers_),
-                                                    palette_(other.palette_){
-      for( const auto& corr : other.correlations_ )
-        correlations_.push_back( std::make_unique<Correlation>( *corr ) );
+  MultiCorrelation(MultiCorrelation const &other) {
+    markers_ = other.markers_;
+    palette_ = other.palette_;
+    for( const auto& corr : other.correlations_ )
+      correlations_.push_back( std::make_unique<Correlation>( *corr ) );
   };
   ~MultiCorrelation() override = default;
   void AddCorrelation( const std::string& file,
@@ -28,28 +29,18 @@ public:
   void Rebin( const std::vector<Qn::AxisD>& axes);
   void Select( const std::vector<Qn::AxisD>& axes);
   void Project(const std::vector<std::string>& axes);
+  void SetStyle(){ ColorObjects(correlations_); };
   [[nodiscard]] const std::vector<std::unique_ptr<Correlation>> &GetCorrelations() {
-    this->ColorObjects(correlations_);
+    ColorObjects(correlations_);
+    return correlations_;
+  }
+  std::vector<std::unique_ptr<Correlation>>& operator*(){
     return correlations_;
   }
   void SetErrorOption(const std::string &error_option);
 
 protected:
   std::vector<std::unique_ptr<Correlation>> correlations_;
-  std::vector<int> markers_{kFullCircle};
-  std::vector<int> palette_{
-      kPink,
-      kMagenta+1,
-      kViolet-8,
-      kBlue,
-      kAzure-4,
-      kCyan+1,
-      kGreen+2,
-      kSpring-4,
-      kYellow-3,
-      kOrange-3,
-      kRed,
-  };
 };
 
 #endif // FLOW_DRAWING_TOOLS_DRAW_MULTI_CORRELATION_H_

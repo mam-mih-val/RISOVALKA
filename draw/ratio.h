@@ -19,43 +19,39 @@ public:
     std::string stack_name = name_+"_ratio_stack";
     ratio_stack_ = std::make_unique<TMultiGraph>(stack_name.c_str(), "");
   }
-  void AddObject( T* obj ){ objects_.push_back(obj); }
-  void AddObject( const std::unique_ptr<T>& obj ){ objects_.push_back(obj.get()); }
-  void AddDrawableObject( DrawableObject* obj ){ drawable_objects_.push_back(obj); }
+  void SetObjects( std::vector<std::unique_ptr<T>>&& vec ){ objects_ = std::move(vec); }
+  void AddObject( T* obj ){ objects_.emplace_back(obj); }
+  void AddObject( std::unique_ptr<T>&& obj ){ objects_.emplace_back( std::move(obj.get()) ); }
+
+  void AddDrawableObject( DrawableObject* obj ){ drawable_objects_.emplace_back(obj); }
 
   void SetRatioRange(const std::array<float, 2> &ratio_range) {
     ratio_range_ = ratio_range;
   }
-  void SetReference(T *reference) { reference_ = reference; }
+  void SetReference(T *reference) { reference_ = std::unique_ptr<T>(reference); }
+  void SetReference(std::unique_ptr<T>&& reference) { reference_ = std::move(reference); }
+
   void Draw() override{
     this->Picture::Draw();
-    if(auto_legend_){
-      assert(legends_.empty());
-      legends_.emplace_back( new TLegend() );
-    }
+//    if(auto_legend_){
+//      assert(legends_.empty());
+//      legends_.emplace_back( new TLegend() );
+//    }
     assert(reference_);
-    for( auto obj : objects_ ){
+    for( const auto& obj : objects_ ){
       if( obj->IsLine() ) {
         stack_->Add( obj->ReleasePoints(), "L");
-        if( auto_legend_ )
-          legends_.back()->AddEntry(obj->GetPoints(), obj->GetTitle().c_str(),"L");
       } else {
         stack_->Add(obj->ReleasePoints(), "P");
-        if( auto_legend_ )
-          legends_.back()->AddEntry(obj->GetPoints(), obj->GetTitle().c_str(),"P");
       }
-      ratios_.push_back( new T( *obj / *reference_ ) );
+      ratios_.emplace_back( new T( *obj / *reference_ ) );
     }
     if( reference_->IsLine() ) {
       stack_->Add(reference_->ReleasePoints(), "L");
-      if( auto_legend_ )
-        legends_.back()->AddEntry(reference_->GetPoints(), reference_->GetTitle().c_str(),"L");
     } else {
       stack_->Add(reference_->ReleasePoints(), "P");
-      if( auto_legend_ )
-        legends_.back()->AddEntry(reference_->GetPoints(), reference_->GetTitle().c_str(),"P");
     }
-    for( auto obj : ratios_ ){
+    for( const auto& obj : ratios_ ){
       if( obj->IsLine() ) {
         ratio_stack_->Add(obj->ReleasePoints(), "L");
       } else {
@@ -66,13 +62,9 @@ public:
       if( obj->IsLine() ) {
         std::string opt{"L+" + obj->GetErrorOption()};
         stack_->Add(obj->ReleasePoints(), opt.c_str());
-        if( auto_legend_ )
-          legends_.back()->AddEntry(obj->ReleasePoints(), obj->GetTitle().c_str(),"L");
       } else {
         std::string opt{"P+" + obj->GetErrorOption()};
         stack_->Add(obj->ReleasePoints(), opt.c_str());
-        if( auto_legend_ )
-          legends_.back()->AddEntry(obj->ReleasePoints(), obj->GetTitle().c_str(),"P");
       }
     }
     auto result_pad = new TPad("result", "result", 0.0, 0.35, 1.0, 1.0);
@@ -99,8 +91,6 @@ public:
     for( const auto& text : texts_ ){
       text->SetNDC();
       text->SetTextSize(text_sizes_.at(i));
-//    text->SetLineWidth(1);
-//    text.SetLineColor(kBlack);
       text->Draw("same");
       ++i;
     }
@@ -157,9 +147,9 @@ public:
 
 
 protected:
-  T* reference_{nullptr};
-  std::vector<T*> objects_;
-  std::vector<T*> ratios_;
+  std::unique_ptr<T> reference_{};
+  std::vector< std::unique_ptr<T> > objects_{};
+  std::vector< std::unique_ptr<T> > ratios_{};
   std::array<float, 2> ratio_range_{};
   std::unique_ptr<TMultiGraph> ratio_stack_{};
   std::vector<DrawableObject*> drawable_objects_;

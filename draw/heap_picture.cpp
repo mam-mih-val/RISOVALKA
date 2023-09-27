@@ -7,24 +7,17 @@
 
 void HeapPicture::AddDrawable( DrawableObject* obj ){
   assert(obj);
-  if(auto_legend_ && legends_.empty()){
-    legends_.emplace_back( new TLegend() );
-  }
   auto points = obj->ReleasePoints();
   if( obj->IsLine() ){
     std::string opt{"L+" + obj->GetErrorOption()};
     stack_->Add(points, opt.c_str());
-    if( auto_legend_ )
-      legends_.back()->AddEntry(points, obj->GetTitle().c_str(),"L");
     if( obj->GetSysErrorPoints() )
-      stack_->Add( obj->GetSysErrorPoints(), "L+2" );
+      stack_->Add( obj->ReleaseSysErrorPoints(), "L+2" );
   } else{
     std::string opt{"P+" + obj->GetErrorOption()};
     stack_->Add(points, opt.c_str());
-    if( auto_legend_ )
-      legends_.back()->AddEntry(points, obj->GetTitle().c_str(),"P");
     if( obj->GetSysErrorPoints() )
-      stack_->Add( obj->GetSysErrorPoints(), "P+2" );
+      stack_->Add( obj->ReleaseSysErrorPoints(), "P+2" );
   }
 }
 
@@ -39,7 +32,7 @@ void HeapPicture::AddDrawables( const std::vector<DrawableObject*>& objects ){
 }
 
 void HeapPicture::Draw() {
-  this->Picture::Draw();
+  Picture::Draw();
   canvas_->cd();
   if(is_log_x_)
     gPad->SetLogx();
@@ -74,6 +67,7 @@ void HeapPicture::Draw() {
     line->Draw("same");
   }
 }
+
 void HeapPicture::SetAxisTitles(const std::vector<std::string> &axis_titles) {
   assert(axis_titles.size()==2);
   axis_titles_ = axis_titles;
@@ -83,5 +77,3 @@ void HeapPicture::SetAxisTitles(const std::vector<std::string> &axis_titles) {
 HeapPicture::HeapPicture(const std::string &name,
                          const std::array<int, 2> &resolution)
     : Picture(name, resolution) {}
-HeapPicture::~HeapPicture() {}
-HeapPicture::HeapPicture() {}

@@ -9,9 +9,9 @@
 
 class HeapPicture : public Picture {
 public:
-  HeapPicture();
+  HeapPicture() = default;
   HeapPicture(const std::string &name, const std::array<int, 2> &resolution);
-  ~HeapPicture() override;
+  ~HeapPicture() override = default;
   void AddDrawable( DrawableObject* obj );
   void AddDrawable( const std::unique_ptr<DrawableObject>& obj ) ;
   void AddDrawables( const std::vector<DrawableObject*>& objects );

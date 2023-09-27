@@ -9,7 +9,8 @@
 DrawableObject::DrawableObject(const DrawableObject &other)  {
   color_ = other.color_;
   marker_ = other.marker_;
-  points_ = std::make_unique<TGraphErrors>( *other.points_ );
+  if( points_ )
+    points_ = std::make_unique<TGraphErrors>( *other.points_ );
   if( other.sys_error_points_ )
     sys_error_points_ = std::make_unique<TGraphErrors>( *other.sys_error_points_ );
   error_option_ = other.error_option_;
