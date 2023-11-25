@@ -21,7 +21,7 @@ public:
   void RefreshPoints() override;
   [[nodiscard]] TH1 *GetHistogram() const { return histogram_.get(); }
   void SetHistogram(TH1 *histogram) { histogram_.reset(histogram); }
-  friend Histogram1D&& operator/( const Histogram1D& num, const Histogram1D& den);
+  friend Histogram1D operator/( const Histogram1D& num, const Histogram1D& den);
 
 protected:
   std::unique_ptr<TH1> histogram_{};

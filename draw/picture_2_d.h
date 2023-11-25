@@ -16,7 +16,7 @@ public:
             const std::string &file_name,
             const std::string &object)
       : Picture(name, resolution) {
-    histogram_ = std::unique_ptr<TH2F>(FileManager::ReadObject<TH2F>( file_name, object ));
+    histogram_ = std::unique_ptr<TH2>(FileManager::ReadObject<TH2>( file_name, object ));
   }
   void SetDrawOpt(const std::string &draw_option) {
     draw_option_ = draw_option;
@@ -34,13 +34,13 @@ public:
 
   void SetZRange(const std::array<float, 2> &z_range) { z_range_ = z_range; }
   void Draw() override;
-  [[nodiscard]] TH2F *GetHistogram() const { return histogram_.get(); }
+  [[nodiscard]] TH2 *GetHistogram() const { return histogram_.get(); }
   void CopyStyle(Picture2D* other);
 
 protected:
   std::vector<float> title_size_;
   std::vector<float> label_size_;
-  std::unique_ptr<TH2F> histogram_{};
+  std::unique_ptr<TH2> histogram_{};
   std::string draw_option_{"colz"};
   std::array<float,2> z_range_;
 };

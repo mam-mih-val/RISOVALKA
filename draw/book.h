@@ -7,6 +7,7 @@
 
 #include <vector>
 #include "picture.h"
+#include "heap_picture.h"
 
 class Book {
 public:

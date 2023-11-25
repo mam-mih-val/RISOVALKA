@@ -43,6 +43,12 @@ void Picture2D::Draw() {
     histogram_->GetXaxis()->SetLabelSize(label_size_.at(0));
     histogram_->GetYaxis()->SetLabelSize(label_size_.at(1));
   }
+  for( const auto& func : functions_ ){
+    func->Draw("same+L");
+  }
+  for( const auto& line : lines_ ){
+    line->Draw("same");
+  }
   int i=0;
   for( const auto& text : texts_ ){
     text->SetNDC();
